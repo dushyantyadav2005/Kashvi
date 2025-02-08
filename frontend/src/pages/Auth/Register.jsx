@@ -11,6 +11,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [phone, setPhone] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const Register = () => {
       toast.error("Passwords do not match");
     } else {
       try {
-        const res = await register({ username, email, password }).unwrap();
+        const res = await register({ username, email, phone, password }).unwrap();
         dispatch(setCredentials({ ...res }));
         navigate(redirect);
         toast.success("User successfully registered");
@@ -84,6 +85,24 @@ const Register = () => {
               placeholder="Enter email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="my-[2rem]">
+            <label
+              htmlFor="phone"
+              className="block text-sm font-medium text-white"
+            >
+              Phone No
+            </label>
+            <input
+              type="tel"
+              id="phone"
+              className="mt-1 p-2 border rounded w-full"
+              placeholder="Enter Phone No"
+              value={phone}
+              minLength={10}
+              maxLength={10}
+              onChange={(e) => setPhone(e.target.value)}
             />
           </div>
 

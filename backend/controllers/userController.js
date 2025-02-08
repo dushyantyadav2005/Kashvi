@@ -2,20 +2,21 @@ import User from "../models/userModel.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import bcrypt from "bcryptjs";
 import createToken from "../utils/createToken.js";
+import e from "express";
 
 const createUser = asyncHandler(async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, phone, password } = req.body;
 
-  if (!username || !email || !password) {
-    throw new Error("Please fill all the inputs.");
+  if (!username || !email || !password || !phone) {
+    return res.status(402).json({ message: "please fill all the fields" });
   }
 
   const userExists = await User.findOne({ email });
-  if (userExists) res.status(400).send("User already exists");
+  if (userExists) return res.status(400).json({ message: "User Already Exists" });
 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
-  const newUser = new User({ username, email, password: hashedPassword });
+  const newUser = new User({ username, email, phone, password: hashedPassword });
 
   try {
     await newUser.save();
@@ -25,6 +26,7 @@ const createUser = asyncHandler(async (req, res) => {
       _id: newUser._id,
       username: newUser.username,
       email: newUser.email,
+      phone: newUser.phone,
       isAdmin: newUser.isAdmin,
     });
   } catch (error) {
@@ -58,6 +60,12 @@ const loginUser = asyncHandler(async (req, res) => {
       });
       return;
     }
+    else {
+      return res.status(401).json({ message: "Invalid Password" });
+    }
+  }
+  else {
+    return res.status(400).json({ message: "User Not Found" });
   }
 });
 
@@ -94,8 +102,15 @@ const updateCurrentUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
+    if (req.body.email && req.body.email !== user.email) {
+      const emailExists = await User.findOne({ email: req.body.email });
+      if (emailExists) {
+        return res.status(400).json({ message: "Email already in use" });
+      }
+    }
     user.username = req.body.username || user.username;
     user.email = req.body.email || user.email;
+    user.phone = req.body.phone || user.phone;
 
     if (req.body.password) {
       const salt = await bcrypt.genSalt(10);
@@ -149,8 +164,16 @@ const updateUserById = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
 
   if (user) {
+    if (req.body.email && req.body.email !== user.email) {
+      const emailExists = await User.findOne({ email: req.body.email });
+      if (emailExists) {
+        return res.status(400).json({ message: "Email already in use" });
+      }
+    }
+
     user.username = req.body.username || user.username;
     user.email = req.body.email || user.email;
+    user.phone = req.body.phone || user.phone;
     user.isAdmin = Boolean(req.body.isAdmin);
 
     const updatedUser = await user.save();

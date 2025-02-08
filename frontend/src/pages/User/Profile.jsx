@@ -12,6 +12,7 @@ const Profile = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [phone, setPhone] = useState("");
 
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -21,7 +22,8 @@ const Profile = () => {
   useEffect(() => {
     setUserName(userInfo.username);
     setEmail(userInfo.email);
-  }, [userInfo.email, userInfo.username]);
+    setPhone(userInfo.phone);
+  }, [userInfo.email, userInfo.username, userInfo.phone]);
 
   const dispatch = useDispatch();
 
@@ -36,6 +38,7 @@ const Profile = () => {
           username,
           email,
           password,
+          phone,
         }).unwrap();
         dispatch(setCredentials({ ...res }));
         toast.success("Profile updated successfully");
@@ -70,6 +73,19 @@ const Profile = () => {
                 className="form-input p-4 rounded-sm w-full"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-white mb-2">Phone Number</label>
+              <input
+                type="tel"
+                placeholder="Enter phone number"
+                className="form-input p-4 rounded-sm w-full"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                minLength="10"
+                maxLength="10"
               />
             </div>
 
