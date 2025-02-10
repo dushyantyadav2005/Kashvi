@@ -17,17 +17,16 @@ const ProductCard = ({ p }) => {
   };
 
   return (
-    <div className="max-w-sm relative bg-[#1A1A1A] rounded-lg shaodw dark:bg-gray-800 dark:border-gray-700">
+    <div className="w-[280px] relative bg-[#1A1A1A] rounded-lg shaodw dark:bg-gray-800 dark:border-gray-700">
       <section className="relative">
         <Link to={`/product/${p._id}`}>
           <span className="absolute bottom-3 right-3 bg-pink-100 text-pink-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-pink-900 dark:text-pink-300">
             {p?.brand}
           </span>
           <img
-            className="cursor-pointer w-full"
+            className="h-[430px] cursor-pointer w-full object-cover object-center"
             src={p.image}
             alt={p.name}
-            style={{ height: "170px", objectFit: "cover" }}
           />
         </Link>
         <HeartIcon product={p} />
@@ -37,7 +36,7 @@ const ProductCard = ({ p }) => {
         <div className="flex justify-between">
           <h5 className="mb-2 text-xl text-whiet dark:text-white">{p?.name}</h5>
 
-          <p className="text-black font-semibold text-pink-500">
+          <p className="font-semibold text-pink-500">
             {p?.price?.toLocaleString("en-US", {
               style: "currency",
               currency: "USD",

@@ -33,15 +33,21 @@ const ProductList = () => {
       productData.append("name", name);
       productData.append("description", description);
       productData.append("price", price);
-      productData.append("category", category);
+      if (category) {
+        productData.append("category", category);
+      } else {
+        productData.append("category", categories[0]._id);
+      }
       productData.append("quantity", quantity);
       productData.append("brand", brand);
       productData.append("countInStock", stock);
 
+
+
       const { data } = await createProduct(productData);
 
       if (data.error) {
-        toast.error("Product create failed. Try Again.");
+        toast.error(data.error);
       } else {
         toast.success(`${data.name} is created`);
         navigate("/");
@@ -165,6 +171,7 @@ const ProductList = () => {
                 <select
                   placeholder="Choose Category"
                   className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
+                  value={category}
                   onChange={(e) => setCategory(e.target.value)}
                 >
                   {categories?.map((c) => (

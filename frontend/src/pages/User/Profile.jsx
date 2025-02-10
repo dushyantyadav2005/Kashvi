@@ -18,7 +18,6 @@ const Profile = () => {
 
   const [updateProfile, { isLoading: loadingUpdateProfile }] =
     useProfileMutation();
-
   useEffect(() => {
     setUserName(userInfo.username);
     setEmail(userInfo.email);
@@ -47,7 +46,6 @@ const Profile = () => {
       }
     }
   };
-
   return (
     <div className="container mx-auto p-4 mt-[10rem]">
       <div className="flex justify-center align-center md:flex md:space-x-4">

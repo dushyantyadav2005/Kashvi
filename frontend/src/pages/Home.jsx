@@ -11,34 +11,32 @@ const Home = () => {
 
   return (
     <>
-      {!keyword ? <Header /> : null}
+      {!keyword && <Header />}
       {isLoading ? (
         <Loader />
       ) : isError ? (
-        <Message variant="danger">
-          {isError?.data.message || isError.error}
-        </Message>
+        <Message variant="danger">{isError?.data.message || isError.error}</Message>
       ) : (
         <>
-          <div className="flex justify-between items-center">
-            <h1 className="ml-[20rem] mt-[10rem] text-[3rem]">
+          {/* Title and Shop Link */}
+          <div className="flex flex-col md:flex-row justify-between items-center mt-16 px-4 md:px-20">
+            <h1 className="text-3xl md:text-4xl font-bold text-center md:text-left">
               Special Products
             </h1>
 
             <Link
               to="/shop"
-              className="bg-pink-600 font-bold rounded-full py-2 px-10 mr-[18rem] mt-[10rem]"
+              className="bg-pink-600 text-white font-bold rounded-full py-2 px-6 md:px-10 mt-4 md:mt-0"
             >
               Shop
             </Link>
           </div>
 
-          <div>
-            <div className="flex justify-center flex-wrap mt-[2rem]">
+          {/* Product Grid */}
+          <div className="mt-8 px-4">
+            <div className="flex flex-wrap justify-center">
               {data.products.map((product) => (
-                <div key={product._id}>
-                  <Product product={product} />
-                </div>
+                <Product key={product._id} product={product} />
               ))}
             </div>
           </div>

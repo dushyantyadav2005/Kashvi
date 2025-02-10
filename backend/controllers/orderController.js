@@ -19,10 +19,10 @@ function calcPrices(orderItems) {
   ).toFixed(2);
 
   return {
-    itemsPrice: itemsPrice.toFixed(2),
-    shippingPrice: shippingPrice.toFixed(2),
-    taxPrice,
-    totalPrice,
+    itemsPrice: `₹${itemsPrice.toFixed(2)}`,
+    shippingPrice: `₹${shippingPrice.toFixed(2)}`,
+    taxPrice: `₹${taxPrice}`,
+    totalPrice: `₹${totalPrice}`,
   };
 }
 
@@ -108,8 +108,8 @@ const countTotalOrders = async (req, res) => {
 const calculateTotalSales = async (req, res) => {
   try {
     const orders = await Order.find();
-    const totalSales = orders.reduce((sum, order) => sum + order.totalPrice, 0);
-    res.json({ totalSales });
+    const totalSales = orders.reduce((sum, order) => sum + parseFloat(order.totalPrice), 0);
+    res.json({ totalSales: `₹${totalSales.toFixed(2)}` });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -133,7 +133,13 @@ const calcualteTotalSalesByDate = async (req, res) => {
       },
     ]);
 
-    res.json(salesByDate);
+    // Convert totalSales to string with Rupee symbol
+    const salesByDateWithSymbol = salesByDate.map(sale => ({
+      ...sale,
+      totalSales: `₹${sale.totalSales.toFixed(2)}`
+    }));
+
+    res.json(salesByDateWithSymbol);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
