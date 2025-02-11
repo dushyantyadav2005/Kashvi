@@ -1,13 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-
+  background: rgb(232, 227, 227);
   color: black;
+  font-family: 'Montserrat', 'Open Sans', 'Playfair Display', serif;
 }
 
 input,
 textarea {
   color: #000;
+  font-family: 'Montserrat', 'Open Sans', 'Playfair Display', serif;
 }

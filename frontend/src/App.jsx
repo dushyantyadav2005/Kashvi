@@ -6,13 +6,14 @@ import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
-    <>
+    <div className="bg-[#f3e4ad] text-[#4c3735] uppercase">
       <ToastContainer />
       <Navigation />
-      <main className="py-3">
+      <main className="pb-3 bg-[#] text-[#]">
         <Outlet />
       </main>
-    </>
+    </div>
+
   );
 };
 
