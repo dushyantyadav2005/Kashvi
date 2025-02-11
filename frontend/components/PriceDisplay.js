@@ -4,6 +4,6 @@ function displayPrice(price) {
 
 const PriceComponent = ({ price }) => (
   <div>
-    <span>Price: {displayPrice(price)}</span>
+    {/* <span>Price: {displayPrice(price)}</span> */}
   </div>
 ); 

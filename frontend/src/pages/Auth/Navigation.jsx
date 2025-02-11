@@ -87,11 +87,7 @@ const Navigation = () => {
                 <ul className="absolute right-0 top-full mt-2 bg-white text-gray-700 shadow-lg rounded-lg overflow-hidden w-48">
                   {userInfo.isAdmin && (
                     <>
-                      <li>
-                        <Link to="/admin/dashboard" className="block px-4 py-2 hover:bg-gray-100" onClick={closeDropdown}>
-                          Dashboard
-                        </Link>
-                      </li>
+                      
                       <li>
                         <Link to="/admin/productlist" className="block px-4 py-2 hover:bg-gray-100" onClick={closeDropdown}>
                           Products

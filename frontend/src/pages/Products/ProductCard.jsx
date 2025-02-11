@@ -35,13 +35,6 @@ const ProductCard = ({ p }) => {
       <div className="p-5">
         <div className="flex justify-between">
           <h5 className="mb-2 text-xl text-whiet dark:text-white">{p?.name}</h5>
-
-          <p className="font-semibold text-pink-500">
-            {p?.price?.toLocaleString("en-US", {
-              style: "currency",
-              currency: "USD",
-            })}
-          </p>
         </div>
 
         <p className="mb-3 font-normal text-[#CFCFCF]">
