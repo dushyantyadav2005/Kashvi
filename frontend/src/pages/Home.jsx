@@ -30,7 +30,7 @@ const Home = () => {
       ) : (
         <>
           {/* Title and Shop Link */}
-          <div
+          {/* <div
             className="flex flex-col md:flex-row justify-between items-center mt-16 px-4 md:px-20"
             data-aos="fade-up"
           >
@@ -45,10 +45,10 @@ const Home = () => {
             >
               Shop
             </Link>
-          </div>
+          </div> */}
 
           {/* Product Grid */}
-          <div className="mt-8 px-4">
+          {/* <div className="mt-8 px-4">
             <div className="flex flex-wrap justify-center">
               {data.products.map((product, index) => (
                 <div
@@ -60,7 +60,7 @@ const Home = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
         </>
       )}
     </>

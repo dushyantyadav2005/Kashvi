@@ -18,6 +18,7 @@ const ProductList = () => {
   const [brand, setBrand] = useState("");
   const [stock, setStock] = useState(0);
   const [imageUrl, setImageUrl] = useState(null);
+  const [tags, setTags] = useState("");
   const navigate = useNavigate();
 
   const [uploadProductImage] = useUploadProductImageMutation();
@@ -42,8 +43,6 @@ const ProductList = () => {
       productData.append("brand", brand);
       productData.append("countInStock", stock);
 
-
-
       const { data } = await createProduct(productData);
 
       if (data.error) {
@@ -55,6 +54,36 @@ const ProductList = () => {
     } catch (error) {
       console.error(error);
       toast.error("Product create failed. Try Again.");
+    }
+  };
+
+  const handleDescription = async () => {
+    try {
+      // Create tags array from the tags input, name and brand
+      const tagsList = [...tags.split(',').map(tag => tag.trim()), name, brand].filter(tag => tag !== '');
+      
+      const response = await fetch('http://localhost:8000/generate-description', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tags: tagsList,
+          use_gemini: true
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to generate description');
+      }
+
+      const data = await response.json();
+      setDescription(data.description);
+      toast.success('Description generated successfully');
+    } catch (error) {
+      console.error('Error generating description:', error);
+      toast.error('Failed to generate description: ' + error.message);
     }
   };
 
@@ -145,15 +174,36 @@ const ProductList = () => {
               </div>
             </div>
 
+            <div className="mb-3">
+              <label htmlFor="tags">Tags (comma-separated)</label> <br />
+              <input
+                type="text"
+                className="p-4 mb-3 w-[95%] border rounded-lg bg-[#101011] text-white"
+                value={tags}
+                onChange={(e) => setTags(e.target.value)}
+                placeholder="Enter tags separated by commas"
+              />
+            </div>
+
             <label htmlFor="" className="my-5">
               Description
             </label>
-            <textarea
-              type="text"
-              className="p-2 mb-3 bg-[#101011] border rounded-lg w-[95%] text-white"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            ></textarea>
+            <div className="relative">
+              <textarea
+                type="text"
+                className="p-2 mb-3 bg-[#101011] border rounded-lg w-[95%] text-white pr-12 h-50 scrollbar-hide"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                style={{ resize: 'vertical', minHeight: '8rem', maxHeight: '20rem', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              ></textarea>
+              <button
+                onClick={handleDescription}
+                className="absolute right-14 top-2 p-2 rounded-lg text-white hover:bg-pink-700 transition-colors"
+                title="Generate AI Description"
+              >
+                🤖
+              </button>
+            </div>
 
             <div className="flex justify-between">
               <div>
