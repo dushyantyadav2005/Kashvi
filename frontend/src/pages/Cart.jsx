@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FaTrash } from "react-icons/fa";
 import { addToCart, removeFromCart } from "../redux/features/cart/cartSlice";
+import axios from "axios";
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -18,13 +19,49 @@ const Cart = () => {
     dispatch(removeFromCart(id));
   };
 
-  const checkoutHandler = () => {
-    navigate("/login?redirect=/shipping");
+  const checkoutHandler = async () => {
+    try {
+      // Configure axios with proper headers
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      };
+
+      const response = await axios.post('http://localhost:5000/getinvoice', {
+        items: cartItems.map(item => ({
+          name: item.name,
+          qty: item.qty,
+          price: item.price,
+          brand: item.brand
+        }))
+      }, config);
+
+      if (response.data && response.data.message) {
+        console.log('Invoice generated:', response.data);
+        navigate("/login?redirect=/shipping");
+      } else {
+        throw new Error('Invalid response from server');
+      }
+    } catch (error) {
+      console.error('Error generating invoice:', error);
+      if (error.response) {
+        // Server responded with error
+        alert(`Failed to generate invoice: ${error.response.data.detail || 'Server error'}`);
+      } else if (error.request) {
+        // Request made but no response
+        alert('Failed to connect to server. Please check if the server is running.');
+      } else {
+        // Other errors
+        alert('Failed to generate invoice. Please try again.');
+      }
+    }
   };
 
   return (
     <>
-      <div className="container flex justify-around items-start flex wrap mx-auto mt-8">
+      <div className="container flex justify-around items-start flex-wrap mx-auto mt-8">
         {cartItems.length === 0 ? (
           <div>
             Your cart is empty <Link to="/shop">Go To Shop</Link>
@@ -50,7 +87,7 @@ const Cart = () => {
                     </Link>
 
                     <div className="mt-2 text-white">{item.brand}</div>
-           
+                
                   </div>
 
                   <div className="w-24">
@@ -86,19 +123,12 @@ const Cart = () => {
                     Items ({cartItems.reduce((acc, item) => acc + item.qty, 0)})
                   </h2>
 
-                  {/* <div className="text-2xl font-bold">
-                    ${" "}
-                    {cartItems
-                      .reduce((acc, item) => acc + item.qty * item.price, 0)
-                      .toFixed(2)}
-                  </div> */}
-
                   <button
                     className="bg-pink-500 mt-4 py-2 px-4 rounded-full text-lg w-full"
                     disabled={cartItems.length === 0}
                     onClick={checkoutHandler}
                   >
-                    Proceed To Checkout
+                    Send Invoice
                   </button>
                 </div>
               </div>

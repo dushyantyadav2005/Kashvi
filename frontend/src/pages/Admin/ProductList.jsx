@@ -62,7 +62,7 @@ const ProductList = () => {
       // Create tags array from the tags input, name and brand
       const tagsList = [...tags.split(',').map(tag => tag.trim()), name, brand].filter(tag => tag !== '');
       
-      const response = await fetch('http://localhost:8000/generate-description', {
+      const response = await fetch('http://localhost:8002/generate-description', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -87,15 +87,44 @@ const ProductList = () => {
     }
   };
 
+  const handleTagGeneration = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('http://localhost:8001/upload-image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate tags');
+      }
+
+      const data = await response.json();
+      // Update the tags input with the generated tags
+      setTags(data.tags.join(', '));
+      toast.success('Tags generated successfully');
+    } catch (error) {
+      console.error('Error generating tags:', error);
+      toast.error('Failed to generate tags');
+    }
+  };
+
   const uploadFileHandler = async (e) => {
     const formData = new FormData();
-    formData.append("image", e.target.files[0]);
+    const file = e.target.files[0];
+    formData.append("image", file);
 
     try {
+      // Upload image for product
       const res = await uploadProductImage(formData).unwrap();
       toast.success(res.message);
       setImage(res.image);
       setImageUrl(res.image);
+
+      // Generate tags from the same image
+      await handleTagGeneration(file);
     } catch (error) {
       toast.error(error?.data?.message || error.error);
     }
