@@ -43,7 +43,7 @@ const Header = () => {
       <div className="relative ">
         {/* Quote Section with Parallax Effect */}
         <div
-          className="w-full h-screen top-0 flex items-center justify-center bg-cover bg-center bg-fixed relative shadow-sm shadow-black/20"
+          className="w-full h-screen top-0 mt-16 flex items-center justify-center bg-cover bg-center bg-fixed relative shadow-sm shadow-black/20"
           style={{ backgroundImage: "url('/home.jpg')" }}
           data-aos="fade-up"
         >
