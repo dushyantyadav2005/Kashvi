@@ -6,12 +6,12 @@ const ProperButton = ({
   name, 
   imgSrc, 
   className,
-  buttonClassName = "border-2 border-white py-[0.4vw] px-3 relative overflow-hidden rounded-xs mb-3 gap-2 flex justify-center items-center w-3vw text-black uppercase",
+  buttonClassName = "border-2 border-black py-[0.4vw] px-3 relative overflow-hidden rounded-xs mb-3 gap-2 flex justify-center items-center w-3vw text-black uppercase",
   imageClassName = "w-9 h-9 rounded-[5px] z-10 relative mx-1",
   textClassName = "z-10 relative flex justify-center text-[1vw] font-medium tracking-wider items-center",
-  hoverColor = "black",
-  defaultColor = "white",
-  hoverBgColor = "bg-white"
+  hoverColor = "white",
+  defaultColor = "black",
+  hoverBgColor = "bg-black"
 }) => {
   const [hover, setHover] = useState(false);
 

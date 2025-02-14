@@ -1,16 +1,14 @@
-
-
 const Footer = () => {
     return (
-        <footer className="bg-gray-900 text-white">
+        <footer className="bg-[#480815] text-[#efdcd9]">
             {/* Top Section with Logo and Newsletter */}
-            <div className="max-w-7xl mx-auto px-8 py-6 flex flex-col md:flex-row justify-between items-center border-b border-gray-700">
+            <div className="max-w-7xl mx-auto px-8 py-6 flex flex-col md:flex-row justify-between items-center border-b border-[#D4AF37]">
                 {/* Logo */}
                 <div className="mb-4 md:mb-0">
                     <img
                         src={'/logopng.png'}
                         alt="Vedanti Logo"
-                        className="h-12 w-auto" // Adjust height/width as needed
+                        className="h-12 w-auto"
                     />
                 </div>
 
@@ -20,11 +18,11 @@ const Footer = () => {
                         <input
                             type="email"
                             placeholder="Subscribe to our Newsletter"
-                            className="w-full md:w-64 px-4 py-2 text-gray-900 rounded-l-md focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                            className="w-full md:w-64 px-4 py-2 text-[#800e25] rounded-l-md focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
                         />
                         <button
                             type="submit"
-                            className="px-6 py-2 bg-yellow-300 text-gray-900 font-medium rounded-r-md hover:bg-yellow-400 transition-colors"
+                            className="px-6 py-2 bg-[#D4AF37] text-[#800e25] font-medium rounded-r-md hover:bg-[#e3af03] transition-colors"
                         >
                             Subscribe
                         </button>
@@ -43,9 +41,9 @@ const Footer = () => {
                                 'Indo Western', 'Sherwan', 'Lehariga', 'Saree', 'Kidewear', 'Accessories']
                                 .map((item) => (
                                     <li key={item}>
-                                        <a href="#" className="relative inline-block hover:text-yellow-300 transition-colors
+                                        <a href="#" className="relative inline-block hover:text-[#D4AF37] transition-colors
                         before:content-[''] before:absolute before:left-0 before:-bottom-1 
-                        before:w-0 before:h-px before:bg-yellow-300 
+                        before:w-0 before:h-px before:bg-[#D4AF37] 
                         before:transition-all before:duration-300 hover:before:w-full">
                                             {item}
                                         </a>
@@ -60,9 +58,9 @@ const Footer = () => {
                         <ul className="space-y-2 text-sm">
                             {['Track Order', 'Contact Us', 'My Account'].map((item) => (
                                 <li key={item}>
-                                    <a href="#" className="relative inline-block hover:text-yellow-300 transition-colors
+                                    <a href="#" className="relative inline-block hover:text-[#D4AF37] transition-colors
                       before:content-[''] before:absolute before:left-0 before:-bottom-1 
-                      before:w-0 before:h-px before:bg-yellow-300 
+                      before:w-0 before:h-px before:bg-[#D4AF37] 
                       before:transition-all before:duration-300 hover:before:w-full">
                                         {item}
                                     </a>
@@ -78,9 +76,9 @@ const Footer = () => {
                             {['About Us', 'Brand Story', 'Blogs', 'Careers', 'Book a Video Call', 'Store Locator']
                                 .map((item) => (
                                     <li key={item}>
-                                        <a href="#" className="relative inline-block hover:text-yellow-300 transition-colors
+                                        <a href="#" className="relative inline-block hover:text-[#D4AF37] transition-colors
                         before:content-[''] before:absolute before:left-0 before:-bottom-1 
-                        before:w-0 before:h-px before:bg-yellow-300 
+                        before:w-0 before:h-px before:bg-[#D4AF37] 
                         before:transition-all before:duration-300 hover:before:w-full">
                                             {item}
                                         </a>
@@ -96,9 +94,9 @@ const Footer = () => {
                             {['FAQs', 'Shipping Details', 'Return, Exchange and Refund Policy',
                                 'Terms of Use', 'Privacy Policy', 'Cookie Policy'].map((item) => (
                                     <li key={item}>
-                                        <a href="#" className="relative inline-block hover:text-yellow-300 transition-colors
+                                        <a href="#" className="relative inline-block hover:text-[#D4AF37] transition-colors
                         before:content-[''] before:absolute before:left-0 before:-bottom-1 
-                        before:w-0 before:h-px before:bg-yellow-300 
+                        before:w-0 before:h-px before:bg-[#D4AF37] 
                         before:transition-all before:duration-300 hover:before:w-full">
                                             {item}
                                         </a>
@@ -112,9 +110,9 @@ const Footer = () => {
                         <h3 className="font-bold mb-4">CONTACT</h3>
                         <div className="space-y-2 text-sm">
                             <p>
-                                <a href="mailto:cavs@vodantitashions.com" className="relative inline-block hover:text-yellow-300 transition-colors
+                                <a href="mailto:cavs@vodantitashions.com" className="relative inline-block hover:text-[#D4AF37] transition-colors
                     before:content-[''] before:absolute before:left-0 before:-bottom-1 
-                    before:w-0 before:h-px before:bg-yellow-300 
+                    before:w-0 before:h-px before:bg-[#D4AF37] 
                     before:transition-all before:duration-300 hover:before:w-full">
                                     cavs@vodantitashions.com
                                 </a>
@@ -130,7 +128,7 @@ const Footer = () => {
                 </div>
 
                 {/* Keep in Touch Section */}
-                <div className="max-w-7xl mx-auto mt-8 border-t border-gray-700 pt-8">
+                <div className="max-w-7xl mx-auto mt-8 border-t border-[#D4AF37] pt-8">
                     <h3 className="font-bold mb-4">KEEP IN TOUCH</h3>
                     <div className="flex gap-4">
                         {['f', 'v', '@', 'in', 'à', '@'].map((icon, index) => (
@@ -138,7 +136,7 @@ const Footer = () => {
                                 key={index}
                                 href="#"
                                 className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center
-                    hover:bg-yellow-300 hover:text-gray-900 transition-colors"
+                    hover:bg-[#D4AF37] hover:text-[#800e25] transition-colors"
                             >
                                 {icon}
                             </a>
