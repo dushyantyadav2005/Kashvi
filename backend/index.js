@@ -3,8 +3,9 @@ import path from "path";
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import cors from "cors";  // Import CORS
 
-// Utiles
+// Utils
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
@@ -18,6 +19,14 @@ const port = process.env.PORT || 5000;
 connectDB();
 
 const app = express();
+
+// Enable CORS
+app.use(cors({
+  origin: "*", // Allow requests from any origin (Change this to specific domains in production)
+  credentials: true, // Allow cookies & authentication headers
+  methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
+  allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

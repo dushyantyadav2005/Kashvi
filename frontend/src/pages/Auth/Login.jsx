@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../components/Loader";
 import { useLoginMutation } from "../../redux/api/usersApiSlice";
-import { setCredentials } from "../../redux/features/auth/authSlice";
+import { setCredentials, setVerified } from "../../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
 
 const Login = () => {
@@ -30,12 +30,16 @@ const Login = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      const res = await login({ email, password }).unwrap();
-      console.log(res);
-      dispatch(setCredentials({ ...res }));
+      const res_login = await login({ email, password }).unwrap();
+      dispatch(setCredentials({ userInfo: res_login, isVerified: res_login.isVerified }));
+      if (res_login.isVerified) {
+        dispatch(setVerified(true));
+      }
       navigate(redirect);
+      toast.success("Login successful");
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      console.log(err);
+      toast.error(err.data?.message || "An error occurred");
     }
   };
 
@@ -78,7 +82,7 @@ const Login = () => {
                 <label className="block text-gray-700 text-sm font-bold mb-2">
                   Password
                 </label>
-                <a href="#" className="text-xs text-gray-500">
+                <a href="/forgot-password" className="text-xs text-gray-500">
                   Forget Password?
                 </a>
               </div>

@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import Loader from "../../components/Loader";
-import { useRegisterMutation } from "../../redux/api/usersApiSlice";
-import { setCredentials } from "../../redux/features/auth/authSlice";
+import { useRegisterMutation, useVerifyEmailMutation } from "../../redux/api/usersApiSlice";
+import { setCredentials, setVerified } from "../../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
 
 const Register = () => {
@@ -12,39 +12,58 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [phone, setPhone] = useState("");
+  const [passwordStrength, setPasswordStrength] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [verifyEmail, { isLoading: isVerifying }] = useVerifyEmailMutation();
+  const [register, { isLoading: isRegistering }] = useRegisterMutation();
+  const redirect = "/otp";
 
-  const [register, { isLoading }] = useRegisterMutation();
-
-  const { userInfo } = useSelector((state) => state.auth);
-
-  const { search } = useLocation();
-  const sp = new URLSearchParams(search);
-  const redirect = sp.get("redirect") || "/";
-
-  useEffect(() => {
-    if (userInfo) {
-      navigate(redirect);
+  const validateInputs = () => {
+    if (!username || !email || !phone || !password || !confirmPassword) {
+      toast.error("All fields are required");
+      return false;
     }
-  }, [navigate, redirect, userInfo]);
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return false;
+    }
+    if (phone.length !== 10 || isNaN(phone)) {
+      toast.error("Phone number must be 10 digits");
+      return false;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error("Invalid email address");
+      return false;
+    }
+    return true;
+  };
+
+  const checkPasswordStrength = (password) => {
+    const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (strongRegex.test(password)) {
+      setPasswordStrength("Strong");
+    } else {
+      setPasswordStrength("Weak");
+    }
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    if (!validateInputs()) return;
 
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
-    } else {
-      try {
-        const res = await register({ username, email, phone, password }).unwrap();
-        dispatch(setCredentials({ ...res }));
-        navigate(redirect);
-        toast.success("User successfully registered");
-      } catch (err) {
-        console.log(err);
-        toast.error(err.data.message);
-      }
+    try {
+      const res_register = await register({ username, email, phone, password }).unwrap();
+      dispatch(setCredentials({ userInfo: res_register, isVerified: false }));
+      const res_verify = await verifyEmail({ email }).unwrap();
+      console.log(res_verify);
+      dispatch(setVerified(true));
+      toast.success(res_verify.message);
+      navigate(redirect);
+    } catch (err) {
+      console.log(err);
+      toast.error(err.data?.message || "An error occurred");
     }
   };
 
@@ -70,6 +89,14 @@ const Register = () => {
             </a>
             <span className="border-b w-1/5 lg:w-1/4"></span>
           </div>
+
+          {/* Loader displayed on the page */}
+          {(isRegistering || isVerifying) && (
+            <div className="flex justify-center my-4">
+              <Loader />
+            </div>
+          )}
+
           <form onSubmit={submitHandler} className="mt-4">
             <div>
               <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -81,6 +108,7 @@ const Register = () => {
                 placeholder="Enter name"
                 value={username}
                 onChange={(e) => setName(e.target.value)}
+                disabled={isRegistering || isVerifying}
               />
             </div>
             <div className="mt-4">
@@ -93,6 +121,7 @@ const Register = () => {
                 placeholder="Enter email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={isRegistering || isVerifying}
               />
             </div>
             <div className="mt-4">
@@ -107,6 +136,7 @@ const Register = () => {
                 minLength="10"
                 maxLength="10"
                 onChange={(e) => setPhone(e.target.value)}
+                disabled={isRegistering || isVerifying}
               />
             </div>
             <div className="mt-4">
@@ -118,8 +148,13 @@ const Register = () => {
                 className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
                 placeholder="Enter password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  checkPasswordStrength(e.target.value);
+                }}
+                disabled={isRegistering || isVerifying}
               />
+              {passwordStrength && <p className="text-sm mt-1">Password Strength: {passwordStrength}</p>}
             </div>
             <div className="mt-4">
               <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -131,18 +166,20 @@ const Register = () => {
                 placeholder="Confirm password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                disabled={isRegistering || isVerifying}
               />
             </div>
             <div className="mt-8">
               <button
-                disabled={isLoading}
                 type="submit"
                 className="bg-gray-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600"
+                disabled={isRegistering || isVerifying}
+                aria-label={isRegistering || isVerifying ? "Loading..." : "Register"}
+                aria-disabled={isRegistering || isVerifying}
               >
-                {isLoading ? "Registering..." : "Register"}
+                Register
               </button>
             </div>
-            {isLoading && <Loader />}
           </form>
           <div className="mt-4 flex items-center justify-between">
             <span className="border-b w-1/5 md:w-1/4"></span>

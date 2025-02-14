@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { FaTrash } from "react-icons/fa";
 import { addToCart, removeFromCart } from "../redux/features/cart/cartSlice";
 import axios from "axios";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -10,6 +13,9 @@ const Cart = () => {
 
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;
+
+  const user = useSelector((state) => state.user);
+  const { isVerified } = user;
 
   const addToCartHandler = (product, qty) => {
     dispatch(addToCart({ ...product, qty }));
@@ -20,6 +26,11 @@ const Cart = () => {
   };
 
   const checkoutHandler = async () => {
+    if (!isVerified) {
+      toast.error('You need to verify your account to proceed with checkout.');
+      return;
+    }
+
     try {
       // Configure axios with proper headers
       const config = {
@@ -47,20 +58,18 @@ const Cart = () => {
     } catch (error) {
       console.error('Error generating invoice:', error);
       if (error.response) {
-        // Server responded with error
-        alert(`Failed to generate invoice: ${error.response.data.detail || 'Server error'}`);
+        toast.error(`Failed to generate invoice: ${error.response.data.detail || 'Server error'}`);
       } else if (error.request) {
-        // Request made but no response
-        alert('Failed to connect to server. Please check if the server is running.');
+        toast.error('Failed to connect to server. Please check if the server is running.');
       } else {
-        // Other errors
-        alert('Failed to generate invoice. Please try again.');
+        toast.error('Failed to generate invoice. Please try again.');
       }
     }
   };
 
   return (
     <>
+      <ToastContainer />
       <div className="container flex justify-around items-start flex-wrap mx-auto mt-8">
         {cartItems.length === 0 ? (
           <div>

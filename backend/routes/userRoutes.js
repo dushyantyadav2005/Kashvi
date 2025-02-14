@@ -9,9 +9,15 @@ import {
   deleteUserById,
   getUserById,
   updateUserById,
+  verifyUser,
+  sendForgetEmail,
+  ResetPassword,
+  verifyOTP,
 } from "../controllers/userController.js";
 
 import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
+import { sendMail } from "../utils/sendEmail.js";
+import { verify } from "crypto";
 
 const router = express.Router();
 
@@ -22,6 +28,8 @@ router
 
 router.post("/auth", loginUser);
 router.post("/logout", logoutCurrentUser);
+router.post("/verify-email", verifyUser)
+router.post("/verify-otp", verifyOTP)
 
 router
   .route("/profile")
@@ -34,5 +42,14 @@ router
   .delete(authenticate, authorizeAdmin, deleteUserById)
   .get(authenticate, authorizeAdmin, getUserById)
   .put(authenticate, authorizeAdmin, updateUserById);
+
+
+
+router.post("/forgot-password", sendForgetEmail)
+
+
+
+router.put("/reset-password/:token", ResetPassword)
+
 
 export default router;
