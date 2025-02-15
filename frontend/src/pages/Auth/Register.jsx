@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Loader from "../../components/Loader";
 import { useRegisterMutation, useVerifyEmailMutation } from "../../redux/api/usersApiSlice";
-import { setCredentials, setVerified } from "../../redux/features/auth/authSlice";
+import { setCredentials } from "../../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
 
 const Register = () => {
@@ -58,7 +58,6 @@ const Register = () => {
       dispatch(setCredentials({ userInfo: res_register, isVerified: false }));
       const res_verify = await verifyEmail({ email }).unwrap();
       console.log(res_verify);
-      dispatch(setVerified(true));
       toast.success(res_verify.message);
       navigate(redirect);
     } catch (err) {

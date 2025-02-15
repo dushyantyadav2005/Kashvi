@@ -17,3 +17,8 @@ textarea {
   color: #000;
   font-family: 'Montserrat', 'Open Sans', 'Playfair Display', serif;
 }
+
+.swiper-slide-shadow-left,
+.swiper-slide-shadow-right {
+  background-image: none;
+}

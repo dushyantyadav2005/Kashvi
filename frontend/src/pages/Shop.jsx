@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetFilteredProductsQuery } from "../redux/api/productApiSlice";
 import { useFetchCategoriesQuery } from "../redux/api/categoryApiSlice";
-
+import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 import {
   setCategories,
   setProducts,
@@ -10,6 +10,7 @@ import {
 } from "../redux/features/shop/shopSlice";
 import Loader from "../components/Loader";
 import ProductCard from "./Products/ProductCard";
+import ProperButtonBlack from "../components/ProperButtonBlack";
 
 const Shop = () => {
   const dispatch = useDispatch();
@@ -17,9 +18,14 @@ const Shop = () => {
     (state) => state.shop
   );
 
-  const categoriesQuery = useFetchCategoriesQuery();
-  const [priceFilter, setPriceFilter] = useState("");
+  const [showCategories, setShowCategories] = useState(false);
+  const [showBrands, setShowBrands] = useState(false);
+  const [showDesignNumber, setShowDesignNumber] = useState(false);
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [designNumberFilter, setDesignNumberFilter] = useState("");
 
+  const categoriesQuery = useFetchCategoriesQuery();
   const filteredProductsQuery = useGetFilteredProductsQuery({
     checked,
     radio,
@@ -32,39 +38,47 @@ const Shop = () => {
   }, [categoriesQuery.data, dispatch]);
 
   useEffect(() => {
-    if (!checked.length || !radio.length) {
-      if (!filteredProductsQuery.isLoading) {
-        // Filter products based on both checked categories and price filter
-        const filteredProducts = filteredProductsQuery.data.filter(
-          (product) => {
-            // Check if the product price includes the entered price filter value
-            return (
-              product.price.toString().includes(priceFilter) ||
-              product.price === parseInt(priceFilter, 10)
-            );
-          }
-        );
+    if (!filteredProductsQuery.isLoading) {
+      // Filter products based on checked categories, selected brand, and design number filter
+      const filteredProducts = filteredProductsQuery.data.filter((product) => {
+        const matchesCategory =
+          !selectedCategory || product.category === selectedCategory;
+        const matchesBrand = !selectedBrand || product.brand === selectedBrand;
+        const matchesDesignNumber =
+          !designNumberFilter ||
+          product.designNumber
+            .toString()
+            .toLowerCase()
+            .includes(designNumberFilter.toLowerCase());
 
-        dispatch(setProducts(filteredProducts));
-      }
+        return matchesCategory && matchesBrand && matchesDesignNumber;
+      });
+
+      dispatch(setProducts(filteredProducts));
     }
-  }, [checked, radio, filteredProductsQuery.data, dispatch, priceFilter]);
+  }, [
+    checked,
+    radio,
+    filteredProductsQuery.data,
+    dispatch,
+    selectedCategory,
+    selectedBrand,
+    designNumberFilter,
+  ]);
 
   const handleBrandClick = (brand) => {
-    const productsByBrand = filteredProductsQuery.data?.filter(
-      (product) => product.brand === brand
-    );
-    dispatch(setProducts(productsByBrand));
+    setSelectedBrand(brand === selectedBrand ? "" : brand);
   };
 
-  const handleCheck = (value, id) => {
-    const updatedChecked = value
-      ? [...checked, id]
-      : checked.filter((c) => c !== id);
-    dispatch(setChecked(updatedChecked));
+  const handleCategoryClick = (categoryId) => {
+    setSelectedCategory(categoryId === selectedCategory ? "" : categoryId);
+    dispatch(setChecked(categoryId ? [categoryId] : []));
   };
 
-  // Add "All Brands" option to uniqueBrands
+  const handleDesignNumberChange = (e) => {
+    setDesignNumberFilter(e.target.value);
+  };
+
   const uniqueBrands = [
     ...Array.from(
       new Set(
@@ -75,96 +89,149 @@ const Shop = () => {
     ),
   ];
 
-  const handlePriceChange = (e) => {
-    // Update the price filter state when the user types in the input filed
-    setPriceFilter(e.target.value);
-  };
-
   return (
     <>
-      <div className="container mx-auto mt-[8vh]">
+      <div className="container mx-auto">
         <div className="flex md:flex-row">
-          <div className="bg-[#151515] p-3 mt-2 mb-2">
-            <h2 className="h4 text-center py-2 bg-black rounded-full mb-2">
-              Filter by Categories
-            </h2>
+          <div className="p-5 py-14 mb-2 border-r-2 border-[#D4AF37] shadow-lg shadow-[#24110c]/10 min-w-[200px]">
+            <h2 className="text-2xl font-playfair text-[#24110c] mb-8 text-center">Filter By</h2>
 
-            <div className="p-5 w-[15rem]">
-              {categories?.map((c) => (
-                <div key={c._id} className="mb-2">
-                  <div className="flex ietms-center mr-4">
-                    <input
-                      type="checkbox"
-                      id="red-checkbox"
-                      onChange={(e) => handleCheck(e.target.checked, c._id)}
-                      className="w-4 h-4 text-pink-600 bg-gray-100 border-gray-300 rounded focus:ring-pink-500 dark:focus:ring-pink-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                    />
-
-                    <label
-                      htmlFor="pink-checkbox"
-                      className="ml-2 text-sm font-medium text-white dark:text-gray-300"
-                    >
-                      {c.name}
-                    </label>
+            {/* Categories Filter */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-base font-normal font-montserrat uppercase text-[#24110c]">
+                  Categories
+                </h2>
+                <button
+                  onClick={() => setShowCategories(!showCategories)}
+                  className="text-[#D4AF37] hover:text-[#e3af03] transition-all duration-300"
+                >
+                  <div className={`transform transition-transform duration-300 ${showCategories ? 'rotate-180' : 'rotate-0'}`}>
+                    <AiOutlinePlus size={20} />
                   </div>
+                </button>
+              </div>
+              <div className="w-full h-[1px] bg-[#D4AF37]/30 mb-4"></div>
+
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden ${showCategories ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                <div className="flex flex-col items-start space-y-3 pl-4">
+                  {categories?.map((c) => (
+                    <div key={c._id} className="flex items-center group w-full cursor-pointer" onClick={() => handleCategoryClick(c._id)}>
+                      <div className="relative w-4 h-4">
+                        <input
+                          type="radio"
+                          id={c._id}
+                          name="category"
+                          checked={selectedCategory === c._id}
+                          onChange={() => { }}
+                          className="absolute opacity-0 w-4 h-4 cursor-pointer"
+                        />
+                        <div className={`w-4 h-4 border-2 rounded-full transition-all duration-300 ${selectedCategory === c._id ? 'border-[#D4AF37]' : 'border-gray-400 group-hover:border-[#D4AF37]'}`}>
+                          <div className={`w-2 h-2 rounded-full bg-[#D4AF37] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${selectedCategory === c._id ? 'scale-100' : 'scale-0'}`}></div>
+                        </div>
+                      </div>
+                      <label
+                        htmlFor={c._id}
+                        onClick={() => handleCategoryClick(c._id)}
+                        className={`ml-3 text-sm font-normal font-montserrat cursor-pointer transition-colors duration-300 ${selectedCategory === c._id ? 'text-[#D4AF37]' : 'text-black group-hover:text-[#D4AF37]'}`}
+                      >
+                        {c.name}
+                      </label>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
 
-            <h2 className="h4 text-center py-2 bg-black rounded-full mb-2">
-              Filter by Brands
-            </h2>
-
-            <div className="p-5">
-              {uniqueBrands?.map((brand) => (
-                <>
-                  <div className="flex items-enter mr-4 mb-5">
-                    <input
-                      type="radio"
-                      id={brand}
-                      name="brand"
-                      onChange={() => handleBrandClick(brand)}
-                      className="w-4 h-4 text-pink-400 bg-gray-100 border-gray-300 focus:ring-pink-500 dark:focus:ring-pink-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                    />
-
-                    <label
-                      htmlFor="pink-radio"
-                      className="ml-2 text-sm font-medium text-white dark:text-gray-300"
-                    >
-                      {brand}
-                    </label>
+            {/* Brands Filter */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-base font-normal font-montserrat uppercase text-[#24110c]">
+                  Brands
+                </h2>
+                <button
+                  onClick={() => setShowBrands(!showBrands)}
+                  className="text-[#D4AF37] hover:text-[#e3af03] transition-all duration-300"
+                >
+                  <div className={`transform transition-transform duration-300 ${showBrands ? 'rotate-180' : 'rotate-0'}`}>
+                    <AiOutlinePlus size={20} />
                   </div>
-                </>
-              ))}
+                </button>
+              </div>
+              <div className="w-full h-[1px] bg-[#D4AF37]/30 mb-4"></div>
+
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden ${showBrands ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                <div className="flex flex-col items-start space-y-3 pl-4">
+                  {uniqueBrands?.map((brand) => (
+                    <div key={brand} className="flex items-center group w-full cursor-pointer" onClick={() => handleBrandClick(brand)}>
+                      <div className="relative w-4 h-4">
+                        <input
+                          type="radio"
+                          id={brand}
+                          name="brand"
+                          checked={selectedBrand === brand}
+                          onChange={() => { }}
+                          className="absolute opacity-0 w-4 h-4 cursor-pointer"
+                        />
+                        <div className={`w-4 h-4 border-2 rounded-full transition-all duration-300 ${selectedBrand === brand ? 'border-[#D4AF37]' : 'border-gray-400 group-hover:border-[#D4AF37]'}`}>
+                          <div className={`w-2 h-2 rounded-full bg-[#D4AF37] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${selectedBrand === brand ? 'scale-100' : 'scale-0'}`}></div>
+                        </div>
+                      </div>
+                      <label
+                        htmlFor={brand}
+                        onClick={() => handleBrandClick(brand)}
+                        className={`ml-3 text-sm font-normal font-montserrat cursor-pointer transition-colors duration-300 ${selectedBrand === brand ? 'text-[#D4AF37]' : 'text-black group-hover:text-[#D4AF37]'}`}
+                      >
+                        {brand}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <h2 className="h4 text-center py-2 bg-black rounded-full mb-2">
-              Filer by Price
-            </h2>
+            {/* Design Number Filter */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-base font-normal font-montserrat uppercase text-[#24110c]">
+                  Design Number
+                </h2>
+                <button
+                  onClick={() => setShowDesignNumber(!showDesignNumber)}
+                  className="text-[#D4AF37] hover:text-[#e3af03] transition-all duration-300"
+                >
+                  <div className={`transform transition-transform duration-300 ${showDesignNumber ? 'rotate-180' : 'rotate-0'}`}>
+                    <AiOutlinePlus size={20} />
+                  </div>
+                </button>
+              </div>
+              <div className="w-full h-[1px] bg-[#D4AF37]/30 mb-4"></div>
 
-            <div className="p-5 w-[15rem]">
-              <input
-                type="text"
-                placeholder="Enter Price"
-                value={priceFilter}
-                onChange={handlePriceChange}
-                className="w-full px-3 py-2 placeholder-gray-400 border rounded-lg focus:outline-none focus:ring focus:border-pink-300"
-              />
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden ${showDesignNumber ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                <div className="flex justify-center px-4">
+                  <input
+                    type="text"
+                    placeholder="Enter Design Number"
+                    value={designNumberFilter}
+                    onChange={handleDesignNumberChange}
+                    className="w-full px-3 py-2 placeholder-gray-400 border border-[#D4AF37] rounded-lg focus:outline-none focus:ring focus:border-[#D4AF37] bg-[#efdcd9]/10 text-black text-sm"
+                  />
+                </div>
+              </div>
             </div>
 
-            <div className="p-5 pt-0">
-              <button
-                className="w-full border my-4"
-                onClick={() => window.location.reload()}
-              >
-                Reset
-              </button>
+            {/* Reset Button */}
+            <div className="  ">
+              <ProperButtonBlack text="Reset" name="reset" className="w-full mx-auto" />
             </div>
           </div>
 
-          <div className="p-3">
-            <h2 className="h4 text-center mb-2">{products?.length} Products</h2>
-            <div className="flex flex-wrap">
+          {/* Products Section */}
+          <div className="py-3 flex flex-col items-center w-full">
+            <img src="../../images/embupsidedown.png" alt="" className='w-full h-auto opacity-50' />
+
+            <h2 className="h4 text-center font-playfair capitalize m-10 text-3xl">{products?.length} SAREES</h2>
+            <div className="flex flex-wrap justify-center">
               {products.length === 0 ? (
                 <Loader />
               ) : (

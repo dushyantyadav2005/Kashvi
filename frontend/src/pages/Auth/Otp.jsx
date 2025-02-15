@@ -67,7 +67,9 @@ function Otp() {
         try {
             const res_verify = await verifyOTP({ email, otp: otpString }).unwrap();
             console.log(res_verify);
-            dispatch(setVerified(true));
+            if (res_verify) {
+                dispatch(setVerified(true));
+            }
             toast.success(res_verify.message);
             navigate("/"); // Redirect after successful verification
         } catch (err) {

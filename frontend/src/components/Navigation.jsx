@@ -16,9 +16,9 @@ import { useLogoutMutation, useVerifyEmailMutation } from "../redux/api/usersApi
 import { logout, setVerified } from "../redux/features/auth/authSlice";
 import FavoritesCount from "../pages/Products/FavoritesCount";
 import { toast } from "react-toastify";
-import Loader from "./Loader";
 
 const Navigation = () => {
+  const { loading, setLoading } = useState(false);
   const { userInfo, isVerified } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.cart);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -45,7 +45,6 @@ const Navigation = () => {
       const response = await verifyEmail({ email: userInfo.email }).unwrap();
       toast.success(response.message);
       navigate("/otp");
-      dispatch(setVerified(true));
     } catch (error) {
       toast.error(error?.data?.message || "Failed to send verification email.");
     } finally {
