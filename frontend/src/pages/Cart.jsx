@@ -1,21 +1,23 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FaTrash } from "react-icons/fa";
+import { useState } from "react";
 import { addToCart, removeFromCart } from "../redux/features/cart/cartSlice";
 import axios from "axios";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import { faker } from '@faker-js/faker';
+import Loader from "../components/Loader"; // Import Loader Component
 
 const Cart = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false); // Track loading state
 
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;
-
-  const user = useSelector((state) => state.user);
-  const { isVerified } = user;
+  const { userInfo, isVerified } = useSelector((state) => state.auth);
 
   const addToCartHandler = (product, qty) => {
     dispatch(addToCart({ ...product, qty }));
@@ -31,8 +33,9 @@ const Cart = () => {
       return;
     }
 
+    setLoading(true); // Start loading before making the request
+
     try {
-      // Configure axios with proper headers
       const config = {
         headers: {
           'Content-Type': 'application/json',
@@ -40,32 +43,34 @@ const Cart = () => {
         }
       };
 
-      const response = await axios.post('http://localhost:5000/getinvoice', {
+      const response = await axios.post('http://localhost:5000/api/invoice', {
+        invoiceNo: faker.string.alphanumeric(10).toUpperCase(),
+        email: userInfo.email,
+        customerName: userInfo.username,
         items: cartItems.map(item => ({
           name: item.name,
           qty: item.qty,
-          price: item.price,
-          brand: item.brand
         }))
       }, config);
 
       if (response.data && response.data.message) {
         console.log('Invoice generated:', response.data);
-        navigate("/login?redirect=/shipping");
+        toast.success("Invoice generated successfully!,Kindly Check Your Email to Download the Invoice");
       } else {
         throw new Error('Invalid response from server');
       }
     } catch (error) {
       console.error('Error generating invoice:', error);
-      if (error.response) {
-        toast.error(`Failed to generate invoice: ${error.response.data.detail || 'Server error'}`);
-      } else if (error.request) {
-        toast.error('Failed to connect to server. Please check if the server is running.');
-      } else {
-        toast.error('Failed to generate invoice. Please try again.');
-      }
+      toast.error('Failed to generate invoice. Please try again.');
+    } finally {
+      setLoading(false); // Stop loading after the request completes
     }
   };
+  if (loading) {
+    return (
+      <Loader />
+    )
+  }
 
   return (
     <>
@@ -81,7 +86,7 @@ const Cart = () => {
               <h1 className="text-2xl font-semibold mb-4">Shopping Cart</h1>
 
               {cartItems.map((item) => (
-                <div key={item._id} className="flex items-enter mb-[1rem] pb-2">
+                <div key={item._id} className="flex items-center mb-[1rem] pb-2">
                   <div className="w-[5rem] h-[5rem]">
                     <img
                       src={item.image}
@@ -96,7 +101,6 @@ const Cart = () => {
                     </Link>
 
                     <div className="mt-2 text-white">{item.brand}</div>
-                
                   </div>
 
                   <div className="w-24">
@@ -133,11 +137,11 @@ const Cart = () => {
                   </h2>
 
                   <button
-                    className="bg-pink-500 mt-4 py-2 px-4 rounded-full text-lg w-full"
-                    disabled={cartItems.length === 0}
+                    className="bg-pink-500 mt-4 py-2 px-4 rounded-full text-lg w-full flex justify-center items-center"
+                    disabled={cartItems.length === 0 || loading}
                     onClick={checkoutHandler}
                   >
-                    Send Invoice
+                    Generate Invoice
                   </button>
                 </div>
               </div>

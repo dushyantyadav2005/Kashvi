@@ -4,7 +4,7 @@ const initialState = {
   userInfo: localStorage.getItem("userInfo")
     ? JSON.parse(localStorage.getItem("userInfo"))
     : null,
-  isVerified: false,
+  isVerified: localStorage.getItem("isVerified") === "true",
 };
 
 const authSlice = createSlice({
@@ -12,25 +12,31 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setCredentials: (state, action) => {
-      state.userInfo = action.payload.userInfo;
-      state.isVerified = action.payload.isVerified;
-      localStorage.setItem("userInfo", JSON.stringify(action.payload.userInfo));
-      localStorage.setItem("isVerified", action.payload.isVerified);
-
-      const expirationTime = new Date().getTime() + 30 * 24 * 60 * 60 * 1000; // 30 days
-      localStorage.setItem("expirationTime", expirationTime);
+      try {
+        state.userInfo = action.payload.userInfo;
+        state.isVerified = Boolean(action.payload.isVerified);
+        localStorage.setItem("userInfo", JSON.stringify(action.payload.userInfo));
+        localStorage.setItem("isVerified", String(action.payload.isVerified));
+      } catch (error) {
+        console.error('Failed to save to localStorage:', error);
+      }
     },
     logout: (state) => {
       state.userInfo = null;
-      localStorage.clear();
+      state.isVerified = false;
+      localStorage.removeItem("userInfo");
+      localStorage.removeItem("isVerified");
     },
     setVerified: (state, action) => {
-      state.isVerified = action.payload;
-      localStorage.setItem("isVerified", action.payload); // Update localStorage
+      try {
+        state.isVerified = Boolean(action.payload);
+        localStorage.setItem("isVerified", String(action.payload));
+      } catch (error) {
+        console.error('Failed to save verification status:', error);
+      }
     },
   },
 });
 
 export const { setCredentials, logout, setVerified } = authSlice.actions;
-
 export default authSlice.reducer;

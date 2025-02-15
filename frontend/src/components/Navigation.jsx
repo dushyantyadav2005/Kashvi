@@ -27,8 +27,6 @@ const Navigation = () => {
   const navigate = useNavigate();
   const [logoutApiCall] = useLogoutMutation();
   const [verifyEmail] = useVerifyEmailMutation();
-  const [loading, setLoading] = useState(false);
-
   const logoutHandler = async () => {
     try {
       await logoutApiCall().unwrap();
@@ -46,11 +44,10 @@ const Navigation = () => {
     try {
       const response = await verifyEmail({ email: userInfo.email }).unwrap();
       toast.success(response.message);
-      dispatch(setVerified(true));
       navigate("/otp");
+      dispatch(setVerified(true));
     } catch (error) {
-      console.error(error);
-      toast.error("Failed to send verification email.");
+      toast.error(error?.data?.message || "Failed to send verification email.");
     } finally {
       setLoading(false);
     }
