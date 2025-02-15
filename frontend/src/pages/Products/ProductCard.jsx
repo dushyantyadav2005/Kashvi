@@ -20,14 +20,14 @@
       };
     
       return (
-        <div className="w-[280px] relative bg-[#8e0e28d4] rounded-lg shadow group overflow-hidden">
+        <div className="w-[280px] relative bg-[#8e0e28d4] rounded-sm shadow group overflow-hidden border-2 border-[#f5c6d04e]">
           <section className="relative">
             <Link to={`/product/${p._id}`}>
               <span className="absolute bottom-3 right-3 bg-[#f8bb82] text-white text-sm font-montserrat px-2.5 py-0.5 rounded-full">
                 {p?.brand}
               </span>
               <img
-                className="h-[430px] cursor-pointer w-full object-cover object-center rounded-lg group-hover:brightness-75 group-hover:scale-105 transform transition-transform duration-300"
+                className="h-[430px] cursor-pointer w-full object-cover object-center rounded-sm group-hover:brightness-75 group-hover:scale-105 transform transition-transform duration-300"
                 src={p.image}
                 alt={p.name}
               />

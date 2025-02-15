@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
-    <div className="bg-[#feeead] mt-[5rem] max-sm:mt-[4rem] text-[#4c3735] uppercase">
+    <div className="bg-[#fdfeff] mt-[5rem] max-sm:mt-[4rem] text-[#4c3735] uppercase">
       <ToastContainer />
       <Navigation />
       <main className="pb-3 bg-[#] text-[#] min-h-screen">

@@ -7,6 +7,8 @@ import {
 import { useFetchCategoriesQuery } from "../../redux/api/categoryApiSlice";
 import { toast } from "react-toastify";
 import AdminMenu from "./AdminMenu";
+import ProperButton from "../../components/ProperButton";
+import ProperButtonBlack from "../../components/ProperButtonBlack";
 
 const ProductList = () => {
   const [image, setImage] = useState("");
@@ -135,7 +137,9 @@ const ProductList = () => {
       <div className="flex flex-col md:flex-row">
         <AdminMenu />
         <div className="md:w-3/4 p-3">
-          <div className="h-12">Create Product</div>
+        
+        <h2 className="h4 text-center font-playfair capitalize m-10 mb-0 text-4xl font-medium">CREATE</h2>
+            <h2 className="h4 text-center font-montserrat uppercase tracking-wider m-10 mt-0 text-lg ">Product</h2>
 
           {imageUrl && (
             <div className="text-center">
@@ -148,7 +152,7 @@ const ProductList = () => {
           )}
 
           <div className="mb-3">
-            <label className="border text-white px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11">
+            <label className="border px-4 block w-full text-center cursor-pointer font-bold py-11">
               {image ? image.name : "Upload Image"}
 
               <input
@@ -163,22 +167,13 @@ const ProductList = () => {
 
           <div className="p-3">
             <div className="flex flex-wrap">
-              <div className="one">
+              <div className="two">
                 <label htmlFor="name">Name</label> <br />
                 <input
                   type="text"
-                  className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
+                  className="p-4 mb-3 w-[30rem] border"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              <div className="two ml-10 ">
-                <label htmlFor="name block">Price</label> <br />
-                <input
-                  type="number"
-                  className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
                 />
               </div>
             </div>
@@ -187,7 +182,7 @@ const ProductList = () => {
                 <label htmlFor="name block">Quantity</label> <br />
                 <input
                   type="number"
-                  className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
+                  className="p-4 mb-3 w-[30rem] border"
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
                 />
@@ -196,7 +191,7 @@ const ProductList = () => {
                 <label htmlFor="name block">Brand</label> <br />
                 <input
                   type="text"
-                  className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
+                  className="p-4 mb-3 w-[30rem] border-2"
                   value={brand}
                   onChange={(e) => setBrand(e.target.value)}
                 />
@@ -207,7 +202,7 @@ const ProductList = () => {
               <label htmlFor="tags">Tags (comma-separated)</label> <br />
               <input
                 type="text"
-                className="p-4 mb-3 w-[95%] border rounded-lg bg-[#101011] text-white"
+                className="p-4 mb-3 w-[95%] border"
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
                 placeholder="Enter tags separated by commas"
@@ -220,14 +215,14 @@ const ProductList = () => {
             <div className="relative">
               <textarea
                 type="text"
-                className="p-2 mb-3 bg-[#101011] border rounded-lg w-[95%] text-white pr-12 h-50 scrollbar-hide"
+                className="p-2 mb-3 border w-[95%] pr-12 h-50 scrollbar-hide"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 style={{ resize: 'vertical', minHeight: '8rem', maxHeight: '20rem', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               ></textarea>
               <button
                 onClick={handleDescription}
-                className="absolute right-14 top-2 p-2 rounded-lg text-white hover:bg-pink-700 transition-colors"
+                className="absolute right-14 top-2 p-2 text-white hover:bg-pink-700 transition-colors"
                 title="Generate AI Description"
               >
                 🤖
@@ -239,7 +234,7 @@ const ProductList = () => {
                 <label htmlFor="name block">Count In Stock</label> <br />
                 <input
                   type="text"
-                  className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
+                  className="p-4 mb-3 w-[30rem] border"
                   value={stock}
                   onChange={(e) => setStock(e.target.value)}
                 />
@@ -249,7 +244,7 @@ const ProductList = () => {
                 <label htmlFor="">Category</label> <br />
                 <select
                   placeholder="Choose Category"
-                  className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
+                  className="p-4 mb-3 w-[30rem] border"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                 >
@@ -262,12 +257,7 @@ const ProductList = () => {
               </div>
             </div>
 
-            <button
-              onClick={handleSubmit}
-              className="py-4 px-10 mt-5 rounded-lg text-lg font-bold bg-pink-600"
-            >
-              Submit
-            </button>
+            <ProperButtonBlack text={'Submit'} className={'py-4 px-10 mt-5 text-lg '}/>
           </div>
         </div>
       </div>
