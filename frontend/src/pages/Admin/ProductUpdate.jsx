@@ -22,7 +22,7 @@ const AdminProductUpdate = () => {
   const [description, setDescription] = useState(
     productData?.description || ""
   );
-  const [price, setPrice] = useState(productData?.price || "");
+    const [designNumber, setDesignNumber] = useState(productData?.designNumber || "");
   const [category, setCategory] = useState(productData?.category || "");
   const [quantity, setQuantity] = useState(productData?.quantity || "");
   const [brand, setBrand] = useState(productData?.brand || "");
@@ -46,7 +46,7 @@ const AdminProductUpdate = () => {
     if (productData && productData._id) {
       setName(productData.name);
       setDescription(productData.description);
-      setPrice(productData.price);
+      setDesignNumber(productData.designNumber);
       setCategory(productData.category?._id);
       setQuantity(productData.quantity);
       setBrand(productData.brand);
@@ -79,7 +79,7 @@ const AdminProductUpdate = () => {
       formData.append("image", image);
       formData.append("name", name);
       formData.append("description", description);
-      formData.append("price", price);
+      formData.append("designNumber", designNumber);
       formData.append("category", category);
       formData.append("quantity", quantity);
       formData.append("brand", brand);
@@ -175,12 +175,12 @@ const AdminProductUpdate = () => {
                 </div>
 
                 <div className="two">
-                  <label htmlFor="name block">Price</label> <br />
+                  <label htmlFor="name block">Design Number</label> <br />
                   <input
-                    type="number"
+                    type="String"
                     className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white "
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
+                    value={designNumber}
+                    onChange={(e) => setDesignNumber(e.target.value)}
                   />
                 </div>
               </div>

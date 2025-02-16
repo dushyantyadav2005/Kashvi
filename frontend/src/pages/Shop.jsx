@@ -18,7 +18,7 @@ const Shop = () => {
   );
 
   const categoriesQuery = useFetchCategoriesQuery();
-  const [priceFilter, setPriceFilter] = useState("");
+  const [designNumberFilter, setDesignNumberFilter] = useState("");
 
   const filteredProductsQuery = useGetFilteredProductsQuery({
     checked,
@@ -34,13 +34,13 @@ const Shop = () => {
   useEffect(() => {
     if (!checked.length || !radio.length) {
       if (!filteredProductsQuery.isLoading) {
-        // Filter products based on both checked categories and price filter
+        // Filter products based on both checked categories and design number filter
         const filteredProducts = filteredProductsQuery.data.filter(
           (product) => {
-            // Check if the product price includes the entered price filter value
+            // Check if the product design number includes the entered design number filter value
             return (
-              product.price.toString().includes(priceFilter) ||
-              product.price === parseInt(priceFilter, 10)
+              product.designNumber.toString().includes(designNumberFilter) ||
+              product.designNumber === parseInt(designNumberFilter, 10)
             );
           }
         );
@@ -48,7 +48,7 @@ const Shop = () => {
         dispatch(setProducts(filteredProducts));
       }
     }
-  }, [checked, radio, filteredProductsQuery.data, dispatch, priceFilter]);
+  }, [checked, radio, filteredProductsQuery.data, dispatch, designNumberFilter]);
 
   const handleBrandClick = (brand) => {
     const productsByBrand = filteredProductsQuery.data?.filter(
@@ -75,9 +75,9 @@ const Shop = () => {
     ),
   ];
 
-  const handlePriceChange = (e) => {
-    // Update the price filter state when the user types in the input filed
-    setPriceFilter(e.target.value);
+  const handleDesignNumberChange = (e) => {
+    // Update the design number filter state when the user types in the input field
+    setDesignNumberFilter(e.target.value);
   };
 
   return (
@@ -139,15 +139,15 @@ const Shop = () => {
             </div>
 
             <h2 className="h4 text-center py-2 bg-black rounded-full mb-2">
-              Filer by Price
+              Filter by Design Number
             </h2>
 
             <div className="p-5 w-[15rem]">
               <input
                 type="text"
-                placeholder="Enter Price"
-                value={priceFilter}
-                onChange={handlePriceChange}
+                placeholder="Enter Design Number"
+                value={designNumberFilter}
+                onChange={handleDesignNumberChange}
                 className="w-full px-3 py-2 placeholder-gray-400 border rounded-lg focus:outline-none focus:ring focus:border-pink-300"
               />
             </div>

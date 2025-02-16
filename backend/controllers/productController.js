@@ -3,7 +3,7 @@ import Product from "../models/productModel.js";
 
 const addProduct = asyncHandler(async (req, res) => {
   try {
-    const { name, description, price, category, quantity, brand } = req.fields;
+    const { name, description, designNumber, category, quantity, brand } = req.fields;
 
     // Validation
     switch (true) {
@@ -13,8 +13,8 @@ const addProduct = asyncHandler(async (req, res) => {
         return res.json({ error: "Brand is required" });
       case !description:
         return res.json({ error: "Description is required" });
-      case !price:
-        return res.json({ error: "Price is required" });
+      case !designNumber:
+        return res.json({ error: "Design Number is required" });
       case !category:
         return res.json({ error: "Category is required" });
       case !quantity:
@@ -32,7 +32,7 @@ const addProduct = asyncHandler(async (req, res) => {
 
 const updateProductDetails = asyncHandler(async (req, res) => {
   try {
-    const { name, description, price, category, quantity, brand } = req.fields;
+    const { name, description, designNumber, category, quantity, brand } = req.fields;
 
     // Validation
     switch (true) {
@@ -42,8 +42,8 @@ const updateProductDetails = asyncHandler(async (req, res) => {
         return res.json({ error: "Brand is required" });
       case !description:
         return res.json({ error: "Description is required" });
-      case !price:
-        return res.json({ error: "Price is required" });
+      case !designNumber:
+        return res.json({ error: "Design Number is required" });
       case !category:
         return res.json({ error: "Category is required" });
       case !quantity:
@@ -200,7 +200,7 @@ const filterProducts = asyncHandler(async (req, res) => {
 
     let args = {};
     if (checked.length > 0) args.category = checked;
-    if (radio.length) args.price = { $gte: radio[0], $lte: radio[1] };
+    if (radio.length) args.designNumber = { $gte: radio[0], $lte: radio[1] };
 
     const products = await Product.find(args);
     res.json(products);

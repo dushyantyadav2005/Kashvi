@@ -16,6 +16,8 @@ import AdminRoute from "./pages/Admin/AdminRoute";
 import Profile from "./pages/User/Profile";
 import UserList from "./pages/Admin/UserList";
 
+import Gallery from "./components/Gallery.jsx";
+
 import CategoryList from "./pages/Admin/CategoryList";
 
 import ProductList from "./pages/Admin/ProductList";
@@ -28,6 +30,10 @@ import ProductDetails from "./pages/Products/ProductDetails.jsx";
 
 import Cart from "./pages/Cart.jsx";
 import Shop from "./pages/Shop.jsx";
+
+import BlogList from "./components/BlogList.jsx";
+import BlogDetail from "./components/BlogDetail.jsx";
+import CreateBlog from "./components/CreateBlog.jsx";
 
 import Shipping from "./pages/Orders/Shipping.jsx";
 import PlaceOrder from "./pages/Orders/PlaceOrder.jsx";
@@ -46,7 +52,10 @@ const router = createBrowserRouter(
       <Route path="/product/:id" element={<ProductDetails />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/shop" element={<Shop />} />
-
+      <Route path="/gallery" element={<Gallery />} />
+      <Route path="/blogs" element={<BlogList />} />
+      <Route path="/blogs/:id" element={<BlogDetail />} />
+      <Route path="/create-blog" element={<CreateBlog />} />
       {/* Registered users */}
       <Route path="" element={<PrivateRoute />}>
         <Route path="/profile" element={<Profile />} />
@@ -65,6 +74,8 @@ const router = createBrowserRouter(
         <Route path="orderlist" element={<OrderList />} />
         {/* <Route path="dashboard" element={<AdminDashboard />} /> */}
       </Route>
+
+
     </Route>
   )
 );

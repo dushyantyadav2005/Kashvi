@@ -98,6 +98,10 @@ const ProductDetails = () => {
               <span className="flex items-center">
                 <FaBox className="mr-2" /> In Stock: {product.countInStock}
               </span>
+              {/* DesignNumber Section */}
+              <span className="flex items-center">
+                <FaBox className="mr-2" /> Design Number: {product.designNumber}
+              </span>
             </div>
 
             {/* Rating */}

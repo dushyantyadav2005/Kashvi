@@ -2,11 +2,13 @@ import { Outlet } from "react-router-dom";
 import Navigation from "./pages/Auth/Navigation";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Footer from "../src/components/Footer"
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 const App = () => {
   return (
-    <div className="bg-[#fcd1d7] text-[#8B4513] uppercase">
+    <div className="bg-[#fcd1d7] mt-[90px] text-[#8B4513] uppercase">
       <style>
         {`
           ::-webkit-scrollbar {
@@ -30,6 +32,7 @@ const App = () => {
       <main className="pb-3 bg-[#] text-[#]">
         <Outlet />
       </main>
+      <Footer />
     </div>
 
   );

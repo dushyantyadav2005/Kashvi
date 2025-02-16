@@ -65,6 +65,12 @@ const Navigation = () => {
                 </Link>
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
               </li>
+              <li className="hover:text-[#D4AF37] group relative">
+                <Link to="/blogs" className="flex items-center gap-1">
+                  <span className="hidden md:inline">BLOG</span>
+                </Link>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
+              </li>
               <li className="relative hover:text-[#D4AF37] group">
                 <Link to="/cart" className="flex items-center gap-1">
                   <span className="hidden md:inline">CART</span>
@@ -133,6 +139,11 @@ const Navigation = () => {
                     <li>
                       <Link to="/profile" className="block px-4 py-2 hover:bg-[#D4AF37] hover:text-white transition-all duration-300" onClick={closeDropdown}>
                         Profile
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/create-blog" className="block px-4 py-2 hover:bg-[#D4AF37] hover:text-white transition-all duration-300" onClick={closeDropdown}>
+                        Create Blog
                       </Link>
                     </li>
                     <li>

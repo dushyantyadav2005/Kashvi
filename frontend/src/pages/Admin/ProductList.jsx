@@ -12,7 +12,7 @@ const ProductList = () => {
   const [image, setImage] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
+  const [designNumber, setDesignNumber] = useState("");
   const [category, setCategory] = useState("");
   const [quantity, setQuantity] = useState("");
   const [brand, setBrand] = useState("");
@@ -33,7 +33,7 @@ const ProductList = () => {
       productData.append("image", image);
       productData.append("name", name);
       productData.append("description", description);
-      productData.append("price", price);
+      productData.append("designNumber", designNumber);
       if (category) {
         productData.append("category", category);
       } else {
@@ -173,12 +173,12 @@ const ProductList = () => {
                 />
               </div>
               <div className="two ml-10 ">
-                <label htmlFor="name block">Price</label> <br />
+                <label htmlFor="name block">DesignNo</label> <br />
                 <input
-                  type="number"
+                  type="text"
                   className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
+                  value={designNumber}
+                  onChange={(e) => setDesignNumber(e.target.value)}
                 />
               </div>
             </div>
