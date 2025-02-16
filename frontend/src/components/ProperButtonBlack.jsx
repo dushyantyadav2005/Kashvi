@@ -11,7 +11,7 @@ const ProperButton = ({
   textClassName = "z-10 relative flex justify-center text-[1vw] font-medium tracking-wider items-center",
   hoverColor = "white",
   defaultColor = "black",
-  hoverBgColor = "bg-black"
+  hoverBgColor = "bg-[#ef4444]"
 }) => {
   const [hover, setHover] = useState(false);
 
