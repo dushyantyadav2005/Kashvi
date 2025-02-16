@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import { FiArrowLeft, FiClock, FiUser, FiEdit, FiTrash } from 'react-icons/fi';
+import { useSelector } from 'react-redux';
 import styled, { keyframes } from 'styled-components';
-import { FiArrowLeft, FiClock, FiUser } from 'react-icons/fi';
 
 // Animations
 const fadeIn = keyframes`
@@ -17,11 +18,10 @@ const float = keyframes`
 `;
 
 const spin = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  to { transform: rotate(360deg); }
 `;
 
-// Styled components
+// Styled Components
 const PageContainer = styled.div`
   padding: 5rem 2rem 2rem;
   background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f5 100%);
@@ -53,12 +53,53 @@ const BackButton = styled.button`
   &:hover {
     background: #5b4bc4;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   }
+`;
+
+const AdminControls = styled.div`
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  display: flex;
+  gap: 1rem;
+  z-index: 100;
 
   @media (min-width: 768px) {
-    left: 4rem;
     top: 3rem;
+    right: 4rem;
+  }
+`;
+
+const ActionButton = styled.button`
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  z-index: 0;
+  font-size: 0.9rem;
+  &:hover {
+    transform: translateY(-2px);
+  }
+`;
+
+const EditButton = styled(ActionButton)`
+  background: #6c5ce7;
+  color: white;
+  &:hover {
+    background: #5b4bc4;
+  }
+`;
+
+const DeleteButton = styled(ActionButton)`
+  background: #ff7675;
+  color: white;
+
+  &:hover {
+    background: #d63031;
   }
 `;
 
@@ -76,16 +117,7 @@ const HeroImage = styled.div`
     width: 100%;
     height: 100%;
     object-fit: cover;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,0.6) 100%);
+    transition: transform 0.4s ease;
   }
 
   @media (min-width: 768px) {
@@ -97,10 +129,8 @@ const HeroImage = styled.div`
 const Title = styled.h1`
   font-family: Georgia, serif;
   font-size: 2.2rem;
-  font-weight: 700;
   color: #2d3436;
   text-align: center;
-  max-width: 800px;
   margin: 0 auto 2rem;
   line-height: 1.3;
   position: relative;
@@ -150,11 +180,6 @@ const MetaData = styled.div`
     align-items: center;
     gap: 0.5rem;
   }
-
-  @media (min-width: 768px) {
-    gap: 2rem;
-    margin-bottom: 2rem;
-  }
 `;
 
 const Content = styled.div`
@@ -183,8 +208,8 @@ const LoadingSpinner = styled.div`
     content: "";
     width: 50px;
     height: 50px;
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #6c5ce7;
+    border: 3px solid rgba(108,92,231,0.2);
+    border-top-color: #6c5ce7;
     border-radius: 50%;
     animation: ${spin} 1s linear infinite;
   }
@@ -193,6 +218,7 @@ const LoadingSpinner = styled.div`
 const BlogDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { userInfo } = useSelector((state) => state.auth);
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -211,6 +237,26 @@ const BlogDetail = () => {
     fetchBlog();
   }, [id]);
 
+  const handleDelete = async () => {
+    if (window.confirm('Are you sure you want to delete this blog post?')) {
+      try {
+        await axios.delete(`http://localhost:5000/api/blogs/${id}`, {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        });
+        navigate('/blogs');
+      } catch (err) {
+        console.error('Error deleting blog:', err);
+        alert('Failed to delete blog');
+      }
+    }
+  };
+
+  // const handleEdit = () => {
+  //   navigate(`/blogs/${id}/edit`);
+  // };
+
   if (loading) return <LoadingSpinner />;
 
   if (!blog) return (
@@ -223,9 +269,19 @@ const BlogDetail = () => {
   return (
     <PageContainer>
       <BackButton onClick={() => navigate(-1)}>
-        <FiArrowLeft style={{ fontSize: '1.2rem' }} /> 
-        <span>Back</span>
+        <FiArrowLeft /> Back
       </BackButton>
+
+      {userInfo?.isAdmin && (
+        <AdminControls>
+          {/* <EditButton onClick={handleEdit}>
+            <FiEdit /> Edit
+          </EditButton> */}
+          <DeleteButton onClick={handleDelete}>
+            <FiTrash /> Delete
+          </DeleteButton>
+        </AdminControls>
+      )}
 
       <HeroImage>
         <img 
@@ -242,7 +298,7 @@ const BlogDetail = () => {
 
       <ContentWrapper>
         <MetaData>
-          <div><FiUser /> By Admin</div>
+          <div><FiUser /> By {blog.author || 'Admin'}</div>
           <div><FiClock /> {Math.ceil(blog.content.length / 1000)} min read</div>
           <div>• {new Date(blog.createdAt).toLocaleDateString('en-US', {
             year: 'numeric',
