@@ -107,6 +107,12 @@ const Navigation = () => {
                 </Link>
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
               </li>
+              <li className="relative hover:text-[#D4AF37] group">
+                <Link to="/about" className="flex items-center gap-1">
+                  <span className="hidden md:inline">About Us</span>
+                </Link>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
+              </li>
             </ul>
           </div>
 
@@ -257,6 +263,16 @@ const Navigation = () => {
               </Link>
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
               <FavoritesCount />
+            </li>
+            <li className="relative hover:text-[#D4AF37] group">
+              <Link to="/contact" className="flex items-center gap-1" onClick={toggleSidebar}>
+                <span>Contact Us</span>
+              </Link>
+            </li>
+            <li className="relative hover:text-[#D4AF37] group">
+              <Link to="/favorite" className="flex items-center gap-1" onClick={toggleSidebar}>
+                <span>About Us</span>
+              </Link>
             </li>
             {userInfo ? (
               <>

@@ -84,7 +84,7 @@ const ProductDetails = () => {
             <p className="text-gray-500 text-sm md:w-[40vw]">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ratione, eveniet! Assumenda maxime sit dolorum reprehenderit ipsa illum unde quidem perspiciatis expedita, excepturi quaerat repellat explicabo sint quos ea qui culpa eveniet quasi, possimus nesciunt repudiandae, ad consequuntur. Ratione ut sapiente dolorem tenetur quaerat laborum ipsum. Consequuntur aperiam, laboriosam autem illo dolores dolore tenetur minima sint quia beatae est eos fugit vel fugiat culpa repellendus nihil debitis et ipsa cum molestiae. Aliquid, aut, ducimus vel sapiente atque reiciendis tempore magni unde eveniet, voluptatibus at? Ut illum asperiores hic officiis quia, sequi perspiciatis culpa omnis dolorum, doloribus qui molestias aspernatur inventore repellendus.</p>  
             <div className="text-sm text-gray-400 flex flex-col space-y-2">
               <span className="flex items-center">
-                <FaStore className="mr-2" /> Brand: {product.brand}
+                <FaStore className="mr-2" /> Festival: {product.festival}
               </span>
               <span className="flex items-center">
                 <FaClock className="mr-2" /> Added: {moment(product.createAt).fromNow()}

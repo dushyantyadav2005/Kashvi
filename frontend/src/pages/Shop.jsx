@@ -19,9 +19,9 @@ const Shop = () => {
   );
 
   const [showCategories, setShowCategories] = useState(false);
-  const [showBrands, setShowBrands] = useState(false);
+  const [showFestivals, setShowFestivals] = useState(false);
   const [showDesignNumber, setShowDesignNumber] = useState(false);
-  const [selectedBrand, setSelectedBrand] = useState("");
+  const [selectedFestival, setSelectedFestival] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [designNumberFilter, setDesignNumberFilter] = useState("");
 
@@ -39,11 +39,11 @@ const Shop = () => {
 
   useEffect(() => {
     if (!filteredProductsQuery.isLoading) {
-      // Filter products based on checked categories, selected brand, and design number filter
+      // Filter products based on checked categories, selected Festival, and design number filter
       const filteredProducts = filteredProductsQuery.data.filter((product) => {
         const matchesCategory =
           !selectedCategory || product.category === selectedCategory;
-        const matchesBrand = !selectedBrand || product.brand === selectedBrand;
+        const matchesFestival = !selectedFestival || product.festival === selectedFestival;
         const matchesDesignNumber =
           !designNumberFilter ||
           product.designNumber
@@ -51,7 +51,7 @@ const Shop = () => {
             .toLowerCase()
             .includes(designNumberFilter.toLowerCase());
 
-        return matchesCategory && matchesBrand && matchesDesignNumber;
+        return matchesCategory && matchesFestival && matchesDesignNumber;
       });
 
       dispatch(setProducts(filteredProducts));
@@ -62,12 +62,12 @@ const Shop = () => {
     filteredProductsQuery.data,
     dispatch,
     selectedCategory,
-    selectedBrand,
+    selectedFestival,
     designNumberFilter,
   ]);
 
-  const handleBrandClick = (brand) => {
-    setSelectedBrand(brand === selectedBrand ? "" : brand);
+  const handleFestivalClick = (festival) => {
+    setSelectedFestival(festival === selectedFestival ? "" : festival);
   };
 
   const handleCategoryClick = (categoryId) => {
@@ -79,12 +79,12 @@ const Shop = () => {
     setDesignNumberFilter(e.target.value);
   };
 
-  const uniqueBrands = [
+  const uniqueFestivals = [
     ...Array.from(
       new Set(
         filteredProductsQuery.data
-          ?.map((product) => product.brand)
-          .filter((brand) => brand !== undefined)
+          ?.map((product) => product.festival)
+          .filter((festival) => festival !== undefined)
       )
     ),
   ];
@@ -143,46 +143,46 @@ const Shop = () => {
               </div>
             </div>
 
-            {/* Brands Filter */}
+            {/* Festivals Filter */}
             <div className="mb-8">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-base font-normal font-montserrat uppercase text-[#24110c]">
-                  Brands
+                  Festivals
                 </h2>
                 <button
-                  onClick={() => setShowBrands(!showBrands)}
+                  onClick={() => setShowFestivals(!showFestivals)}
                   className="text-[#D4AF37] hover:text-[#e3af03] transition-all duration-300"
                 >
-                  <div className={`transform transition-transform duration-300 ${showBrands ? 'rotate-180' : 'rotate-0'}`}>
+                  <div className={`transform transition-transform duration-300 ${showFestivals ? 'rotate-180' : 'rotate-0'}`}>
                     <AiOutlinePlus size={20} />
                   </div>
                 </button>
               </div>
               <div className="w-full h-[1px] bg-[#D4AF37]/30 mb-4"></div>
 
-              <div className={`transition-all duration-500 ease-in-out overflow-hidden ${showBrands ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden ${showFestivals ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
                 <div className="flex flex-col items-start space-y-3 pl-4">
-                  {uniqueBrands?.map((brand) => (
-                    <div key={brand} className="flex items-center group w-full cursor-pointer" onClick={() => handleBrandClick(brand)}>
+                  {uniqueFestivals?.map((festival) => (
+                    <div key={festival} className="flex items-center group w-full cursor-pointer" onClick={() => handleFestivalClick(festival)}>
                       <div className="relative w-4 h-4">
                         <input
                           type="radio"
-                          id={brand}
-                          name="brand"
-                          checked={selectedBrand === brand}
+                          id={festival}
+                          name="festival"
+                          checked={selectedFestival === festival}
                           onChange={() => { }}
                           className="absolute opacity-0 w-4 h-4 cursor-pointer"
                         />
-                        <div className={`w-4 h-4 border-2 rounded-full transition-all duration-300 ${selectedBrand === brand ? 'border-[#D4AF37]' : 'border-gray-400 group-hover:border-[#D4AF37]'}`}>
-                          <div className={`w-2 h-2 rounded-full bg-[#D4AF37] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${selectedBrand === brand ? 'scale-100' : 'scale-0'}`}></div>
+                        <div className={`w-4 h-4 border-2 rounded-full transition-all duration-300 ${selectedFestival === festival ? 'border-[#D4AF37]' : 'border-gray-400 group-hover:border-[#D4AF37]'}`}>
+                          <div className={`w-2 h-2 rounded-full bg-[#D4AF37] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${selectedFestival === festival ? 'scale-100' : 'scale-0'}`}></div>
                         </div>
                       </div>
                       <label
-                        htmlFor={brand}
-                        onClick={() => handleBrandClick(brand)}
-                        className={`ml-3 text-sm font-normal font-montserrat cursor-pointer transition-colors duration-300 ${selectedBrand === brand ? 'text-[#D4AF37]' : 'text-black group-hover:text-[#D4AF37]'}`}
+                        htmlFor={festival}
+                        onClick={() => handleFestivalClick(festival)}
+                        className={`ml-3 text-sm font-normal font-montserrat cursor-pointer transition-colors duration-300 ${selectedFestival === festival ? 'text-[#D4AF37]' : 'text-black group-hover:text-[#D4AF37]'}`}
                       >
-                        {brand}
+                        {festival}
                       </label>
                     </div>
                   ))}

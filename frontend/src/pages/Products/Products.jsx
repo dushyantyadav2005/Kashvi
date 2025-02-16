@@ -102,8 +102,8 @@ const Product = () => {
               <div className="flex items-center justify-between w-[20rem]">
                 <div className="one">
                   <h1 className="flex items-center mb-6">
-                    <FaStore className="mr-2 text-white" /> Brand:{" "}
-                    {product.brand}
+                    <FaStore className="mr-2 text-white" /> Festival:{" "}
+                    {product.festival}
                   </h1>
                   <h1 className="flex items-center mb-6">
                     <FaClock className="mr-2 text-white" /> Added:{" "}

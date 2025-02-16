@@ -25,7 +25,7 @@ const AdminProductUpdate = () => {
   const [price, setPrice] = useState(productData?.price || "");
   const [category, setCategory] = useState(productData?.category || "");
   const [quantity, setQuantity] = useState(productData?.quantity || "");
-  const [brand, setBrand] = useState(productData?.brand || "");
+  const [festival, setFestival] = useState(productData?.festival || "");
   const [stock, setStock] = useState(productData?.countInStock);
 
   // hook
@@ -49,7 +49,7 @@ const AdminProductUpdate = () => {
       setPrice(productData.price);
       setCategory(productData.category?._id);
       setQuantity(productData.quantity);
-      setBrand(productData.brand);
+      setFestival(productData.festival);
       setImage(productData.image);
     }
   }, [productData]);
@@ -82,7 +82,7 @@ const AdminProductUpdate = () => {
       formData.append("price", price);
       formData.append("category", category);
       formData.append("quantity", quantity);
-      formData.append("brand", brand);
+      formData.append("festival", festival);
       formData.append("countInStock", stock);
 
       // Update product using the RTK Query mutation
@@ -197,12 +197,12 @@ const AdminProductUpdate = () => {
                   />
                 </div>
                 <div>
-                  <label htmlFor="name block">Brand</label> <br />
+                  <label htmlFor="name block">Festival</label> <br />
                   <input
                     type="text"
                     className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white "
-                    value={brand}
-                    onChange={(e) => setBrand(e.target.value)}
+                    value={festival}
+                    onChange={(e) => setFestival(e.target.value)}
                   />
                 </div>
               </div>

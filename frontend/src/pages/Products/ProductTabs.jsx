@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Ratings from "./Ratings";
 import { useGetTopProductsQuery } from "../../redux/api/productApiSlice";
+import { useGetFestivalProductsQuery } from "../../redux/api/productApiSlice";
 import SmallProduct from "./SmallProduct";
 import Loader from "../../components/Loader";
 
@@ -16,16 +17,18 @@ const ProductTabs = ({
   product,
 }) => {
   const { data, isLoading } = useGetTopProductsQuery();
+  const { data: festiveData, isLoading: festiveIsLoading } = useGetFestivalProductsQuery();
+
   const [activeTab, setActiveTab] = useState(1);
 
-  if (isLoading) return <Loader />;
+  if (isLoading || festiveIsLoading) return <Loader />;
 
   const handleTabClick = (tabNumber) => setActiveTab(tabNumber);
 
   return (
     <div className="flex flex-col md:flex-row flex-wrap gap-4">
       <section className="flex md:flex-col w-full md:w-auto flex-shrink-0">
-        {["Write Your Review", "All Reviews", "Related Products"].map((tab, index) => (
+        {["Write Your Review", "All Reviews", "Related Products", "Festival Products"].map((tab, index) => (
           <div
             key={index}
             className={`p-4 cursor-pointer text-lg ${activeTab === index + 1 ? "font-bold" : ""}`}
@@ -107,6 +110,20 @@ const ProductTabs = ({
             data.map((product) => (
               <SmallProduct key={product._id} product={product} />
             ))
+          )}
+        </section>
+      )}
+
+      {activeTab === 4 && (
+        <section className="flex flex-wrap gap-4 w-full">
+          {festiveIsLoading ? (
+            <Loader />
+          ) : festiveData && festiveData.length > 0 ? (
+            festiveData.map((product) => (
+              <SmallProduct key={product._id} product={product} />
+            ))
+          ) : (
+            <p>No festival products found.</p>
           )}
         </section>
       )}

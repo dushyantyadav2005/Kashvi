@@ -114,7 +114,7 @@ function Contact() {
                                 className="w-full bg-white rounded border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"
                             ></textarea>
                         </div>
-                        <ProperButtonBlack text={"Submit"} />
+                        <ProperButtonBlack text={"Submit"}/>
                     </form>
                     <p className="text-xs text-gray-500 mt-3">
                         Chicharrones blog helvetica normcore iceland tousled brook viral artisan.

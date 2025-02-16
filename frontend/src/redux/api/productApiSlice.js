@@ -75,6 +75,11 @@ export const productApiSlice = apiSlice.injectEndpoints({
       query: () => `${PRODUCT_URL}/top`,
       keepUnusedDataFor: 5,
     }),
+    
+    getFestivalProducts: builder.query({
+      query: () => `${PRODUCT_URL}/festival`,
+      keepUnusedDataFor: 5,
+    }),
 
     getNewProducts: builder.query({
       query: () => `${PRODUCT_URL}/new`,
@@ -104,4 +109,5 @@ export const {
   useGetNewProductsQuery,
   useUploadProductImageMutation,
   useGetFilteredProductsQuery,
+  useGetFestivalProductsQuery
 } = productApiSlice;

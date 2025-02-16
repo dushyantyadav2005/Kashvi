@@ -18,7 +18,7 @@ const ProductList = () => {
   const [designNumber, setDesignNumber] = useState(""); // Added designNumber state
   const [category, setCategory] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [brand, setBrand] = useState("");
+  const [festival, setFestival] = useState("");
   const [stock, setStock] = useState(0);
   const [imageUrl, setImageUrl] = useState(null);
   const [tags, setTags] = useState("");
@@ -44,7 +44,7 @@ const ProductList = () => {
         productData.append("category", categories[0]._id);
       }
       productData.append("quantity", quantity);
-      productData.append("brand", brand);
+      productData.append("festival", festival);
       productData.append("countInStock", stock);
 
       const { data } = await createProduct(productData);
@@ -63,8 +63,8 @@ const ProductList = () => {
 
   const handleDescription = async () => {
     try {
-      // Create tags array from the tags input, name and brand
-      const tagsList = [...tags.split(',').map(tag => tag.trim()), name, brand].filter(tag => tag !== '');
+      // Create tags array from the tags input, name and festival
+      const tagsList = [...tags.split(',').map(tag => tag.trim()), name, festival].filter(tag => tag !== '');
 
       const response = await fetch('http://localhost:8002/generate-description', {
         method: 'POST',
@@ -199,12 +199,12 @@ const ProductList = () => {
                   />
                 </div>
                 <div className="two ml-10 ">
-                  <label htmlFor="name block">Brand</label> <br />
+                  <label htmlFor="name block">Festival</label> <br />
                   <input
                     type="text"
                     className="p-4 mb-3 w-[30rem] border-2"
-                    value={brand}
-                    onChange={(e) => setBrand(e.target.value)}
+                    value={festival}
+                    onChange={(e) => setFestival(e.target.value)}
                   />
                 </div>
               </div>

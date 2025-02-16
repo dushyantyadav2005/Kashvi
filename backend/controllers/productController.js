@@ -1,16 +1,16 @@
 import asyncHandler from "../middlewares/asyncHandler.js";
 import Product from "../models/productModel.js";
+import festivalsData from "../../festivals.js";
 
 const addProduct = asyncHandler(async (req, res) => {
   try {
-    const { name, description, designNumber, category, quantity, brand } = req.fields;
+    console.log("Request Files: ", req.fields)
+    const { countInStock, image, name, description, designNumber, category, quantity, festival } = req.fields;
 
     // Validation
     switch (true) {
       case !name:
         return res.json({ error: "Name is required" });
-      case !brand:
-        return res.json({ error: "Brand is required" });
       case !description:
         return res.json({ error: "Description is required" });
       case !designNumber:
@@ -20,8 +20,13 @@ const addProduct = asyncHandler(async (req, res) => {
       case !quantity:
         return res.json({ error: "Quantity is required" });
     }
-
-    const product = new Product({ ...req.fields });
+    let product = null;
+    if (festival != "") {
+      product = new Product({ ...req.fields });
+    }
+    else {
+      product = new Product({ image, name, description, designNumber, category, quantity, countInStock });
+    }
     await product.save();
     res.json(product);
   } catch (error) {
@@ -32,14 +37,12 @@ const addProduct = asyncHandler(async (req, res) => {
 
 const updateProductDetails = asyncHandler(async (req, res) => {
   try {
-    const { name, description, designNumber, category, quantity, brand } = req.fields;
+    const { name, description, designNumber, category, quantity, festival } = req.fields;
 
     // Validation
     switch (true) {
       case !name:
         return res.json({ error: "Name is required" });
-      case !brand:
-        return res.json({ error: "Brand is required" });
       case !description:
         return res.json({ error: "Description is required" });
       case !designNumber:
@@ -184,6 +187,69 @@ const fetchTopProducts = asyncHandler(async (req, res) => {
   }
 });
 
+const fetchFestivals = () => {
+  try {
+    const today = new Date();
+    const currentMonth = today.getMonth() + 1; // getMonth() returns 0-11, so add 1
+    // Calculate the next two months
+    const nextMonth = currentMonth === 12 ? 1 : currentMonth + 1; // Handle December overflow
+    const nextNextMonth = nextMonth === 12 ? 1 : nextMonth + 1; // Handle December overflow
+
+    console.log('Current Month:', currentMonth);
+    console.log('Next Month:', nextMonth);
+    console.log('Next Next Month:', nextNextMonth);
+
+    // Filter festivals for the current month and the next two months
+    const upcomingFestivals = festivalsData.filter(festival => {
+      return (
+        festival.month === currentMonth ||
+        festival.month === nextMonth ||
+        festival.month === nextNextMonth
+      );
+    });
+
+    console.log('Upcoming festivals for the next two months:', upcomingFestivals);
+    return upcomingFestivals;
+  } catch (error) {
+    console.error('Error fetching festivals:', error);
+    return [];
+  }
+};
+
+const fetchFestiveProducts = asyncHandler(async (req, res) => {
+  try {
+    const upcomingFestivals = fetchFestivals(); // Remove await
+
+    if (!upcomingFestivals || upcomingFestivals.length === 0) {
+      return res.status(404).json({ message: 'No upcoming festivals found.' });
+    }
+
+    // Normalize festival names
+    const festivalNames = upcomingFestivals.map(festival =>
+      festival.name.trim().toLowerCase()
+    );
+
+    // Case-insensitive search
+    const products = await Product.find({
+      festival: {
+        $in: festivalNames.map(name => new RegExp(name, 'i'))
+      }
+    });
+    console.log(products);
+    res.json({
+      products,
+      festivalNames
+    });
+  } catch (error) {
+    console.error('Error fetching festive products:', error);
+    res.status(400).json({
+      message: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+
 const fetchNewProducts = asyncHandler(async (req, res) => {
   try {
     const products = await Product.find().sort({ _id: -1 }).limit(5);
@@ -221,4 +287,5 @@ export {
   fetchTopProducts,
   fetchNewProducts,
   filterProducts,
+  fetchFestiveProducts
 };
