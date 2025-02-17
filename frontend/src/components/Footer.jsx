@@ -89,21 +89,21 @@ const Footer = () => {
 
                     {/* Our Policies Section */}
                     <div>
-                        <h3 className="font-bold mb-4">OUR POLICIES</h3>
-                        <ul className="space-y-2 text-sm">
-                            {['FAQs', 'Shipping Details', 'Return, Exchange and Refund Policy',
-                                'Terms of Use', 'Privacy Policy', 'Cookie Policy'].map((item) => (
-                                    <li key={item}>
-                                        <a href="#" className="relative inline-block hover:text-[#D4AF37] transition-colors
+              <h3 className="font-bold mb-4">OUR POLICIES</h3>
+              <ul className="space-y-2 text-sm">
+                {['FAQs', 'Shipping Details', 'Return, Exchange and Refund Policy', 
+                  'Terms of Use', 'Privacy Policy', 'Cookie Policy'].map((item) => (
+                    <li key={item}>
+                      <a href={item === 'FAQs' ? '/faq' : '#'} className="relative inline-block hover:text-yellow-300 transition-colors
                         before:content-[''] before:absolute before:left-0 before:-bottom-1 
-                        before:w-0 before:h-px before:bg-[#D4AF37] 
+                        before:w-0 before:h-px before:bg-yellow-300 
                         before:transition-all before:duration-300 hover:before:w-full">
-                                            {item}
-                                        </a>
-                                    </li>
-                                ))}
-                        </ul>
-                    </div>
+                        {item}
+                      </a>
+                    </li>
+                  ))}
+              </ul>
+            </div>
 
                     {/* Contact Section */}
                     <div>
@@ -152,7 +152,7 @@ const Footer = () => {
                             <span key={carrier}>{carrier}</span>
                         ))}
                     </div>
-                    <div>© 2023 Vedant Fashion Ltd. All rights reserved.</div>
+                    <div>© 2023 Kashivi Fashion Ltd. All rights reserved.</div>
                 </div>
             </div>
         </footer>

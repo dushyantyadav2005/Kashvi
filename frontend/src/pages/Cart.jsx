@@ -1,21 +1,24 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FaTrash } from "react-icons/fa";
+import { useState } from "react";
 import { addToCart, removeFromCart } from "../redux/features/cart/cartSlice";
 import axios from "axios";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import { faker } from '@faker-js/faker';
+import Loader from "../components/Loader"; // Import Loader Component
+import ProperButtonBlack from "../components/ProperButtonBlack";
 
 const Cart = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false); // Track loading state
 
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;
-
-  const user = useSelector((state) => state.user);
-  const { isVerified } = user;
+  const { userInfo, isVerified } = useSelector((state) => state.auth);
 
   const addToCartHandler = (product, qty) => {
     dispatch(addToCart({ ...product, qty }));
@@ -31,8 +34,9 @@ const Cart = () => {
       return;
     }
 
+    setLoading(true); // Start loading before making the request
+
     try {
-      // Configure axios with proper headers
       const config = {
         headers: {
           'Content-Type': 'application/json',
@@ -40,49 +44,56 @@ const Cart = () => {
         }
       };
 
-      const response = await axios.post('http://localhost:5000/getinvoice', {
+      const response = await axios.post('http://localhost:5000/api/invoice', {
+        invoiceNo: faker.string.alphanumeric(10).toUpperCase(),
+        email: userInfo.email,
+        customerName: userInfo.username,
         items: cartItems.map(item => ({
           name: item.name,
           qty: item.qty,
-          price: item.price,
-          brand: item.brand
         }))
       }, config);
 
       if (response.data && response.data.message) {
         console.log('Invoice generated:', response.data);
-        navigate("/login?redirect=/shipping");
+        toast.success("Invoice generated successfully! Kindly check your email to download the invoice.");
       } else {
         throw new Error('Invalid response from server');
       }
     } catch (error) {
       console.error('Error generating invoice:', error);
-      if (error.response) {
-        toast.error(`Failed to generate invoice: ${error.response.data.detail || 'Server error'}`);
-      } else if (error.request) {
-        toast.error('Failed to connect to server. Please check if the server is running.');
-      } else {
-        toast.error('Failed to generate invoice. Please try again.');
-      }
+      toast.error('Failed to generate invoice. Please try again.');
+    } finally {
+      setLoading(false); // Stop loading after the request completes
     }
   };
+  
+  if (loading) {
+    return (
+      <Loader />
+    )
+  }
 
   return (
     <>
       <ToastContainer />
-      <div className="container flex justify-around items-start flex-wrap mx-auto mt-8">
-        {cartItems.length === 0 ? (
-          <div>
-            Your cart is empty <Link to="/shop">Go To Shop</Link>
-          </div>
+      <img src="../../images/embupsidedown.png" alt="" className='w-full h-auto opacity-50' />
+
+          
+          <div className="container flex justify-center items-center flex-wrap mx-auto mt-1 px-4 min-h-[90vh]">
+            {cartItems.length === 0 ? (
+              <div className="text-center text-[#efdcd9]">
+                Your cart is empty <Link to="/shop" className="text-[#D4AF37] hover:underline">Go To Shop</Link>
+              </div>
         ) : (
           <>
-            <div className="flex flex-col w-[80%]">
-              <h1 className="text-2xl font-semibold mb-4">Shopping Cart</h1>
+            <div className="flex flex-col w-full md:w-4/5">
+            <h2 className="h4 text-center font-playfair m-10 mb-0 text-4xl uppercase">Shopping</h2>
+            <h2 className="h4 text-center font-montserrat m-10 mt-0 text-xl uppercase">Cart</h2>
 
               {cartItems.map((item) => (
-                <div key={item._id} className="flex items-enter mb-[1rem] pb-2">
-                  <div className="w-[5rem] h-[5rem]">
+                <div key={item._id} className="flex items-center mb-6 pb-4 border-b border-gray-700">
+                  <div className="w-20 h-20">
                     <img
                       src={item.image}
                       alt={item.name}
@@ -90,18 +101,17 @@ const Cart = () => {
                     />
                   </div>
 
-                  <div className="flex-1 ml-4">
-                    <Link to={`/product/${item._id}`} className="text-pink-500">
+                  <div className="flex-1 ml-6">
+                    <Link to={`/product/${item._id}`} className="text-[#D4AF37] hover:underline text-lg font-medium">
                       {item.name}
                     </Link>
 
-                    <div className="mt-2 text-white">{item.brand}</div>
-                
+                    <div className="mt-2 text-[#efdcd9]">{item.brand}</div>
                   </div>
 
                   <div className="w-24">
                     <select
-                      className="w-full p-1 border rounded text-black"
+                      className="w-full p-2 border border-[#D4AF37] rounded bg-[#c7304f] text-white"
                       value={item.qty}
                       onChange={(e) =>
                         addToCartHandler(item, Number(e.target.value))
@@ -115,30 +125,29 @@ const Cart = () => {
                     </select>
                   </div>
 
-                  <div>
+                  <div className="ml-6">
                     <button
-                      className="text-red-500 mr-[5rem]"
+                      className="text-red-500 hover:text-[#D4AF37] transition-colors"
                       onClick={() => removeFromCartHandler(item._id)}
                     >
-                      <FaTrash className="ml-[1rem] mt-[.5rem]" />
+                      <FaTrash className="text-lg" />
                     </button>
                   </div>
                 </div>
               ))}
 
-              <div className="mt-8 w-[40rem]">
-                <div className="p-4 rounded-lg">
-                  <h2 className="text-xl font-semibold mb-2">
+              <div className="mt-10 w-full md:w-1/2 lg:w-1/3 mx-auto">
+                <div className="p-6 rounded-lg flex flex-col justify-center items-center">
+                  <h2 className="text-2xl font-semibold mb-4 text-[#D4AF37]">
                     Items ({cartItems.reduce((acc, item) => acc + item.qty, 0)})
                   </h2>
 
-                  <button
-                    className="bg-pink-500 mt-4 py-2 px-4 rounded-full text-lg w-full"
-                    disabled={cartItems.length === 0}
+                  <ProperButtonBlack
+                    className=" mt-2 py-3 px-6 text-lg w-full flex justify-center items-center "
+                    disabled={cartItems.length === 0 || loading}
                     onClick={checkoutHandler}
-                  >
-                    Send Invoice
-                  </button>
+                    text={"Generate Invoice"}
+                  />
                 </div>
               </div>
             </div>

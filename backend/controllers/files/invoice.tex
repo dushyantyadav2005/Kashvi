@@ -1,0 +1,76 @@
+\documentclass{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{booktabs}
+
+\begin{document}
+
+\begin{center}
+    {\Huge \textbf{Invoice}} \\[1em]
+\end{center}
+
+\noindent
+\begin{tabular}{@{}ll@{}}
+    \textbf{Invoice No:} & \texttt{<INVOICE\_NO>} \\
+    \textbf{Customer Name:} & \texttt{<CUSTOMER\_NAME>} \\
+    \textbf{Address:} & \texttt{<ADDRESS>} \\
+    \textbf{Date:} & \texttt{<DATE>} \\
+\end{tabular}
+
+\vspace{2em}
+
+\textbf{Items Purchased:} \\
+
+\begin{tabular}{|c|l|c|}
+    \hline
+    \textbf{No.} & \textbf{Item Name} & \textbf{Quantity} \\
+    \hline
+    1 & Item 1 & 10 \\
+    \hline
+    2 & Item 2 & 5 \\
+    \hline
+    3 & Item 3 & 8 \\
+    \hline
+    4 & Item 4 & 12 \\
+    \hline
+    5 & Item 5 & 7 \\
+    \hline
+    6 & Item 6 & 3 \\
+    \hline
+    7 & Item 7 & 9 \\
+    \hline
+    8 & Item 8 & 6 \\
+    \hline
+    9 & Item 9 & 4 \\
+    \hline
+    10 & Item 10 & 2 \\
+    \hline
+    11 & Item 11 & 15 \\
+    \hline
+    12 & Item 12 & 1 \\
+    \hline
+    13 & Item 13 & 11 \\
+    \hline
+    14 & Item 14 & 5 \\
+    \hline
+    15 & Item 15 & 7 \\
+    \hline
+\end{tabular}
+
+\vspace{2em}
+
+\noindent
+\textbf{Notes:} \\
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+\vspace{1em}
+
+\noindent
+\begin{tabular}{@{}p{0.5\textwidth}p{0.5\textwidth}@{}}
+    \textbf{Authorized Signature:} & \textbf{Company Stamp:} \\
+    \vspace{2cm} & \vspace{2cm} \\
+\end{tabular}
+
+\end{document}

@@ -16,9 +16,10 @@ import { useLogoutMutation, useVerifyEmailMutation } from "../redux/api/usersApi
 import { logout, setVerified } from "../redux/features/auth/authSlice";
 import FavoritesCount from "../pages/Products/FavoritesCount";
 import { toast } from "react-toastify";
-import Loader from "./Loader";
+import { FaBlog } from "react-icons/fa";
 
 const Navigation = () => {
+  const { loading, setLoading } = useState(false);
   const { userInfo, isVerified } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.cart);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -27,8 +28,6 @@ const Navigation = () => {
   const navigate = useNavigate();
   const [logoutApiCall] = useLogoutMutation();
   const [verifyEmail] = useVerifyEmailMutation();
-  const [loading, setLoading] = useState(false);
-
   const logoutHandler = async () => {
     try {
       await logoutApiCall().unwrap();
@@ -46,11 +45,9 @@ const Navigation = () => {
     try {
       const response = await verifyEmail({ email: userInfo.email }).unwrap();
       toast.success(response.message);
-      dispatch(setVerified(true));
       navigate("/otp");
     } catch (error) {
-      console.error(error);
-      toast.error("Failed to send verification email.");
+      toast.error(error?.data?.message || "Failed to send verification email.");
     } finally {
       setLoading(false);
     }
@@ -60,7 +57,7 @@ const Navigation = () => {
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
   return (
-    <nav className="bg-[#800e25dc] h-auto text-[#efdcd9] w-full fixed top-0 z-50 shadow-lg shadow-[#24110c]/50 font-montserrat border-b-4 border-b-[#D4AF37] backdrop-blur-lg">
+    <nav className="bg-[#800e25d2] h-auto text-[#efdcd9] w-full fixed top-0 z-50 shadow-lg shadow-[#24110c]/50 font-montserrat border-b-4 border-b-[#D4AF37] backdrop-blur-lg">
       <div className="w-full">
         <div className="w-full flex items-center justify-between p-2 pt-3 max-w-[1200px] mx-auto">
           {/* Left - Logo */}
@@ -104,6 +101,18 @@ const Navigation = () => {
                 </Link>
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
                 <FavoritesCount />
+              </li>
+              <li className="relative hover:text-[#D4AF37] group">
+              <Link to="/blogs" className="flex items-center gap-1" onClick={toggleSidebar}>
+                <span>BLOG</span>
+              </Link>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
+            </li>
+              <li className="relative hover:text-[#D4AF37] group">
+                <Link to="/contact" className="flex items-center gap-1">
+                  <span className="hidden md:inline">Contact Us</span>
+                </Link>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
               </li>
             </ul>
           </div>
@@ -171,6 +180,11 @@ const Navigation = () => {
                         </button>
                       </li>
                     )}
+                    <li>
+                      <Link to="/create-blog" className="block px-4 py-2 hover:bg-[#D4AF37] hover:text-white transition-all duration-300" onClick={closeDropdown}>
+                        Create Blog
+                      </Link>
+                    </li>
                     <li>
                       <button
                         onClick={logoutHandler}
@@ -256,6 +270,8 @@ const Navigation = () => {
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
               <FavoritesCount />
             </li>
+            
+            
             {userInfo ? (
               <>
                 <li>

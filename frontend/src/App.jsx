@@ -10,7 +10,7 @@ const App = () => {
     <div className="bg-[#fdfeff] mt-[5rem] max-sm:mt-[4rem] text-[#4c3735] uppercase">
       <ToastContainer />
       <Navigation />
-      <main className="pb-3 bg-[#] text-[#] min-h-screen">
+      <main className=" min-h-screen">
         <Outlet />
       </main>
       <Footer />

@@ -23,6 +23,8 @@ const ProductDetails = () => {
   const [qty, setQty] = useState(1);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [isHovered, setIsHovered] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const {
     data: product,
@@ -35,6 +37,13 @@ const ProductDetails = () => {
 
   const [createReview, { isLoading: loadingProductReview }] =
     useCreateReviewMutation();
+
+  const handleMouseMove = (e) => {
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - left) / width) * 100;
+    const y = ((e.clientY - top) / height) * 100;
+    setPosition({ x: e.clientX - left - 100, y: e.clientY - top - 100 });
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -58,76 +67,126 @@ const ProductDetails = () => {
   };
 
   return (
-    <>
-      <div className="my-2">
-        <Link to="/" className="text-blue-500 hover:underline">
-          &lt; Back to Products
-        </Link>
-      </div>
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      <Link
+        to="/"
+        className="text-gray-500 hover:text-gray-700 text-sm mb-6 inline-block"
+      >
+        &larr; Back to Products
+      </Link>
 
       {isLoading ? (
         <Loader />
       ) : error ? (
         <Message variant="danger">{error?.data?.message || error.message}</Message>
       ) : (
-        <div className="flex flex-col lg:flex-row gap-4">
-          {/* Product Image */}
-          <div className="w-full lg:w-1/2 flex-shrink-4">
-            <img src={product.image} alt={product.name} className="w-full rounded" />
-            <HeartIcon product={product} />
+        <div className="flex flex-col lg:flex-row gap-12">
+          {/* Product Image with Magnifier */}
+          <div 
+            className="lg:w-1/2 relative"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            onMouseMove={handleMouseMove}
+          >
+            <div className="h-[600px] w-full border rounded-xl bg-white p-8 overflow-hidden">
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-full object-contain"
+              />
+              
+              {/* Magnifier Glass */}
+              {isHovered && (
+                <div 
+                  className="absolute hidden lg:block w-[200px] h-[200px] rounded-full border-4 border-white shadow-lg pointer-events-none overflow-hidden"
+                  style={{
+                    left: `${position.x}px`,
+                    top: `${position.y}px`,
+                    transform: 'translate(0, 0)',
+                  }}
+                >
+                  <div 
+                    className="w-full h-full bg-no-repeat"
+                    style={{
+                      backgroundImage: `url(${product.image})`,
+                      backgroundPosition: `${(position.x + 100) * 1.5}% ${(position.y + 100) * 1.5}%`,
+                      backgroundSize: `${100 * 2}% auto`,
+                    }}
+                  />
+                </div>
+              )}
+
+              <HeartIcon product={product} className="absolute top-6 right-6 z-10" />
+            </div>
           </div>
 
           {/* Product Details */}
-          <div className="flex flex-col gap-10 space-y-3">
-            <h2 className="text-5xl font-semibold">{product.name}</h2>
-            {/* product description will come here */}
-            <p className="text-gray-500 text-sm md:w-[40vw]">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ratione, eveniet! Assumenda maxime sit dolorum reprehenderit ipsa illum unde quidem perspiciatis expedita, excepturi quaerat repellat explicabo sint quos ea qui culpa eveniet quasi, possimus nesciunt repudiandae, ad consequuntur. Ratione ut sapiente dolorem tenetur quaerat laborum ipsum. Consequuntur aperiam, laboriosam autem illo dolores dolore tenetur minima sint quia beatae est eos fugit vel fugiat culpa repellendus nihil debitis et ipsa cum molestiae. Aliquid, aut, ducimus vel sapiente atque reiciendis tempore magni unde eveniet, voluptatibus at? Ut illum asperiores hic officiis quia, sequi perspiciatis culpa omnis dolorum, doloribus qui molestias aspernatur inventore repellendus.</p>  
-            <div className="text-sm text-gray-400 flex flex-col space-y-2">
-              <span className="flex items-center">
-                <FaStore className="mr-2" /> Brand: {product.brand}
-              </span>
-              <span className="flex items-center">
-                <FaClock className="mr-2" /> Added: {moment(product.createAt).fromNow()}
-              </span>
-              <span className="flex items-center">
-                <FaStar className="mr-2" /> Reviews: {product.numReviews}
-              </span>
-              <span className="flex items-center">
-                <FaShoppingCart className="mr-2" /> Quantity: {product.quantity}
-              </span>
-              <span className="flex items-center">
-                <FaBox className="mr-2" /> In Stock: {product.countInStock}
-              </span>
+          <div className="lg:w-1/2 space-y-6">
+            <h1 className="text-3xl font-light text-gray-900">{product.name}</h1>
+            
+            <div className="space-y-4">
+              <Ratings 
+                value={product.rating} 
+                text={`${product.numReviews} reviews`} 
+                className="text-lg"
+              />
+              
+              <p className="text-gray-600 leading-relaxed">
+                {product.description}
+              </p>
+
+              <div className="grid grid-cols-2 gap-4 text-gray-600">
+                <div className="flex items-center space-x-2">
+                  <FaStore className="text-gray-400 min-w-[16px]" />
+                  <span>{product.brand}</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <FaClock className="text-gray-400 min-w-[16px]" />
+                  <span>{moment(product.createAt).fromNow()}</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <FaShoppingCart className="text-gray-400 min-w-[16px]" />
+                  <span>{product.quantity} units</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <FaBox className="text-gray-400 min-w-[16px]" />
+                  <span>{product.countInStock} in stock</span>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t">
+                <div className="flex items-center space-x-6">
+                  {product.countInStock > 0 && (
+                    <select
+                      value={qty}
+                      onChange={(e) => setQty(Number(e.target.value))}
+                      className="border rounded-md px-3 py-2 text-sm w-24 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    >
+                      {[...Array(product.countInStock).keys()].map((x) => (
+                        <option key={x + 1} value={x + 1}>
+                          {x + 1}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+
+                  <button
+                    onClick={addToCartHandler}
+                    disabled={product.countInStock === 0}
+                    className={`px-6 py-3 rounded-md text-sm font-medium transition-colors
+                      ${product.countInStock === 0 
+                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                        : 'bg-indigo-600 text-white hover:bg-indigo-700'}
+                    `}
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              </div>
             </div>
 
-            {/* Rating */}
-            <Ratings value={product.rating} text={`${product.numReviews} reviews`} />
-
-            {/* Quantity Selector */}
-            {product.countInStock > 0 && (
-              <select
-                value={qty}
-                onChange={(e) => setQty(Number(e.target.value))}
-                className="border rounded px-2 py-1 text-sm"
-              >
-                {[...Array(product.countInStock).keys()].map((x) => (
-                  <option key={x + 1} value={x + 1}>
-                    {x + 1}
-                  </option>
-                ))}
-              </select>
-            )}
-
-            {/* Add to Cart Button */}
-            <button
-              onClick={addToCartHandler}
-              disabled={product.countInStock === 0}
-              className="bg-yellow-500 text-white py-2 px-4 rounded text-sm"
-            >
-              Add To Cart
-            </button>
             {/* Reviews Section */}
-            <div className="mt-4">
+            <div className="mt-8">
               <ProductTabs
                 loadingProductReview={loadingProductReview}
                 userInfo={userInfo}
@@ -142,7 +201,7 @@ const ProductDetails = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

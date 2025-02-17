@@ -4,6 +4,7 @@ import { useVerifyOTPMutation } from "../../redux/api/usersApiSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { setVerified } from "../../redux/features/auth/authSlice";
+import ProperButtonBlack from "../../components/ProperButtonBlack";
 
 function Otp() {
     const [otp, setOtp] = useState(new Array(6).fill(""));
@@ -67,7 +68,9 @@ function Otp() {
         try {
             const res_verify = await verifyOTP({ email, otp: otpString }).unwrap();
             console.log(res_verify);
-            dispatch(setVerified(true));
+            if (res_verify) {
+                dispatch(setVerified(true));
+            }
             toast.success(res_verify.message);
             navigate("/"); // Redirect after successful verification
         } catch (err) {
@@ -77,8 +80,8 @@ function Otp() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-            <h2 className="text-2xl font-semibold mb-4">Enter OTP</h2>
+        <div className="flex flex-col items-center justify-center min-h-screen bg-[#c3183a16]">
+            <h2 className="h4 text-center font-playfair m-10 mt-0 text-4xl uppercase text-[#24110c] mb-10">Enter OTP</h2>
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
@@ -86,7 +89,7 @@ function Otp() {
                 }}
                 className="flex flex-col items-center"
             >
-                <div className="flex space-x-2">
+                <div className="flex space-x-2 mb-6">
                     {otp.map((data, index) => (
                         <input
                             key={index}
@@ -96,17 +99,16 @@ function Otp() {
                             onChange={(e) => handleChange(e.target, index)}
                             onFocus={(e) => e.target.select()}
                             onKeyDown={(e) => handleKeyDown(e, index)}
-                            className="w-12 h-12 text-center border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-12 h-12 text-center bg-white text-[#24110c] border border-[#480815] rounded-md focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
                         />
                     ))}
                 </div>
-                <button
+                <ProperButtonBlack
                     type="submit"
                     disabled={isVerifying}
-                    className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                    {isVerifying ? "Verifying..." : "Verify OTP"}
-                </button>
+                    className="mt-4 px-6 py-3"
+                    text={isVerifying ? "Verifying..." : "Verify OTP"}
+                />
             </form>
         </div>
     );

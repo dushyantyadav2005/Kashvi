@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { Navigation, Pagination, EffectCoverflow } from "swiper/modules";
+import { Navigation, Pagination } from "swiper/modules";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -25,6 +25,80 @@ const HeaderSections = () => {
 
     if (isLoading) return <Loader />;
     if (error) return <h1>ERROR</h1>;
+
+    const renderProductSlider = (products) => (
+        <div className="container relative mx-auto px-4 pb-8" data-aos="fade-up" data-aos-duration="1000">
+            {/* Custom Navigation Buttons with SVG */}
+            <button className="custom-swiper-button-prev absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-lg transition-all duration-300 hover:scale-110 backdrop-blur-sm">
+                <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="24" 
+                    height="24" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="#d1a515" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                >
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg>
+            </button>
+            <button className="custom-swiper-button-next absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-lg transition-all duration-300 hover:scale-110 backdrop-blur-sm">
+                <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="24" 
+                    height="24" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="#d1a515" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                >
+                    <path d="M9 18l6-6-6-6"/>
+                </svg>
+            </button>
+
+            <Swiper
+                modules={[Navigation, Pagination]}
+                spaceBetween={30}
+                slidesPerView={1}
+                navigation={{
+                    prevEl: '.custom-swiper-button-prev',
+                    nextEl: '.custom-swiper-button-next',
+                }}
+                pagination={{
+                    clickable: true,
+                    type: 'bullets',
+                    bulletActiveClass: 'swiper-pagination-bullet-active',
+                    bulletClass: 'swiper-pagination-bullet',
+                }}
+                speed={800}
+                breakpoints={{
+                    450: { slidesPerView: 2 },
+                    768: { slidesPerView: 3 },
+                    1024: { slidesPerView: 4 },
+                }}
+                className="py-8 px-12"
+            >
+                {products.map((product, index) => (
+                    <SwiperSlide key={product._id}>
+                        <div 
+                            className="group relative w-full flex items-center justify-center"
+                            data-aos="fade-up"
+                            data-aos-delay={index * 100}
+                        >
+                            <div className="w-full transform transition-all duration-500 hover:scale-[1.02] relative">
+                                <div className="absolute inset-0 bg-[#d1a515]/0 group-hover:bg-[#d1a515]/5 transition-colors duration-300 rounded-lg"></div>
+                                <SmallProduct product={product} />
+                            </div>
+                        </div>
+                    </SwiperSlide>
+                ))}
+            </Swiper>
+        </div>
+    );
 
     return (
         <div id="sections" className="overflow-hidden">
@@ -79,46 +153,7 @@ const HeaderSections = () => {
                     />
                 </div>
 
-                {/* Product Slider */}
-                <div 
-                    className="container mx-auto px-4 pb-8"
-                    data-aos="fade-up"
-                    data-aos-duration="1000"
-                >
-                    <Swiper
-                        modules={[Navigation, Pagination, EffectCoverflow]}
-                        spaceBetween={20}
-                        slidesPerView={1}
-                        navigation
-                        pagination={{ clickable: true }}
-                        effect="coverflow"
-                        coverflowEffect={{
-                            rotate: 50,
-                            stretch: 0,
-                            depth: 100,
-                            modifier: 1,
-                            slideShadows: true,
-                        }}
-                        breakpoints={{
-                            450: { slidesPerView: 2 },
-                            768: { slidesPerView: 4 },
-                            1024: { slidesPerView: 5 },
-                        }}
-                        className="py-8"
-                    >
-                        {data.map((product, index) => (
-                            <SwiperSlide key={product._id}>
-                                <div
-                                    className="w-full flex items-center justify-center transform transition-all duration-500 hover:scale-105"
-                                    data-aos="zoom-in"
-                                    data-aos-delay={index * 100}
-                                >
-                                    <SmallProduct product={product} />
-                                </div>
-                            </SwiperSlide>
-                        ))}
-                    </Swiper>
-                </div>
+                {renderProductSlider(data)}
 
                 <div className="w-full flex justify-center my-8">
                     <div 
@@ -164,46 +199,7 @@ const HeaderSections = () => {
                     />
                 </div>
 
-                {/* Festival Product Slider */}
-                <div 
-                    className="container mx-auto px-4 pb-8"
-                    data-aos="fade-up"
-                    data-aos-duration="1000"
-                >
-                    <Swiper
-                        modules={[Navigation, Pagination, EffectCoverflow]}
-                        spaceBetween={20}
-                        slidesPerView={1}
-                        navigation
-                        pagination={{ clickable: true }}
-                        effect="coverflow"
-                        coverflowEffect={{
-                            rotate: 50,
-                            stretch: 0,
-                            depth: 100,
-                            modifier: 1,
-                            slideShadows: true,
-                        }}
-                        breakpoints={{
-                            450: { slidesPerView: 2 },
-                            768: { slidesPerView: 4 },
-                            1024: { slidesPerView: 5 },
-                        }}
-                        className="py-8"
-                    >
-                        {data.map((product, index) => (
-                            <SwiperSlide key={product._id}>
-                                <div
-                                    className="w-full flex items-center justify-center transform transition-all duration-500 hover:scale-105"
-                                    data-aos="zoom-in"
-                                    data-aos-delay={index * 100}
-                                >
-                                    <SmallProduct product={product} />
-                                </div>
-                            </SwiperSlide>
-                        ))}
-                    </Swiper>
-                </div>
+                {renderProductSlider(data)}
 
                 <div className="relative">
                     <img 
@@ -215,6 +211,60 @@ const HeaderSections = () => {
                     />
                 </div>
             </div>
+
+            <style jsx>{`
+                .swiper-pagination {
+                    position: relative;
+                    margin-top: 20px;
+                }
+                
+                .swiper-pagination-bullet {
+                    width: 8px;
+                    height: 8px;
+                    background: #d1a515;
+                    opacity: 0.3;
+                    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                    margin: 0 6px;
+                }
+                
+                .swiper-pagination-bullet-active {
+                    opacity: 1;
+                    width: 24px;
+                    border-radius: 4px;
+                    background: linear-gradient(to right, #d1a515, #e3af03);
+                }
+
+                .swiper-slide {
+                    transition: all 0.4s ease;
+                }
+
+                .swiper-slide-active {
+                    opacity: 1;
+                }
+
+                .custom-swiper-button-prev,
+                .custom-swiper-button-next {
+                    border: 1px solid rgba(209, 165, 21, 0.2);
+                }
+
+                .custom-swiper-button-prev:hover,
+                .custom-swiper-button-next:hover {
+                    border-color: rgba(209, 165, 21, 0.4);
+                }
+
+                .custom-swiper-button-prev.swiper-button-disabled,
+                .custom-swiper-button-next.swiper-button-disabled {
+                    opacity: 0;
+                    cursor: default;
+                }
+
+                @media (max-width: 640px) {
+                    .custom-swiper-button-prev,
+                    .custom-swiper-button-next {
+                        display: none;
+                    }
+                }
+            `}</style>
         </div>
     );
 };

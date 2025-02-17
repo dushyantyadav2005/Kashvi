@@ -20,13 +20,12 @@ const Shop = () => {
 
   const [showCategories, setShowCategories] = useState(false);
   const [showBrands, setShowBrands] = useState(false);
-  const [showPrice, setShowPrice] = useState(false);
+  const [showDesignNumber, setShowDesignNumber] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [designNumberFilter, setDesignNumberFilter] = useState("");
 
   const categoriesQuery = useFetchCategoriesQuery();
-  const [priceFilter, setPriceFilter] = useState("");
-
   const filteredProductsQuery = useGetFilteredProductsQuery({
     checked,
     radio,
@@ -39,34 +38,45 @@ const Shop = () => {
   }, [categoriesQuery.data, dispatch]);
 
   useEffect(() => {
-    if (!checked.length || !radio.length) {
-      if (!filteredProductsQuery.isLoading) {
-        const filteredProducts = filteredProductsQuery.data.filter(
-          (product) => {
-            return (
-              product.price.toString().includes(priceFilter) ||
-              product.price === parseInt(priceFilter, 10)
-            );
-          }
-        );
+    if (!filteredProductsQuery.isLoading) {
+      // Filter products based on checked categories, selected brand, and design number filter
+      const filteredProducts = filteredProductsQuery.data.filter((product) => {
+        const matchesCategory =
+          !selectedCategory || product.category === selectedCategory;
+        const matchesBrand = !selectedBrand || product.brand === selectedBrand;
+        const matchesDesignNumber =
+          !designNumberFilter ||
+          product.designNumber
+            .toString()
+            .toLowerCase()
+            .includes(designNumberFilter.toLowerCase());
 
-        dispatch(setProducts(filteredProducts));
-      }
+        return matchesCategory && matchesBrand && matchesDesignNumber;
+      });
+
+      dispatch(setProducts(filteredProducts));
     }
-  }, [checked, radio, filteredProductsQuery.data, dispatch, priceFilter]);
+  }, [
+    checked,
+    radio,
+    filteredProductsQuery.data,
+    dispatch,
+    selectedCategory,
+    selectedBrand,
+    designNumberFilter,
+  ]);
 
   const handleBrandClick = (brand) => {
     setSelectedBrand(brand === selectedBrand ? "" : brand);
-    const productsByBrand = brand === selectedBrand 
-      ? filteredProductsQuery.data
-      : filteredProductsQuery.data?.filter((product) => product.brand === brand);
-    dispatch(setProducts(productsByBrand));
   };
 
   const handleCategoryClick = (categoryId) => {
-    const newCategory = categoryId === selectedCategory ? "" : categoryId;
-    setSelectedCategory(newCategory);
-    dispatch(setChecked(newCategory ? [newCategory] : []));
+    setSelectedCategory(categoryId === selectedCategory ? "" : categoryId);
+    dispatch(setChecked(categoryId ? [categoryId] : []));
+  };
+
+  const handleDesignNumberChange = (e) => {
+    setDesignNumberFilter(e.target.value);
   };
 
   const uniqueBrands = [
@@ -79,23 +89,20 @@ const Shop = () => {
     ),
   ];
 
-  const handlePriceChange = (e) => {
-    setPriceFilter(e.target.value);
-  };
-
   return (
     <>
       <div className="container mx-auto">
         <div className="flex md:flex-row">
-          <div className="p-5 py-14 mb-2 border-r-2 border-[#D4AF37] shadow-lg shadow-[#24110c]/10 min-w-[200px]">
+          <div className="p-5 py-14 border-r-2 border-b-2 h-[60vh] border-[#D4AF37] shadow-2xl shadow-[#24110c]/20 min-w-[200px]">
             <h2 className="text-2xl font-playfair text-[#24110c] mb-8 text-center">Filter By</h2>
-            
-            <div className="mb-8">
+
+            {/* Categories Filter */}
+            <div className="mb-8 ">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-base font-normal font-montserrat uppercase text-[#24110c]">
                   Categories
                 </h2>
-                <button 
+                <button
                   onClick={() => setShowCategories(!showCategories)}
                   className="text-[#D4AF37] hover:text-[#e3af03] transition-all duration-300"
                 >
@@ -116,7 +123,7 @@ const Shop = () => {
                           id={c._id}
                           name="category"
                           checked={selectedCategory === c._id}
-                          onChange={() => {}}
+                          onChange={() => { }}
                           className="absolute opacity-0 w-4 h-4 cursor-pointer"
                         />
                         <div className={`w-4 h-4 border-2 rounded-full transition-all duration-300 ${selectedCategory === c._id ? 'border-[#D4AF37]' : 'border-gray-400 group-hover:border-[#D4AF37]'}`}>
@@ -136,12 +143,13 @@ const Shop = () => {
               </div>
             </div>
 
+            {/* Brands Filter */}
             <div className="mb-8">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-base font-normal font-montserrat uppercase text-[#24110c]">
                   Brands
                 </h2>
-                <button 
+                <button
                   onClick={() => setShowBrands(!showBrands)}
                   className="text-[#D4AF37] hover:text-[#e3af03] transition-all duration-300"
                 >
@@ -162,7 +170,7 @@ const Shop = () => {
                           id={brand}
                           name="brand"
                           checked={selectedBrand === brand}
-                          onChange={() => {}}
+                          onChange={() => { }}
                           className="absolute opacity-0 w-4 h-4 cursor-pointer"
                         />
                         <div className={`w-4 h-4 border-2 rounded-full transition-all duration-300 ${selectedBrand === brand ? 'border-[#D4AF37]' : 'border-gray-400 group-hover:border-[#D4AF37]'}`}>
@@ -182,40 +190,43 @@ const Shop = () => {
               </div>
             </div>
 
+            {/* Design Number Filter */}
             <div className="mb-8">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-base font-normal font-montserrat uppercase text-[#24110c]">
                   Design Number
                 </h2>
-                <button 
-                  onClick={() => setShowPrice(!showPrice)}
+                <button
+                  onClick={() => setShowDesignNumber(!showDesignNumber)}
                   className="text-[#D4AF37] hover:text-[#e3af03] transition-all duration-300"
                 >
-                  <div className={`transform transition-transform duration-300 ${showPrice ? 'rotate-180' : 'rotate-0'}`}>
+                  <div className={`transform transition-transform duration-300 ${showDesignNumber ? 'rotate-180' : 'rotate-0'}`}>
                     <AiOutlinePlus size={20} />
                   </div>
                 </button>
               </div>
               <div className="w-full h-[1px] bg-[#D4AF37]/30 mb-4"></div>
 
-              <div className={`transition-all duration-500 ease-in-out overflow-hidden ${showPrice ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden ${showDesignNumber ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
                 <div className="flex justify-center px-4">
                   <input
                     type="text"
-                    placeholder="Design Number"
-                    value={priceFilter}
-                    onChange={handlePriceChange}
+                    placeholder="Enter Design Number"
+                    value={designNumberFilter}
+                    onChange={handleDesignNumberChange}
                     className="w-full px-3 py-2 placeholder-gray-400 border border-[#D4AF37] rounded-lg focus:outline-none focus:ring focus:border-[#D4AF37] bg-[#efdcd9]/10 text-black text-sm"
                   />
                 </div>
               </div>
             </div>
 
+            {/* Reset Button */}
             <div className="  ">
-              <ProperButtonBlack text="Reset" name="reset" className="w-full mx-auto"/>
+              <ProperButtonBlack text="Reset" name="reset" className="w-full mx-auto" />
             </div>
           </div>
 
+          {/* Products Section */}
           <div className="py-3 flex flex-col items-center w-full">
             <img src="../../images/embupsidedown.png" alt="" className='w-full h-auto opacity-50' />
 

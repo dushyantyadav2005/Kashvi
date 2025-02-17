@@ -30,13 +30,19 @@ import ProductDetails from "./pages/Products/ProductDetails.jsx";
 import Cart from "./pages/Cart.jsx";
 import Shop from "./pages/Shop.jsx";
 
+import BlogList from "./components/BlogList.jsx";
+import BlogDetail from "./components/BlogDetail.jsx";
+import CreateBlog from "./components/CreateBlog.jsx";
+
 import Shipping from "./pages/Orders/Shipping.jsx";
 import PlaceOrder from "./pages/Orders/PlaceOrder.jsx";
 import Order from "./pages/Orders/Order.jsx";
 import OrderList from "./pages/Admin/OrderList.jsx";
-import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+// import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import ForgotPassword from "./pages/Auth/ForgotPassword.jsx";
 import ResetPassword from "./pages/Auth/ResetPassword.jsx";
+import Contact from "./pages/Contact.jsx";
+import Faq from "./components/Faq.jsx";
 // import AdminDashboard from "./pages/Admin/AdminDashboard.jsx";
 
 const router = createBrowserRouter(
@@ -52,6 +58,11 @@ const router = createBrowserRouter(
       <Route path="/forgot-password/" element={<ForgotPassword />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route path="/otp" element={<Otp />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/blogs" element={<BlogList />} />
+      <Route path="/blogs/:id" element={<BlogDetail />} />
+      <Route path="/create-blog" element={<CreateBlog />} />
+      <Route path="/faq" element={<Faq />} />
 
 
       {/* Registered users */}
@@ -78,8 +89,6 @@ const router = createBrowserRouter(
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
-    <PayPalScriptProvider>
       <RouterProvider router={router} />
-    </PayPalScriptProvider>
   </Provider>
 );
