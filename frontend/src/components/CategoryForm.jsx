@@ -1,3 +1,5 @@
+import ProperButtonBlack from "../components/ProperButtonBlack";
+
 const CategoryForm = ({
   value,
   setValue,
@@ -6,28 +8,38 @@ const CategoryForm = ({
   handleDelete,
 }) => {
   return (
-    <div className="p-3">
-      <form onSubmit={handleSubmit} className="space-y-3">
+    <div className="p-6">
+      <div className="text-center mb-10">
+        <h2 className="h4 text-center font-playfair m-10 mb-0 text-4xl uppercase">
+          MANAGE
+        </h2>
+        <h2 className="h4 text-center font-montserrat m-10 mt-0 mb-10 text-sm uppercase">
+          CATEGORIES
+        </h2>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
         <input
           type="text"
-          className="py-3 px-4 border rounded-lg w-full"
+          className="bg-[#c3183a16] border border-[#480815] focus:ring-2 focus:ring-[#D4AF37] focus:outline-none py-3 px-4 rounded-sm w-full"
           placeholder="Write category name"
           value={value}
           onChange={(e) => setValue(e.target.value)}
         />
 
-        <div className="flex justify-between">
-          <button className="bg-pink-500 text-white py-2 px-4 rounded-lg hover:bg-pink-600 focus:outline-none focus:ring-2 foucs:ring-pink-500 focus:ring-opacity-50">
-            {buttonText}
-          </button>
+        <div className="flex gap-4">
+          <ProperButtonBlack
+            type="submit"
+            className="w-full"
+            text={buttonText}
+          />
 
           {handleDelete && (
-            <button
+            <ProperButtonBlack
               onClick={handleDelete}
-              className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 foucs:ring-red-500 focus:ring-opacity-50"
-            >
-              Delete
-            </button>
+              className="w-full bg-red-600 hover:bg-red-700"
+              text="Delete"
+            />
           )}
         </div>
       </form>
