@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetFilteredProductsQuery } from "../redux/api/productApiSlice";
 import { useFetchCategoriesQuery } from "../redux/api/categoryApiSlice";
-import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
+import { AiOutlinePlus, AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import {
   setCategories,
   setProducts,
@@ -24,6 +24,7 @@ const Shop = () => {
   const [selectedFestival, setSelectedFestival] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [designNumberFilter, setDesignNumberFilter] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false); // State for mobile sidebar toggle
 
   const categoriesQuery = useFetchCategoriesQuery();
   const filteredProductsQuery = useGetFilteredProductsQuery({
@@ -39,7 +40,6 @@ const Shop = () => {
 
   useEffect(() => {
     if (!filteredProductsQuery.isLoading) {
-      // Filter products based on checked categories, selected Festival, and design number filter
       const filteredProducts = filteredProductsQuery.data.filter((product) => {
         const matchesCategory =
           !selectedCategory || product.category === selectedCategory;
@@ -89,140 +89,168 @@ const Shop = () => {
     ),
   ];
 
+  // Toggle sidebar visibility
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
     <>
       <div className="container mx-auto">
+        {/* Mobile Toggle Button */}
+        <button
+          onClick={toggleSidebar}
+          className="md:hidden fixed top-24 left-4 z-50 p-2 bg-[#D4AF37] text-white rounded-full shadow-lg"
+        >
+          <AiOutlineMenu size={24} />
+        </button>
+
+        {/* Backdrop for mobile sidebar */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-40 md:hidden"
+            onClick={toggleSidebar}
+          />
+        )}
+
         <div className="flex md:flex-row">
-          <div className="p-5 py-14 mb-2 border-r-2 border-[#D4AF37] shadow-lg shadow-[#24110c]/10 min-w-[200px]">
-            <h2 className="text-2xl font-playfair text-[#24110c] mb-8 text-center">Filter By</h2>
+          {/* Filters Sidebar */}
+          <div
+            className={`fixed md:static h-full bg-white md:bg-transparent z-50 w-64 md:w-auto transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+              }`}
+          >
+            <AiOutlineClose size={24} onClick={toggleSidebar} className={`${sidebarOpen ? "block" : "hidden"} m-4`} />
+            <div className="p-5 py-14 h-screen md:h-auto overflow-y-auto border-r-2 border-[#D4AF37] shadow-lg md:shadow-none">
+              <h2 className="text-2xl font-playfair text-[#24110c] mb-8 text-center">Filter By</h2>
 
-            {/* Categories Filter */}
-            <div className="mb-8">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-base font-normal font-montserrat uppercase text-[#24110c]">
-                  Categories
-                </h2>
-                <button
-                  onClick={() => setShowCategories(!showCategories)}
-                  className="text-[#D4AF37] hover:text-[#e3af03] transition-all duration-300"
-                >
-                  <div className={`transform transition-transform duration-300 ${showCategories ? 'rotate-180' : 'rotate-0'}`}>
-                    <AiOutlinePlus size={20} />
-                  </div>
-                </button>
-              </div>
-              <div className="w-full h-[1px] bg-[#D4AF37]/30 mb-4"></div>
-
-              <div className={`transition-all duration-500 ease-in-out overflow-hidden ${showCategories ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                <div className="flex flex-col items-start space-y-3 pl-4">
-                  {categories?.map((c) => (
-                    <div key={c._id} className="flex items-center group w-full cursor-pointer" onClick={() => handleCategoryClick(c._id)}>
-                      <div className="relative w-4 h-4">
-                        <input
-                          type="radio"
-                          id={c._id}
-                          name="category"
-                          checked={selectedCategory === c._id}
-                          onChange={() => { }}
-                          className="absolute opacity-0 w-4 h-4 cursor-pointer"
-                        />
-                        <div className={`w-4 h-4 border-2 rounded-full transition-all duration-300 ${selectedCategory === c._id ? 'border-[#D4AF37]' : 'border-gray-400 group-hover:border-[#D4AF37]'}`}>
-                          <div className={`w-2 h-2 rounded-full bg-[#D4AF37] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${selectedCategory === c._id ? 'scale-100' : 'scale-0'}`}></div>
-                        </div>
-                      </div>
-                      <label
-                        htmlFor={c._id}
-                        onClick={() => handleCategoryClick(c._id)}
-                        className={`ml-3 text-sm font-normal font-montserrat cursor-pointer transition-colors duration-300 ${selectedCategory === c._id ? 'text-[#D4AF37]' : 'text-black group-hover:text-[#D4AF37]'}`}
-                      >
-                        {c.name}
-                      </label>
+              {/* Categories Filter */}
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-base font-normal font-montserrat uppercase text-[#24110c]">
+                    Categories
+                  </h2>
+                  <button
+                    onClick={() => setShowCategories(!showCategories)}
+                    className="text-[#D4AF37] hover:text-[#e3af03] transition-all duration-300"
+                  >
+                    <div className={`transform transition-transform duration-300 ${showCategories ? 'rotate-180' : 'rotate-0'}`}>
+                      <AiOutlinePlus size={20} />
                     </div>
-                  ))}
+                  </button>
                 </div>
-              </div>
-            </div>
+                <div className="w-full h-[1px] bg-[#D4AF37]/30 mb-4"></div>
 
-            {/* Festivals Filter */}
-            <div className="mb-8">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-base font-normal font-montserrat uppercase text-[#24110c]">
-                  Festivals
-                </h2>
-                <button
-                  onClick={() => setShowFestivals(!showFestivals)}
-                  className="text-[#D4AF37] hover:text-[#e3af03] transition-all duration-300"
-                >
-                  <div className={`transform transition-transform duration-300 ${showFestivals ? 'rotate-180' : 'rotate-0'}`}>
-                    <AiOutlinePlus size={20} />
-                  </div>
-                </button>
-              </div>
-              <div className="w-full h-[1px] bg-[#D4AF37]/30 mb-4"></div>
-
-              <div className={`transition-all duration-500 ease-in-out overflow-hidden ${showFestivals ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                <div className="flex flex-col items-start space-y-3 pl-4">
-                  {uniqueFestivals?.map((festival) => (
-                    <div key={festival} className="flex items-center group w-full cursor-pointer" onClick={() => handleFestivalClick(festival)}>
-                      <div className="relative w-4 h-4">
-                        <input
-                          type="radio"
-                          id={festival}
-                          name="festival"
-                          checked={selectedFestival === festival}
-                          onChange={() => { }}
-                          className="absolute opacity-0 w-4 h-4 cursor-pointer"
-                        />
-                        <div className={`w-4 h-4 border-2 rounded-full transition-all duration-300 ${selectedFestival === festival ? 'border-[#D4AF37]' : 'border-gray-400 group-hover:border-[#D4AF37]'}`}>
-                          <div className={`w-2 h-2 rounded-full bg-[#D4AF37] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${selectedFestival === festival ? 'scale-100' : 'scale-0'}`}></div>
+                <div className={`transition-all duration-500 ease-in-out overflow-hidden ${showCategories ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                  <div className="flex flex-col items-start space-y-3 pl-4">
+                    {categories?.map((c) => (
+                      <div key={c._id} className="flex items-center group w-full cursor-pointer" onClick={() => handleCategoryClick(c._id)}>
+                        <div className="relative w-4 h-4">
+                          <input
+                            type="radio"
+                            id={c._id}
+                            name="category"
+                            checked={selectedCategory === c._id}
+                            onChange={() => { }}
+                            className="absolute opacity-0 w-4 h-4 cursor-pointer"
+                          />
+                          <div className={`w-4 h-4 border-2 rounded-full transition-all duration-300 ${selectedCategory === c._id ? 'border-[#D4AF37]' : 'border-gray-400 group-hover:border-[#D4AF37]'}`}>
+                            <div className={`w-2 h-2 rounded-full bg-[#D4AF37] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${selectedCategory === c._id ? 'scale-100' : 'scale-0'}`}></div>
+                          </div>
                         </div>
+                        <label
+                          htmlFor={c._id}
+                          onClick={() => handleCategoryClick(c._id)}
+                          className={`ml-3 text-sm font-normal font-montserrat cursor-pointer transition-colors duration-300 ${selectedCategory === c._id ? 'text-[#D4AF37]' : 'text-black group-hover:text-[#D4AF37]'}`}
+                        >
+                          {c.name}
+                        </label>
                       </div>
-                      <label
-                        htmlFor={festival}
-                        onClick={() => handleFestivalClick(festival)}
-                        className={`ml-3 text-sm font-normal font-montserrat cursor-pointer transition-colors duration-300 ${selectedFestival === festival ? 'text-[#D4AF37]' : 'text-black group-hover:text-[#D4AF37]'}`}
-                      >
-                        {festival}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Design Number Filter */}
-            <div className="mb-8">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-base font-normal font-montserrat uppercase text-[#24110c]">
-                  Design Number
-                </h2>
-                <button
-                  onClick={() => setShowDesignNumber(!showDesignNumber)}
-                  className="text-[#D4AF37] hover:text-[#e3af03] transition-all duration-300"
-                >
-                  <div className={`transform transition-transform duration-300 ${showDesignNumber ? 'rotate-180' : 'rotate-0'}`}>
-                    <AiOutlinePlus size={20} />
+                    ))}
                   </div>
-                </button>
-              </div>
-              <div className="w-full h-[1px] bg-[#D4AF37]/30 mb-4"></div>
-
-              <div className={`transition-all duration-500 ease-in-out overflow-hidden ${showDesignNumber ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                <div className="flex justify-center px-4">
-                  <input
-                    type="text"
-                    placeholder="Enter Design Number"
-                    value={designNumberFilter}
-                    onChange={handleDesignNumberChange}
-                    className="w-full px-3 py-2 placeholder-gray-400 border border-[#D4AF37] rounded-lg focus:outline-none focus:ring focus:border-[#D4AF37] bg-[#efdcd9]/10 text-black text-sm"
-                  />
                 </div>
               </div>
-            </div>
 
-            {/* Reset Button */}
-            <div className="  ">
-              <ProperButtonBlack text="Reset" name="reset" className="w-full mx-auto" />
+              {/* Festivals Filter */}
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-base font-normal font-montserrat uppercase text-[#24110c]">
+                    Festivals
+                  </h2>
+                  <button
+                    onClick={() => setShowFestivals(!showFestivals)}
+                    className="text-[#D4AF37] hover:text-[#e3af03] transition-all duration-300"
+                  >
+                    <div className={`transform transition-transform duration-300 ${showFestivals ? 'rotate-180' : 'rotate-0'}`}>
+                      <AiOutlinePlus size={20} />
+                    </div>
+                  </button>
+                </div>
+                <div className="w-full h-[1px] bg-[#D4AF37]/30 mb-4"></div>
+
+                <div className={`transition-all duration-500 ease-in-out overflow-hidden ${showFestivals ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                  <div className="flex flex-col items-start space-y-3 pl-4">
+                    {uniqueFestivals?.map((festival) => (
+                      <div key={festival} className="flex items-center group w-full cursor-pointer" onClick={() => handleFestivalClick(festival)}>
+                        <div className="relative w-4 h-4">
+                          <input
+                            type="radio"
+                            id={festival}
+                            name="festival"
+                            checked={selectedFestival === festival}
+                            onChange={() => { }}
+                            className="absolute opacity-0 w-4 h-4 cursor-pointer"
+                          />
+                          <div className={`w-4 h-4 border-2 rounded-full transition-all duration-300 ${selectedFestival === festival ? 'border-[#D4AF37]' : 'border-gray-400 group-hover:border-[#D4AF37]'}`}>
+                            <div className={`w-2 h-2 rounded-full bg-[#D4AF37] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${selectedFestival === festival ? 'scale-100' : 'scale-0'}`}></div>
+                          </div>
+                        </div>
+                        <label
+                          htmlFor={festival}
+                          onClick={() => handleFestivalClick(festival)}
+                          className={`ml-3 text-sm font-normal font-montserrat cursor-pointer transition-colors duration-300 ${selectedFestival === festival ? 'text-[#D4AF37]' : 'text-black group-hover:text-[#D4AF37]'}`}
+                        >
+                          {festival}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Design Number Filter */}
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-base font-normal font-montserrat uppercase text-[#24110c]">
+                    Design Number
+                  </h2>
+                  <button
+                    onClick={() => setShowDesignNumber(!showDesignNumber)}
+                    className="text-[#D4AF37] hover:text-[#e3af03] transition-all duration-300"
+                  >
+                    <div className={`transform transition-transform duration-300 ${showDesignNumber ? 'rotate-180' : 'rotate-0'}`}>
+                      <AiOutlinePlus size={20} />
+                    </div>
+                  </button>
+                </div>
+                <div className="w-full h-[1px] bg-[#D4AF37]/30 mb-4"></div>
+
+                <div className={`transition-all duration-500 ease-in-out overflow-hidden ${showDesignNumber ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                  <div className="flex justify-center px-4">
+                    <input
+                      type="text"
+                      placeholder="Enter Design Number"
+                      value={designNumberFilter}
+                      onChange={handleDesignNumberChange}
+                      className="w-full px-3 py-2 placeholder-gray-400 border border-[#D4AF37] rounded-lg focus:outline-none focus:ring focus:border-[#D4AF37] bg-[#efdcd9]/10 text-black text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Reset Button */}
+              <div className="mb-8">
+                <ProperButtonBlack text="Reset" name="reset" className="w-full mx-auto" />
+              </div>
             </div>
           </div>
 
