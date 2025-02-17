@@ -60,7 +60,7 @@ const Footer = () => {
               <ul className="space-y-2 text-sm">
                 {['Track Order', 'Contact Us', 'My Account'].map((item) => (
                   <li key={item}>
-                    <a href="#" className="relative inline-block hover:text-yellow-300 transition-colors
+                    <a href={item === 'Contact Us' ? '/contact' : '#'} className="relative inline-block hover:text-yellow-300 transition-colors
                       before:content-[''] before:absolute before:left-0 before:-bottom-1 
                       before:w-0 before:h-px before:bg-yellow-300 
                       before:transition-all before:duration-300 hover:before:w-full">
@@ -78,7 +78,7 @@ const Footer = () => {
                 {['About Us', 'Brand Story', 'Blogs', 'Careers', 'Book a Video Call', 'Store Locator']
                   .map((item) => (
                     <li key={item}>
-                      <a href="#" className="relative inline-block hover:text-yellow-300 transition-colors
+                      <a href={item === 'About Us' ? '/about' : '#'} className="relative inline-block hover:text-yellow-300 transition-colors
                         before:content-[''] before:absolute before:left-0 before:-bottom-1 
                         before:w-0 before:h-px before:bg-yellow-300 
                         before:transition-all before:duration-300 hover:before:w-full">
@@ -96,7 +96,7 @@ const Footer = () => {
                 {['FAQs', 'Shipping Details', 'Return, Exchange and Refund Policy', 
                   'Terms of Use', 'Privacy Policy', 'Cookie Policy'].map((item) => (
                     <li key={item}>
-                      <a href="#" className="relative inline-block hover:text-yellow-300 transition-colors
+                      <a href={item === 'FAQs' ? '/faq' : '#'} className="relative inline-block hover:text-yellow-300 transition-colors
                         before:content-[''] before:absolute before:left-0 before:-bottom-1 
                         before:w-0 before:h-px before:bg-yellow-300 
                         before:transition-all before:duration-300 hover:before:w-full">
