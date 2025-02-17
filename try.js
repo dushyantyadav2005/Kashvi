@@ -1,10 +1,5 @@
-import fs from 'fs'
+import path from 'path'
 
-fs.readFile('festivals.json', 'utf8', (err, data) => {
-    if (err) {
-        console.error("Error reading file:", err);
-        return;
-    }
-    const holidays = JSON.parse(data);
-    console.log(holidays);
-});
+const dirName = path.dirname("C:\\Users\\04khu\\Desktop\\Invoice Integration\\backend\\files");
+const outputTexPath = path.join(dirName, 'files', 'output_invoice.tex');
+console.log(outputTexPath);

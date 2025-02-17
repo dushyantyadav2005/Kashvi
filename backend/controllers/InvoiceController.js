@@ -1,24 +1,21 @@
 import fs from 'fs';
 import latex from 'node-latex';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { sendMail } from "../utils/sendEmail.js";
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Define __dirname for ES module compatibility
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 async function generateInvoice(req, res) {
     try {
         const invoiceData = req.body;
         console.log(invoiceData);
 
+        const dirName = path.dirname("C:\\Users\\04khu\\Desktop\\Invoice Integration\\backend\\files");
         // Define output PDF path
-        const outputTexPath = path.join(__dirname, 'files', 'output_invoice.tex');
-        const outputPdfPath = path.join(__dirname, 'files', 'invoice.pdf');
+        const outputTexPath = path.join(dirName, 'files', 'output_invoice.tex');
+        const outputPdfPath = path.join(dirName, 'files', 'invoice.pdf');
 
         // Construct dynamic LaTeX template
         const latexTemplate = `

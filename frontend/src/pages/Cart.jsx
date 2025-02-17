@@ -153,12 +153,13 @@ const Cart = () => {
                     Items ({cartItems.reduce((acc, item) => acc + item.qty, 0)})
                   </h2>
 
-                  <ProperButtonBlack
-                    className=" mt-2 py-3 px-6 text-lg w-full flex justify-center items-center "
-                    disabled={cartItems.length === 0 || loading}
-                    onClick={checkoutHandler}
-                    text={"Generate Invoice"}
-                  />
+                  <div onClick={checkoutHandler}>
+                    <ProperButtonBlack
+                      className=" mt-2 py-3 px-6 text-lg w-full flex justify-center items-center "
+                      disabled={cartItems.length === 0 || loading}
+                      text={"Generate Invoice"}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
