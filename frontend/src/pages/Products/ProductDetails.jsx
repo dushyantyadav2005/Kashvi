@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -23,6 +23,12 @@ const ProductDetails = () => {
   const [qty, setQty] = useState(1);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
+
+  const [zoomImageCoordinate, setZoomImageCoordinate] = useState({
+    x: 0,
+    y: 0,
+  });
+  const [zoomImage, setZoomImage] = useState(false);
 
   const {
     data: product,
@@ -57,6 +63,25 @@ const ProductDetails = () => {
     navigate("/cart");
   };
 
+  const handleZoomImage = useCallback((e) => {
+    setZoomImage(true);
+    const rect = e.target.getBoundingClientRect();
+
+    console.log("Bounding Rect:", rect); // Debugging log
+
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+
+    setZoomImageCoordinate({ x, y });
+
+    console.log("Zoom Coordinates:", { x, y }); // Debugging log
+  }, []);
+
+
+  const handleLeaveImageZoom = () => {
+    setZoomImage(false);
+  };
+
   return (
     <>
       <div className="my-2">
@@ -72,16 +97,32 @@ const ProductDetails = () => {
       ) : (
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Product Image */}
-          <div className="w-full lg:w-1/2 flex-shrink-4">
-            <img src={product.image} alt={product.name} className="w-full rounded" />
+          <div className="w-full lg:w-1/2 flex-shrink-4 relative">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full rounded"
+              onMouseMove={handleZoomImage}
+              onMouseLeave={handleLeaveImageZoom}
+            />
+            {zoomImage && (
+              <div
+                className="hidden lg:block absolute min-w-[500px] overflow-hidden min-h-[400px] bg-slate-200 p-1 -right-[510px] top-0"
+                style={{
+                  backgroundImage: `url('${product.image.replace(/\\/g, "/")}')`,  // Replace backslashes with forward slashes
+                  backgroundPosition: `${zoomImageCoordinate.x * 100}% ${zoomImageCoordinate.y * 100}%`,
+                }}
+              >
+                <div className="w-full h-full min-h-[400px] min-w-[500px] mix-blend-multiply scale-150"></div>
+              </div>
+            )}
             <HeartIcon product={product} />
           </div>
 
           {/* Product Details */}
           <div className="flex flex-col gap-10 space-y-3">
             <h2 className="text-5xl font-semibold">{product.name}</h2>
-            {/* product description will come here */}
-            <p className="text-gray-500 text-sm md:w-[40vw]">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ratione, eveniet! Assumenda maxime sit dolorum reprehenderit ipsa illum unde quidem perspiciatis expedita, excepturi quaerat repellat explicabo sint quos ea qui culpa eveniet quasi, possimus nesciunt repudiandae, ad consequuntur. Ratione ut sapiente dolorem tenetur quaerat laborum ipsum. Consequuntur aperiam, laboriosam autem illo dolores dolore tenetur minima sint quia beatae est eos fugit vel fugiat culpa repellendus nihil debitis et ipsa cum molestiae. Aliquid, aut, ducimus vel sapiente atque reiciendis tempore magni unde eveniet, voluptatibus at? Ut illum asperiores hic officiis quia, sequi perspiciatis culpa omnis dolorum, doloribus qui molestias aspernatur inventore repellendus.</p>  
+            <p className="text-gray-500 text-sm md:w-[40vw]">{product.description}</p>
             <div className="text-sm text-gray-400 flex flex-col space-y-2">
               <span className="flex items-center">
                 <FaStore className="mr-2" /> Festival: {product.festival}
@@ -126,6 +167,7 @@ const ProductDetails = () => {
             >
               Add To Cart
             </button>
+
             {/* Reviews Section */}
             <div className="mt-4">
               <ProductTabs

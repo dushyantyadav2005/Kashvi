@@ -72,9 +72,8 @@ const ProductTabs = ({
                   ></textarea>
                 </div>
                 <button
-                  type="submit"
-                  disabled={loadingProductReview}
                   className="bg-pink-600 text-white py-2 px-4 rounded-lg w-full"
+                  onSubmit={submitHandler}
                 >
                   Submit
                 </button>
