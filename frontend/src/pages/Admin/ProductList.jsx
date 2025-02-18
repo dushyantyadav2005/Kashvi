@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   useCreateProductMutation,
@@ -7,15 +7,13 @@ import {
 import { useFetchCategoriesQuery } from "../../redux/api/categoryApiSlice";
 import { toast } from "react-toastify";
 import AdminMenu from "./AdminMenu";
-import ProperButton from "../../components/ProperButton";
 import ProperButtonBlack from "../../components/ProperButtonBlack";
 
 const ProductList = () => {
   const [image, setImage] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [designNumber, setDesignNumber] = useState(""); // Added designNumber state
+  const [designNumber, setDesignNumber] = useState("");
   const [category, setCategory] = useState("");
   const [quantity, setQuantity] = useState("");
   const [festival, setFestival] = useState("");
@@ -23,6 +21,7 @@ const ProductList = () => {
   const [imageUrl, setImageUrl] = useState(null);
   const [tags, setTags] = useState("");
   const navigate = useNavigate();
+  const formRef = useRef();
 
   const [uploadProductImage] = useUploadProductImageMutation();
   const [createProduct] = useCreateProductMutation();
@@ -30,25 +29,18 @@ const ProductList = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const productData = new FormData();
       productData.append("image", image);
       productData.append("name", name);
       productData.append("description", description);
-      productData.append("price", price);
-      productData.append("designNumber", designNumber); // Added designNumber to form data
-      if (category) {
-        productData.append("category", category);
-      } else {
-        productData.append("category", categories[0]._id);
-      }
+      productData.append("designNumber", designNumber);
+      productData.append("category", category || categories[0]._id);
       productData.append("quantity", quantity);
       productData.append("festival", festival);
       productData.append("countInStock", stock);
 
       const { data } = await createProduct(productData);
-
       if (data.error) {
         toast.error(data.error);
       } else {
@@ -56,38 +48,23 @@ const ProductList = () => {
         navigate("/");
       }
     } catch (error) {
-      console.error(error);
       toast.error("Product create failed. Try Again.");
     }
   };
 
   const handleDescription = async () => {
     try {
-      // Create tags array from the tags input, name and festival
       const tagsList = [...tags.split(',').map(tag => tag.trim()), name, festival].filter(tag => tag !== '');
-
       const response = await fetch('http://localhost:8002/generate-description', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          tags: tagsList,
-          use_gemini: true
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tags: tagsList, use_gemini: true }),
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Failed to generate description');
-      }
-
-      const data = await response.json();
-      setDescription(data.description);
+      if (!response.ok) throw new Error('Failed to generate description');
+      setDescription((await response.json()).description);
       toast.success('Description generated successfully');
     } catch (error) {
-      console.error('Error generating description:', error);
-      toast.error('Failed to generate description: ' + error.message);
+      toast.error('Failed to generate description');
     }
   };
 
@@ -95,39 +72,24 @@ const ProductList = () => {
     try {
       const formData = new FormData();
       formData.append('file', file);
-
-      const response = await fetch('http://localhost:8001/upload-image', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate tags');
-      }
-
-      const data = await response.json();
-      // Update the tags input with the generated tags
-      setTags(data.tags.join(', '));
+      const response = await fetch('http://localhost:8001/upload-image', { method: 'POST', body: formData });
+      if (!response.ok) throw new Error('Failed to generate tags');
+      setTags((await response.json()).tags.join(', '));
       toast.success('Tags generated successfully');
     } catch (error) {
-      console.error('Error generating tags:', error);
       toast.error('Failed to generate tags');
     }
   };
 
   const uploadFileHandler = async (e) => {
-    const formData = new FormData();
     const file = e.target.files[0];
-    formData.append("image", file);
-
+    if (!file) return;
     try {
-      // Upload image for product
+      const formData = new FormData();
+      formData.append("image", file);
       const res = await uploadProductImage(formData).unwrap();
-      toast.success(res.message);
       setImage(res.image);
       setImageUrl(res.image);
-
-      // Generate tags from the same image
       await handleTagGeneration(file);
     } catch (error) {
       toast.error(error?.data?.message || error.error);
@@ -135,140 +97,126 @@ const ProductList = () => {
   };
 
   return (
-    <div className="container xl:mx-[9rem] sm:mx-[0]">
-      <div className="flex flex-col md:flex-row">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="flex flex-col md:flex-row gap-6">
         <AdminMenu />
-        <div className="md:w-3/4 p-3">
-
-          <h2 className="h4 text-center font-playfair capitalize m-10 mb-0 text-4xl font-medium">CREATE</h2>
-          <h2 className="h4 text-center font-montserrat uppercase tracking-wider m-10 mt-0 text-lg ">Product</h2>
+        <div className="flex-1 p-4 bg-white rounded-lg shadow-md">
+          <h2 className="text-center text-3xl font-playfair font-medium mb-2">CREATE</h2>
+          <h2 className="text-center font-montserrat uppercase tracking-wider text-lg mb-8">Product</h2>
 
           {imageUrl && (
-            <div className="text-center">
-              <img
-                src={imageUrl}
-                alt="product"
-                className="block mx-auto max-h-[200px]"
-              />
+            <div className="text-center mb-6">
+              <img src={imageUrl} alt="product" className="mx-auto max-h-[200px]" />
             </div>
           )}
-          <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <label className="border px-4 block w-full text-center cursor-pointer font-bold py-11">
-                {image ? image.name : "Upload Image"}
 
-                <input
-                  type="file"
-                  name="image"
-                  accept="image/*"
-                  onChange={uploadFileHandler}
-                  className={!image ? "hidden" : "text-white"}
-                />
+          <form onSubmit={handleSubmit} ref={formRef}>
+            <div className="mb-6">
+              <label className="block border border-[#480815] px-4 py-6 text-center cursor-pointer font-bold">
+                {image ? image.name : "Upload Image"}
+                <input type="file" name="image" accept="image/*" onChange={uploadFileHandler} className="hidden" />
               </label>
             </div>
 
-            <div className="p-3">
-              <div className="flex flex-wrap">
-                <div className="two">
-                  <label htmlFor="name">Name</label> <br />
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Name</label>
                   <input
                     type="text"
-                    className="p-4 mb-3 w-[30rem] border"
+                    className="w-full bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815] py-2 px-4"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
                 </div>
-                <div className="two ml-10">
-                  <label htmlFor="designNumber">Design Number</label> <br />
+                <div>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Design Number</label>
                   <input
                     type="text"
-                    className="p-4 mb-3 w-[30rem] border"
+                    className="w-full bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815] py-2 px-4"
                     value={designNumber}
                     onChange={(e) => setDesignNumber(e.target.value)}
                   />
                 </div>
               </div>
-              <div className="flex flex-wrap">
-                <div className="one">
-                  <label htmlFor="name block">Quantity</label> <br />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Quantity</label>
                   <input
                     type="number"
-                    className="p-4 mb-3 w-[30rem] border"
+                    className="w-full bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815] py-2 px-4"
                     value={quantity}
                     onChange={(e) => setQuantity(e.target.value)}
                   />
                 </div>
-                <div className="two ml-10 ">
-                  <label htmlFor="name block">Festival</label> <br />
+                <div>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Festival</label>
                   <input
                     type="text"
-                    className="p-4 mb-3 w-[30rem] border-2"
+                    className="w-full bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815] py-2 px-4"
                     value={festival}
                     onChange={(e) => setFestival(e.target.value)}
                   />
                 </div>
               </div>
 
-              <div className="mb-3">
-                <label htmlFor="tags">Tags (comma-separated)</label> <br />
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">Tags (comma-separated)</label>
                 <input
                   type="text"
-                  className="p-4 mb-3 w-[95%] border"
+                  className="w-full bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815] py-2 px-4"
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
                   placeholder="Enter tags separated by commas"
                 />
               </div>
 
-              <label htmlFor="" className="my-5">
-                Description
-              </label>
-              <div className="relative">
-                <textarea
-                  type="text"
-                  className="p-2 mb-3 border w-[95%] pr-12 h-50 scrollbar-hide"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  style={{ resize: 'vertical', minHeight: '8rem', maxHeight: '20rem', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                ></textarea>
-                <button
-                  onClick={handleDescription}
-                  className="absolute right-14 top-2 p-2 text-white hover:bg-pink-700 transition-colors"
-                  title="Generate AI Description"
-                >
-                  🤖
-                </button>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">Description</label>
+                <div className="relative">
+                  <textarea
+                    className="w-full bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815] py-2 px-4 pr-12"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    style={{ minHeight: '8rem' }}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleDescription}
+                    className="absolute right-2 top-2 p-2 bg-transparent hover:bg-gray-100 rounded-full"
+                    title="Generate AI Description"
+                  >
+                    🤖
+                  </button>
+                </div>
               </div>
 
-              <div className="flex justify-between">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="name block">Count In Stock</label> <br />
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Count In Stock</label>
                   <input
                     type="text"
-                    className="p-4 mb-3 w-[30rem] border"
+                    className="w-full bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815] py-2 px-4"
                     value={stock}
                     onChange={(e) => setStock(e.target.value)}
                   />
                 </div>
-
                 <div>
-                  <label htmlFor="">Category</label> <br />
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Category</label>
                   <select
-                    placeholder="Choose Category"
-                    className="p-4 mb-3 w-[30rem] border"
+                    className="w-full bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815] py-2 px-4"
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                   >
                     {categories?.map((c) => (
-                      <option key={c._id} value={c._id}>
-                        {c.name}
-                      </option>
+                      <option key={c._id} value={c._id}>{c.name}</option>
                     ))}
                   </select>
                 </div>
               </div>
 
-              <ProperButtonBlack text={'Submit'} className={'py-4 px-10 mt-5 text-lg '} />
+              <ProperButtonBlack type="submit" text="Submit" className="w-full md:w-auto py-3 px-8 mt-6" />
             </div>
           </form>
         </div>

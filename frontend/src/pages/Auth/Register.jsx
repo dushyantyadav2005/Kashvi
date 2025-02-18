@@ -1,4 +1,3 @@
-// Start of Selection
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -44,7 +43,6 @@ const Register = () => {
 
   const checkPasswordStrength = (password) => {
     const strongRegex = /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%?&]{8,}$/;
-
     if (strongRegex.test(password)) {
       setPasswordStrength("Strong");
     } else {
@@ -60,7 +58,6 @@ const Register = () => {
       const res_register = await register({ username, email, phone, password }).unwrap();
       dispatch(setCredentials({ userInfo: res_register, isVerified: false }));
       const res_verify = await verifyEmail({ email }).unwrap();
-      console.log(res_verify);
       toast.success(res_verify.message);
       navigate(redirect);
     } catch (err) {
@@ -70,123 +67,155 @@ const Register = () => {
   };
 
   return (
-    <div className="py-10">
-      <div className="flex justify-between items-center overflow-hidden mx-auto max-w-sm lg:max-w-2xl lg:max-h-xl border border-[#D4AF37]">
-        <img src="../../images/LoginPage.png" alt="" className=' h-full opacity-50' />
+    <div className="flex flex-col min-h-screen py-6 px-4 sm:px-6 md:py-8">
+      <div className="flex-grow flex items-center justify-center">
+        <div className="flex justify-between items-center mx-auto w-full max-w-md md:max-w-xl lg:max-w-4xl border border-[#D4AF37] rounded-lg bg-white shadow-lg">
+          {/* Left image - hidden on medium screens */}
+          <img 
+            src="../../images/LoginPage.png" 
+            alt="Decorative left" 
+            className="h-full opacity-50 hidden lg:block" 
+          />
 
-        <div className="w-full p-4 lg:w-1/2 flex flex-col justify-center items-center ">
-          <h2 className="h4 text-center font-playfair m-10 mb-0 text-4xl uppercase">CREATE</h2>
-          <h2 className="h4 text-center font-montserrat m-10 mt-0 text-lg uppercase">an account</h2>
-          <div className="mt-4 flex items-center justify-between">
-            <span className="border-b w-1/5 lg:w-1/4"></span>
-            <a href="#" className="text-xs text-center text-gray-500 uppercase">
-              or sign up with email
-            </a>
-            <span className="border-b w-1/5 lg:w-1/4"></span>
-          </div>
+          <div className="w-full p-6 md:p-8 lg:w-1/2 flex flex-col justify-center items-center">
+            <h2 className="text-3xl md:text-4xl text-center font-playfair mb-2 uppercase">
+              CREATE
+            </h2>
+            <h3 className="text-lg md:text-xl text-center font-montserrat mb-6 md:mb-8 uppercase">
+              your account
+            </h3>
 
-          {/* Loader displayed on the page */}
-          {(isRegistering || isVerifying) && (
-            <div className="flex justify-center my-4">
-              <Loader />
-            </div>
-          )}
+            {(isRegistering || isVerifying) && (
+              <div className="flex justify-center my-2">
+                <Loader />
+              </div>
+            )}
 
-          <form onSubmit={submitHandler} className="mt-4 w-full">
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Name
-              </label>
-              <input
-                type="text"
-                className="bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815]  py-2 px-4 block w-full"
-                placeholder="Enter name"
-                value={username}
-                onChange={(e) => setName(e.target.value)}
-                disabled={isRegistering || isVerifying}
-              />
-            </div>
-            <div className="mt-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Email Address
-              </label>
-              <input
-                type="email"
-                className="bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815]  py-2 px-4 block w-full"
-                placeholder="Enter email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={isRegistering || isVerifying}
-              />
-            </div>
-            <div className="mt-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Phone No
-              </label>
-              <input
-                type="tel"
-                className="bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815]  py-2 px-4 block w-full"
-                placeholder="Enter Phone No"
-                value={phone}
-                minLength="10"
-                maxLength="10"
-                onChange={(e) => setPhone(e.target.value)}
-                disabled={isRegistering || isVerifying}
-              />
-            </div>
-            <div className="mt-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                className="bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815]  py-2 px-4 block w-full"
-                placeholder="Enter password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  checkPasswordStrength(e.target.value);
-                }}
-                disabled={isRegistering || isVerifying}
-              />
-              {passwordStrength && <p className="text-sm mt-1">Password Strength: {passwordStrength}</p>}
-            </div>
-            <div className="mt-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                className="bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815]  py-2 px-4 block w-full"
-                placeholder="Confirm password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                disabled={isRegistering || isVerifying}
-              />
-            </div>
-            <div className="mt-8">
-              <ProperButtonBlack
-                type="submit"
-                text={isRegistering || isVerifying ? "Signing Up..." : "Register"}
-                className="w-full"
-                disabled={isRegistering || isVerifying}
-                aria-label={isRegistering || isVerifying ? "Loading..." : "Register"}
-                aria-disabled={isRegistering || isVerifying}
+            <form onSubmit={submitHandler} className="w-full mt-4 space-y-6">
+              <div>
+                <label className="block text-sm md:text-base font-semibold mb-3">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  className="w-full py-3 px-4 border border-[#480815] bg-[#c3183a16] 
+                           focus:outline-none focus:ring-2 focus:ring-[#D4AF37]
+                           text-base md:text-lg"
+                  placeholder="Enter your full name"
+                  value={username}
+                  onChange={(e) => setName(e.target.value)}
+                  disabled={isRegistering || isVerifying}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm md:text-base font-semibold mb-3">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  className="w-full py-3 px-4 border border-[#480815] bg-[#c3183a16] 
+                           focus:outline-none focus:ring-2 focus:ring-[#D4AF37]
+                           text-base md:text-lg"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={isRegistering || isVerifying}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm md:text-base font-semibold mb-3">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  className="w-full py-3 px-4 border border-[#480815] bg-[#c3183a16] 
+                           focus:outline-none focus:ring-2 focus:ring-[#D4AF37]
+                           text-base md:text-lg"
+                  placeholder="Enter phone number"
+                  value={phone}
+                  minLength="10"
+                  maxLength="10"
+                  onChange={(e) => setPhone(e.target.value)}
+                  disabled={isRegistering || isVerifying}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm md:text-base font-semibold mb-3">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  className="w-full py-3 px-4 border border-[#480815] bg-[#c3183a16] 
+                           focus:outline-none focus:ring-2 focus:ring-[#D4AF37]
+                           text-base md:text-lg"
+                  placeholder="Create password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    checkPasswordStrength(e.target.value);
+                  }}
+                  disabled={isRegistering || isVerifying}
+                />
+                {passwordStrength && (
+                  <p className={`text-sm mt-2 ${
+                    passwordStrength === "Strong" ? "text-green-600" : "text-red-600"
+                  }`}>
+                    Password Strength: {passwordStrength}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm md:text-base font-semibold mb-3">
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  className="w-full py-3 px-4 border border-[#480815] bg-[#c3183a16] 
+                           focus:outline-none focus:ring-2 focus:ring-[#D4AF37]
+                           text-base md:text-lg"
+                  placeholder="Confirm password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  disabled={isRegistering || isVerifying}
+                />
+              </div>
+
+              <div className="mt-8">
+                <ProperButtonBlack
+                  type="submit"
+                  className="w-full py-3 text-lg md:text-xl"
+                  disabled={isRegistering || isVerifying}
+                >
+                  {isRegistering || isVerifying ? "Creating Account..." : "Register Now"}
+                </ProperButtonBlack>
+              </div>
+            </form>
+
+            <div className="w-full mt-8 flex items-center justify-center space-x-2">
+              <span className="flex-1 border-b"></span>
+              <Link
+                to={redirect ? "/login?redirect=${redirect}" : "/login"}
+                className="text-sm text-gray-500 uppercase hover:text-[#D4AF37]"
               >
-              </ProperButtonBlack>
+                Already have an account? <b className="text-[#D4AF37]">Login</b>
+              </Link>
+              <span className="flex-1 border-b"></span>
             </div>
-          </form>
-          <div className="mt-4 flex items-center justify-between w-full">
-            <span className="border-b w-1/5 md:w-1/4"></span>
-            <Link to={redirect ? `/login?redirect=${redirect}` : "/login"} className="text-xs text-gray-500 uppercase">
-              or login
-            </Link>
-            <span className="border-b w-1/5 md:w-1/4"></span>
           </div>
+
+          {/* Right image - hidden on medium screens */}
+          <img 
+            src="../../images/LoginPage.png" 
+            alt="Decorative right" 
+            className="opacity-50 h-full rotate-180 hidden lg:block" 
+          />
         </div>
-        <img src="../../images/LoginPage.png" alt="" className=' opacity-50 rotate-180' />
-      </div >
-    </div >
+      </div>
+    </div>
   );
 };
 

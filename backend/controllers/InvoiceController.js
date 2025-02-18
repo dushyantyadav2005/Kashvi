@@ -12,7 +12,7 @@ async function generateInvoice(req, res) {
         const invoiceData = req.body;
         console.log(invoiceData);
 
-        const dirName = path.dirname("C:\\Users\\04khu\\Desktop\\Invoice Integration\\backend\\files");
+        const dirName = path.dirname("C:\\Users\\04khu\\Desktop\\New Folder\\backend\\files");
         // Define output PDF path
         const outputTexPath = path.join(dirName, 'files', 'output_invoice.tex');
         const outputPdfPath = path.join(dirName, 'files', 'invoice.pdf');

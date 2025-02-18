@@ -8,15 +8,17 @@ import {
   AiOutlineUser,
   AiOutlineMenu,
   AiOutlineClose,
-  AiOutlineContacts
+  AiOutlineContacts,
+  AiOutlineBook
 } from "react-icons/ai";
 import { MdFavoriteBorder } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogoutMutation, useVerifyEmailMutation } from "../redux/api/usersApiSlice";
-import { logout, setVerified } from "../redux/features/auth/authSlice";
+import { logout } from "../redux/features/auth/authSlice";
 import FavoritesCount from "../pages/Products/FavoritesCount";
 import { toast } from "react-toastify";
+import { FaBlog } from "react-icons/fa";
 
 const Navigation = () => {
   const { loading, setLoading } = useState(false);
@@ -70,23 +72,23 @@ const Navigation = () => {
           </div>
 
           {/* Center - Navigation Links (Hidden on mobile) */}
-          <div className="w-2/4 hidden lg:flex justify-center">
+          <div className="w-2/4 hidden md:flex justify-center">
             <ul className="flex gap-7 text-sm font-medium tracking-wide">
               <li className="hover:text-[#D4AF37] group relative">
                 <Link to="/" className="flex items-center gap-1">
-                  <span className="hidden lg:inline">HOME</span>
+                  <span className="hidden md:inline">HOME</span>
                 </Link>
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
               </li>
               <li className="hover:text-[#D4AF37] group relative">
                 <Link to="/shop" className="flex items-center gap-1">
-                  <span className="hidden lg:inline">SHOP</span>
+                  <span className="hidden md:inline">SHOP</span>
                 </Link>
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
               </li>
               <li className="relative hover:text-[#D4AF37] group">
                 <Link to="/cart" className="flex items-center gap-1">
-                  <span className="hidden lg:inline">CART</span>
+                  <span className="hidden md:inline">CART</span>
                 </Link>
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
                 {cartItems.length > 0 && (
@@ -97,19 +99,24 @@ const Navigation = () => {
               </li>
               <li className="relative hover:text-[#D4AF37] group">
                 <Link to="/favorite" className="flex items-center gap-1">
-                  <span className="hidden lg:inline">FAVOURITES</span>
+                  <span className="hidden md:inline">FAVOURITES</span>
                 </Link>
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
                 <FavoritesCount />
               </li>
               <li className="relative hover:text-[#D4AF37] group">
+                <Link to="/blogs" className="flex items-center gap-1" onClick={toggleSidebar}>
+                  <span>BLOG</span>
+                </Link>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
+              </li>
+              <li className="relative hover:text-[#D4AF37] group">
                 <Link to="/contact" className="flex items-center gap-1">
-                  <span className="hidden lg:inline">Contact Us</span>
+                  <span className="hidden md:inline">Contact Us</span>
                 </Link>
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
               </li>
             </ul>
-
           </div>
 
           {/* Right - User Profile */}
@@ -117,11 +124,11 @@ const Navigation = () => {
             {userInfo ? (
               <div className="flex items-center gap-2 text-base font-medium relative">
                 <button
-                  className="flex items-center gap-1 bg-[#D4AF37] text-white px-3 py-1.5 rounded-full hover:bg-[#800e25] transition-all duration-300 transform hover:scale-105 focus:outline-none shadow-lg hover:shadow-lg"
+                  className="flex items-center gap-1 bg-[#D4AF37] text-white px-3 py-1.5 rounded-full hover:bg-[#800e25] transition-all duration-300 transform hover:scale-105 focus:outline-none shadow-md hover:shadow-lg"
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                 >
                   <AiOutlineUser size={18} className="transition-transform duration-300 group-hover:rotate-12" />
-                  <span className="hidden lg:inline">{userInfo.username}</span>
+                  <span className="hidden md:inline">{userInfo.username}</span>
                   <span className={`text-xs transition-transform duration-300 ${dropdownOpen ? 'rotate-180' : ''}`}>▼</span>
                 </button>
 
@@ -129,11 +136,7 @@ const Navigation = () => {
                   <ul className="absolute right-0 top-full mt-2 bg-[#800e25d2] text-[#efdcd9] shadow-lg rounded-lg overflow-hidden w-48 backdrop-blur-lg border border-[#D4AF37]">
                     {userInfo.isAdmin && (
                       <>
-                        <li>
-                          <Link to="/admin/dashboard" className="block px-4 py-2 hover:bg-[#D4AF37] hover:text-white transition-all duration-300" onClick={closeDropdown}>
-                            Dashboard
-                          </Link>
-                        </li>
+                  
                         <li>
                           <Link to="/admin/productlist" className="block px-4 py-2 hover:bg-[#D4AF37] hover:text-white transition-all duration-300" onClick={closeDropdown}>
                             Products
@@ -176,6 +179,11 @@ const Navigation = () => {
                       </li>
                     )}
                     <li>
+                      <Link to="/create-blog" className="block px-4 py-2 hover:bg-[#D4AF37] hover:text-white transition-all duration-300" onClick={closeDropdown}>
+                        Create Blog
+                      </Link>
+                    </li>
+                    <li>
                       <button
                         onClick={logoutHandler}
                         className="block w-full text-left px-4 py-2 hover:bg-[#D4AF37] hover:text-white transition-all duration-300"
@@ -190,13 +198,13 @@ const Navigation = () => {
               <div className="flex gap-2 text-sm">
                 <Link to="/login" className="hover:text-[#D4AF37] relative group flex items-center gap-1">
                   <AiOutlineLogin size={15} />
-                  <span className="hidden text-base font-medium tracking-wide lg:inline">LOGIN</span>
+                  <span className="hidden text-base font-medium tracking-wide md:inline">LOGIN</span>
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
                 </Link>
 
                 <Link to="/register" className="hover:text-[#D4AF37] relative group flex items-center gap-1">
                   <AiOutlineUserAdd size={15} />
-                  <span className="hidden text-base font-medium tracking-wide lg:inline">REGISTER</span>
+                  <span className="hidden text-base font-medium tracking-wide md:inline">REGISTER</span>
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
                 </Link>
               </div>
@@ -204,7 +212,7 @@ const Navigation = () => {
 
             {/* Hamburger Menu for Mobile */}
             <button
-              className="lg:hidden text-[#efdcd9] focus:outline-none"
+              className="md:hidden text-[#efdcd9] focus:outline-none"
               onClick={toggleSidebar}
             >
               {sidebarOpen ? <AiOutlineClose size={24} /> : <AiOutlineMenu size={24} />}
@@ -215,7 +223,7 @@ const Navigation = () => {
 
       {/* Sidebar for Mobile */}
       <div
-        className={`lg:hidden fixed top-0 right-0 h-full w-64 bg-[#800e25d2] backdrop-blur-lg z-40 transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "translate-x-full"
+        className={`md:hidden fixed top-0 right-0 h-full w-64 bg-[#800e25d2] backdrop-blur-lg z-40 transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "translate-x-full"
           }`}
       >
         {/* Close icon inside the sidebar */}
@@ -253,19 +261,39 @@ const Navigation = () => {
               )}
             </li>
             <li className="relative hover:text-[#D4AF37] group">
+              <Link to="/blogs" className="flex items-center gap-1" onClick={toggleSidebar}>
+                <AiOutlineBook size={20} />
+                <span>Blogs</span>
+              </Link>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
+              {cartItems.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-[#D4AF37] text-[#1A2238] px-1.5 py-0.5 text-xs rounded-full">
+                  {cartItems.reduce((a, c) => a + c.qty, 0)}
+                </span>
+              )}
+            </li>
+            <li className="relative hover:text-[#D4AF37] group">
+              <Link to="/contact" className="flex items-center gap-1" onClick={toggleSidebar}>
+                <AiOutlineContacts size={20} />
+                <span>Contact us</span>
+              </Link>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
+              {cartItems.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-[#D4AF37] text-[#1A2238] px-1.5 py-0.5 text-xs rounded-full">
+                  {cartItems.reduce((a, c) => a + c.qty, 0)}
+                </span>
+              )}
+            </li>
+            <li className="relative hover:text-[#D4AF37] group">
               <Link to="/favorite" className="flex items-center gap-1" onClick={toggleSidebar}>
-                <lgFavoriteBorder size={20} />
+                <MdFavoriteBorder size={20} />
                 <span>FAVOURITES</span>
               </Link>
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
               <FavoritesCount />
             </li>
-            <li className="relative hover:text-[#D4AF37] group">
-              <Link to="/contact" className="flex items-center gap-1" onClick={toggleSidebar}>
-                <AiOutlineContacts />
-                <span>Contact Us</span>
-              </Link>
-            </li>
+
+
             {userInfo ? (
               <>
                 <li>

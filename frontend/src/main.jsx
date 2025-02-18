@@ -6,7 +6,9 @@ import store from "./redux/store";
 import { Route, RouterProvider, createRoutesFromElements } from "react-router";
 import { createBrowserRouter } from "react-router-dom";
 import Otp from "./pages/Auth/Otp";
-
+import BlogList from "./components/BlogList.jsx";
+import CreateBlog from "./components/CreateBlog.jsx";
+import BlogDetail from "./components/BlogDetail.jsx";
 import PrivateRoute from "./components/PrivateRoute";
 
 // Auth
@@ -56,6 +58,9 @@ const router = createBrowserRouter(
       <Route path="/otp" element={<Otp />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/about" element={<AboutUs />} />
+      <Route path="/blogs" element={<BlogList />} />
+      <Route path="/create-blog" element={<CreateBlog />} />
+      <Route path="/blogs/:id" element={<BlogDetail />} />
 
 
       {/* Registered users */}

@@ -1,35 +1,27 @@
-import path from "path";
-import express from "express";
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 import multer from "multer";
+import express from "express";
 
 const router = express.Router();
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-  filename: (req, file, cb) => {
-    const extname = path.extname(file.originalname);
-    cb(null, `${file.fieldname}-${Date.now()}${extname}`);
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "Dresses-Images", // Organize images into a folder
+    allowed_formats: ["jpg", "jpeg", "png", "webp"], // Allowed formats
+    transformation: [{ width: 600, height: 600, crop: "limit" }], // Optional: resize images
   },
 });
 
-const fileFilter = (req, file, cb) => {
-  const filetypes = /jpe?g|png|webp/;
-  const mimetypes = /image\/jpe?g|image\/png|image\/webp/;
+const upload = multer({ storage });
 
-  const extname = path.extname(file.originalname).toLowerCase();
-  const mimetype = file.mimetype;
-
-  if (filetypes.test(extname) && mimetypes.test(mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error("Images only"), false);
-  }
-};
-
-const upload = multer({ storage, fileFilter });
 const uploadSingleImage = upload.single("image");
 
 router.post("/", (req, res) => {
@@ -39,7 +31,7 @@ router.post("/", (req, res) => {
     } else if (req.file) {
       res.status(200).send({
         message: "Image uploaded successfully",
-        image: `/${req.file.path}`,
+        image: req.file.path, // Cloudinary URL
       });
     } else {
       res.status(400).send({ message: "No image file provided" });

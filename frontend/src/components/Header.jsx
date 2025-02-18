@@ -1,26 +1,19 @@
 import { useEffect } from "react";
 import { useGetTopProductsQuery } from "../redux/api/productApiSlice";
-import { useGetFestivalProductsQuery } from "../redux/api/productApiSlice";
 import Loader from "./Loader";
-import SmallProduct from "../pages/Products/SmallProduct";
-import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { Navigation, Pagination } from "swiper/modules";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { motion } from "motion/react";
 import ProperButton from "./ProperButton";
-import LocomotiveScroll from 'locomotive-scroll';
 import HeaderSections from "./HeaderSections";
-import { Link } from "react-router-dom";
 
 
 
 const Header = () => {
   const { data, isLoading, error } = useGetTopProductsQuery();
-  const { festivalData, festivalisLoading, festivalerror } = useGetTopProductsQuery();
+
   useEffect(() => {
     AOS.init({
       duration: 500, // Reduced animation duration from 1000 to 600
@@ -29,15 +22,14 @@ const Header = () => {
     });
   }, []);
 
-  if (isLoading || festivalisLoading) {
+  if (isLoading) {
     return <Loader />;
   }
 
-  if (error || festivalerror) {
+  if (error) {
     return <h1>ERROR</h1>;
   }
 
-  const locomotiveScroll = new LocomotiveScroll();
 
 
   return (
@@ -69,9 +61,7 @@ const Header = () => {
               Shop with Confidence"
             </h2>
             <div className="flex justify-center items-center mt-6">
-              <Link to={"/shop"}>
-                <ProperButton text="Shop Now" />
-              </Link>
+              <ProperButton text="Shop Now" />
             </div>
           </div>
           {/* Quote Text */}

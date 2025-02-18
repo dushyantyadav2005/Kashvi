@@ -35,8 +35,12 @@ function Contact() {
     };
 
     return (
-        <section className="text-gray-600 body-font relative">
-            <div className="container px-5 py-10 mx-auto flex sm:flex-nowrap flex-wrap">
+        <section className="text-gray-600 body-font relative flex flex-col items-center min-h-screen ">
+            <img src="../../images/embupsidedown.png" alt="" className='w-full h-auto opacity-50 mb-9' />
+            
+            <div>
+            <div className="container px-5 py-5 mx-auto flex sm:flex-nowrap flex-wrap">
+                
                 <div
                     className="lg:w-2/3 md:w-1/2 bg-gray-300 rounded-lg overflow-hidden sm:mr-10 p-10 flex items-end justify-start relative"
                 >
@@ -82,11 +86,10 @@ function Contact() {
                         </div>
                     </div>
                 </div>
-                <div className="lg:w-1/3 md:w-1/2 bg-white flex flex-col md:ml-auto w-full md:py-8 mt-8 md:mt-0">
-                    <h2 className="text-gray-900 text-lg mb-1 font-medium title-font">Feedback</h2>
-                    <p className="leading-relaxed mb-5 text-gray-600">
-                        Post-ironic Portland shabby chic echo park, banjo fashion axe
-                    </p>
+                <div className="lg:w-1/3 md:w-1/2 bg-white flex flex-col md:ml-auto w-full md:py-8 mt-8 md:mt-0 justify-center ">
+           <h2 className="h4 text-center font-playfair m-10 mb-0 mt-0 text-4xl uppercase">FEEDBACK</h2>
+           <h2 className="h4 text-center font-montserrat m-10 mt-0 mb-3 text-lg uppercase">form</h2>
+                    
                     <form onSubmit={handleSubmit}>
                         <div className="relative mb-4">
                             <label htmlFor="name" className="leading-7 text-sm text-gray-600">Name</label>
@@ -94,7 +97,8 @@ function Contact() {
                                 type="text"
                                 id="name"
                                 name="name"
-                                className="w-full bg-white rounded border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                                
+                className="bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815] py-2 px-4 block w-full"
                             />
                         </div>
                         <div className="relative mb-4">
@@ -103,7 +107,8 @@ function Contact() {
                                 type="email"
                                 id="email"
                                 name="email"
-                                className="w-full bg-white rounded border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                                
+                className="bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815] py-2 px-4 block w-full"
                             />
                         </div>
                         <div className="relative mb-4">
@@ -111,16 +116,17 @@ function Contact() {
                             <textarea
                                 id="message"
                                 name="message"
-                                className="w-full bg-white rounded border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"
+                               
+                className="bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815] py-2 px-4 block w-full"
                             ></textarea>
                         </div>
-                        <ProperButtonBlack text={"Submit"}/>
+                        <ProperButtonBlack text={"Submit"} className={"mt-8"} />
                     </form>
-                    <p className="text-xs text-gray-500 mt-3">
-                        Chicharrones blog helvetica normcore iceland tousled brook viral artisan.
-                    </p>
+                    
                 </div>
             </div>
+            </div>
+
         </section>
     );
 }

@@ -103,19 +103,12 @@ const HeaderSections = () => {
                     data-aos-duration="1000"
                 >
                     <Swiper
-                        modules={[Navigation, Pagination, EffectCoverflow]}
+                        modules={[Navigation, Pagination]}
                         spaceBetween={20}
                         slidesPerView={1}
                         navigation
                         pagination={{ clickable: true }}
-                        effect="coverflow"
-                        coverflowEffect={{
-                            rotate: 50,
-                            stretch: 0,
-                            depth: 100,
-                            modifier: 1,
-                            slideShadows: true,
-                        }}
+
                         breakpoints={{
                             450: { slidesPerView: 2 },
                             768: { slidesPerView: 4 },
@@ -188,19 +181,11 @@ const HeaderSections = () => {
                     data-aos-duration="1000"
                 >
                     <Swiper
-                        modules={[Navigation, Pagination, EffectCoverflow]}
+                        modules={[Navigation, Pagination]}
                         spaceBetween={20}
                         slidesPerView={1}
                         navigation
                         pagination={{ clickable: true }}
-                        effect="coverflow"
-                        coverflowEffect={{
-                            rotate: 50,
-                            stretch: 0,
-                            depth: 100,
-                            modifier: 1,
-                            slideShadows: true,
-                        }}
                         breakpoints={{
                             450: { slidesPerView: 2 },
                             768: { slidesPerView: 4 },
