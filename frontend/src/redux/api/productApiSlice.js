@@ -1,4 +1,4 @@
-import { PRODUCT_URL, UPLOAD_URL } from "../constants";
+import { PRODUCT_FESTIVE_URL, PRODUCT_URL, UPLOAD_URL } from "../constants";
 import { apiSlice } from "./apiSlice";
 
 export const productApiSlice = apiSlice.injectEndpoints({
@@ -75,9 +75,9 @@ export const productApiSlice = apiSlice.injectEndpoints({
       query: () => `${PRODUCT_URL}/top`,
       keepUnusedDataFor: 5,
     }),
-    
+
     getFestivalProducts: builder.query({
-      query: () => `${PRODUCT_URL}/festival`,
+      query: () => `${PRODUCT_FESTIVE_URL}/festival`,
       keepUnusedDataFor: 5,
     }),
 
