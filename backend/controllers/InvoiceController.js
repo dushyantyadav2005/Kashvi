@@ -22,34 +22,56 @@ async function generateInvoice(req, res) {
 
         const latexTemplate = `
         \\documentclass{article}
-        \\usepackage[a4paper,margin=1in]{geometry}
+        \\usepackage[a4paper,margin=0.75in]{geometry}
         \\usepackage{graphicx}
         \\usepackage{array}
         \\usepackage{multirow}
         \\usepackage{booktabs}
+        \\usepackage[table]{xcolor}  % For colors
+        \\usepackage{helvet} % Use Helvetica font
+        \\renewcommand{\\familydefault}{\\sfdefault} % Set sans-serif as default
+
+
+
+        \\definecolor{headerblue}{RGB}{230, 242, 255} % Light blue for header
+        \\definecolor{tableblue}{RGB}{220, 230, 250} % Lighter blue for tables
+        \\definecolor{textgray}{RGB}{80, 80, 80}  % Professional gray text
 
         \\begin{document}
 
-        % Logo and Company Name
+        % Logo and Header
         \\begin{center}
-            \\includegraphics[width=3cm]{"C:/Users/04khu/Desktop/New folder (2)/backend/files/logopng1.png"} \\\\[1em]  
-            {\\large Your Trusted Partner} \\\\[2em]
+            \\includegraphics[width=3cm]{"C:/Users/04khu/Desktop/New folder (2)/backend/files/logopng1.png"} \\\\[0.5em]  
+            {\\Large \\textbf{Invoice}} \\\\[0.5em]
+            {\\small Your Trusted Partner in Quality Service}
         \\end{center}
 
-        % Invoice Details
-        \\noindent
-        \\begin{tabular}{@{}ll@{}}
-            \\textbf{Invoice No:} & \\texttt{\\textbf{${invoiceData.invoiceNo || 'N/A'}}} \\\\
-            \\textbf{Customer Name:} & \\texttt{\\textbf{${invoiceData.customerName || 'N/A'}}} \\\\
-            \\textbf{Date:} & \\texttt{\\textbf{${new Date().toLocaleDateString()}}} \\\\
-        \\end{tabular}
+        \\vspace{1em}
 
+        % Invoice Information
+        \\color{textgray}
+        \\noindent
+        \\fbox{%
+        \\begin{minipage}{\\textwidth}
+        \\renewcommand{\\arraystretch}{1.4}
+        \\begin{tabular}{@{}p{4cm}p{8cm}@{}}
+            \\textbf{Invoice No:} & ${invoiceData.invoiceNo || 'N/A'} \\\\
+            \\textbf{Customer Name:} & ${invoiceData.customerName || 'N/A'} \\\\
+            \\textbf{Date:} & ${new Date().toLocaleDateString()} \\\\
+            \\textbf{Contact Email:} & ${invoiceData.email || 'N/A'} \\\\
+        \\end{tabular}
+        \\end{minipage}
+        }
+        
         \\vspace{2em}
 
         % Items Table
         \\textbf{Items Purchased:} \\\\[1em]
 
+        \\renewcommand{\\arraystretch}{1.3} % Increase row height for readability
+        \\rowcolors{2}{tableblue}{white} % Alternate row colors
         \\begin{tabular}{|c|l|c|}
+            \\rowcolor{headerblue} % Set header row color
             \\hline
             \\textbf{No.} & \\textbf{Item Name} & \\textbf{Quantity} \\\\
             \\hline
@@ -60,9 +82,9 @@ async function generateInvoice(req, res) {
 
         % Notes Section
         \\noindent
-        \\textbf{Notes:} \\\\[0.5em]
+        \\textbf{Important Notes:} \\\\[0.5em]
         \\begin{quote}
-            Thank you for choosing Kashvi. We value your trust and are committed to providing the best service.  
+            Thank you for choosing Kashvi. We appreciate your trust and strive to provide the best service.  
             For any inquiries, please contact our customer support.  
             All items are non-refundable unless stated otherwise.  
             Please retain this invoice for future reference.  
