@@ -107,8 +107,6 @@ const deliverHandler = async () => {
                       <th className="px-4 py-3 text-left rounded-tl-2xl">Image</th>
                       <th className="px-4 py-3 text-left">Product</th>
                       <th className="px-4 py-3 text-center">Qty</th>
-                      <th className="px-4 py-3 text-left">Price</th>
-                      <th className="px-4 py-3 text-left rounded-tr-2xl">Total</th>
                     </tr>
                   </thead>
                   <tbody>

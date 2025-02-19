@@ -18,7 +18,6 @@ import { useLogoutMutation, useVerifyEmailMutation } from "../redux/api/usersApi
 import { logout } from "../redux/features/auth/authSlice";
 import FavoritesCount from "../pages/Products/FavoritesCount";
 import { toast } from "react-toastify";
-import { FaBlog } from "react-icons/fa";
 
 const Navigation = () => {
   const { loading, setLoading } = useState(false);
@@ -59,7 +58,7 @@ const Navigation = () => {
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
   return (
-    <nav className="bg-[#800e25d2] h-auto text-[#efdcd9] w-full fixed top-0 z-50 shadow-lg shadow-[#24110c]/50 font-montserrat border-b-4 border-b-[#D4AF37] backdrop-blur-lg">
+    <nav className="bg-[#640c1dd2] h-auto text-[#efdcd9] w-full fixed top-0 z-50 shadow-lg shadow-[#24110c]/50 font-montserrat border-b-4 border-b-[#D4AF37] backdrop-blur-lg">
       <div className="w-full">
         <div className="w-full flex items-center justify-between p-2 pt-3 max-w-[1200px] mx-auto">
           {/* Left - Logo */}

@@ -8,6 +8,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import ProperButton from "./ProperButton";
 import HeaderSections from "./HeaderSections";
+import { Link } from "react-router-dom";
 
 
 
@@ -61,7 +62,9 @@ const Header = () => {
               Shop with Confidence"
             </h2>
             <div className="flex justify-center items-center mt-6">
-              <ProperButton text="Shop Now" />
+              <Link to={'/shop'}>
+                <ProperButton text="Shop Now" />
+              </Link>
             </div>
           </div>
           {/* Quote Text */}
