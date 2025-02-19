@@ -6,18 +6,20 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-
 async function generateInvoice(req, res) {
     try {
         const invoiceData = req.body;
         console.log(invoiceData);
 
-        const dirName = path.dirname("C:\\Users\\04khu\\Desktop\\New Folder\\backend\\files");
-        // Define output PDF path
-        const outputTexPath = path.join(dirName, 'files', 'output_invoice.tex');
-        const outputPdfPath = path.join(dirName, 'files', 'invoice.pdf');
+        const dirName = "C:\\Users\\04khu\\Desktop\\New folder (2)\\backend\\files";
+        const outputTexPath = path.join(dirName, 'output_invoice.tex');
+        const outputPdfPath = path.join(dirName, 'invoice.pdf');
 
-        // Construct dynamic LaTeX template
+        // Generate LaTeX table content separately
+        const itemsTableContent = invoiceData.items.map((item, index) =>
+            `${index + 1} & ${item.name} & ${item.qty} \\\\ \\hline`
+        ).join('\n');
+
         const latexTemplate = `
         \\documentclass{article}
         \\usepackage[a4paper,margin=1in]{geometry}
@@ -28,37 +30,50 @@ async function generateInvoice(req, res) {
 
         \\begin{document}
 
+        % Logo and Company Name
         \\begin{center}
-            {\\Huge \\textbf{Invoice}} \\\\[1em]
+            \\includegraphics[width=3cm]{"C:/Users/04khu/Desktop/New folder (2)/backend/files/logopng1.png"} \\\\[1em]  
+            {\\large Your Trusted Partner} \\\\[2em]
         \\end{center}
 
+        % Invoice Details
         \\noindent
         \\begin{tabular}{@{}ll@{}}
-            \\textbf{Invoice No:} & \\texttt{${invoiceData.invoiceNo || 'N/A'}} \\\\
-            \\textbf{Customer Name:} & \\texttt{${invoiceData.customerName || 'N/A'}} \\\\
-            \\textbf{Date:} & \\texttt{${new Date().toLocaleDateString()}} \\\\
+            \\textbf{Invoice No:} & \\texttt{\\textbf{${invoiceData.invoiceNo || 'N/A'}}} \\\\
+            \\textbf{Customer Name:} & \\texttt{\\textbf{${invoiceData.customerName || 'N/A'}}} \\\\
+            \\textbf{Date:} & \\texttt{\\textbf{${new Date().toLocaleDateString()}}} \\\\
         \\end{tabular}
 
         \\vspace{2em}
 
-        \\textbf{Items Purchased:} \\\\
+        % Items Table
+        \\textbf{Items Purchased:} \\\\[1em]
 
         \\begin{tabular}{|c|l|c|}
             \\hline
             \\textbf{No.} & \\textbf{Item Name} & \\textbf{Quantity} \\\\
             \\hline
-            ${invoiceData.items.map((item, index) => `${index + 1} & ${item.name} & ${item.qty} \\\\ \\hline`).join('\n')}
+            ${itemsTableContent}
         \\end{tabular}
 
         \\vspace{2em}
 
+        % Notes Section
         \\noindent
-        \\textbf{Notes:} \\\\
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        \\textbf{Notes:} \\\\[0.5em]
+        \\begin{quote}
+            Thank you for choosing Kashvi. We value your trust and are committed to providing the best service.  
+            For any inquiries, please contact our customer support.  
+            All items are non-refundable unless stated otherwise.  
+            Please retain this invoice for future reference.  
+            If you have any concerns, feel free to reach out to us within 7 days of purchase.
+        \\end{quote}
+
         \\vspace{1em}
 
+        % Signature and Stamp Section
         \\noindent
-        \\begin{tabular}{@{}p{0.5\\textwidth}p{0.5\\textwidth}@{}}
+        \\begin{tabular}{@{}p{0.45\\textwidth}p{0.45\\textwidth}@{}}
             \\textbf{Authorized Signature:} & \\textbf{Company Stamp:} \\\\
             \\vspace{2cm} & \\vspace{2cm} \\\\
         \\end{tabular}
@@ -66,10 +81,8 @@ async function generateInvoice(req, res) {
         \\end{document}
         `;
 
-        // Write LaTeX content to file
         fs.writeFileSync(outputTexPath, latexTemplate, 'utf8');
 
-        // Compile LaTeX to PDF
         const input = fs.createReadStream(outputTexPath);
         const output = fs.createWriteStream(outputPdfPath);
         const pdf = latex(input);
@@ -84,11 +97,14 @@ async function generateInvoice(req, res) {
         pdf.on('finish', async () => {
             console.log('✅ Invoice PDF generated successfully:', outputPdfPath);
 
-            // Send email with invoice PDF attached
+            if (!invoiceData.email) {
+                return res.status(400).json({ error: 'No email provided for sending invoice' });
+            }
+
             try {
                 await sendMail(
-                    invoiceData.email, // Recipient's email
-                    "Your Invoice from Our Store",
+                    invoiceData.email,
+                    "Your Invoice from Kashvi",
                     "Thank you for your Visit. Please find your invoice attached.",
                     "<p>Thank you for your purchase. Please find your invoice attached.</p>",
                     outputPdfPath

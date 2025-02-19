@@ -130,16 +130,18 @@ const HeaderSections = () => {
                     </Swiper>
                 </div>
 
-                <div className="w-full flex justify-center my-8">
-                    <div
-                        className="w-5/6 h-[1px] bg-gradient-to-r from-transparent via-[#24110c]/20 to-transparent"
-                        data-aos="fade-right"
-                        data-aos-duration="1200"
-                    />
-                </div>
             </div>
-
             {/* Festival Section */}
+            <div className="relative">
+                <img
+                    src="../../images/embupsidedown.png"
+                    alt="Decorative Embellishment"
+                    className="w-full h-auto opacity-50 transform transition-transform duration-1000 hover:scale-105"
+                    data-aos="fade-down"
+                    data-aos-duration="1500"
+                    data-aos-offset="200"
+                />
+            </div>
             <div id="festival-section" className="mt-16">
                 <div className="flex items-center flex-col justify-center my-7">
                     <img

@@ -207,8 +207,6 @@ const fetchFestivals = () => {
         festival.month === nextNextMonth
       );
     });
-
-    console.log('Upcoming festivals for the next two months:', upcomingFestivals);
     return upcomingFestivals;
   } catch (error) {
     console.error('Error fetching festivals:', error);

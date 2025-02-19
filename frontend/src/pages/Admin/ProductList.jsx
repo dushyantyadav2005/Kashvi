@@ -23,12 +23,19 @@ const ProductList = () => {
   const navigate = useNavigate();
   const formRef = useRef();
 
+  // Loading states for asynchronous operations
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [isGeneratingTags, setIsGeneratingTags] = useState(false);
+  const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
+  const [isCreatingProduct, setIsCreatingProduct] = useState(false);
+
   const [uploadProductImage] = useUploadProductImageMutation();
   const [createProduct] = useCreateProductMutation();
   const { data: categories } = useFetchCategoriesQuery();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsCreatingProduct(true); // Start loading
     try {
       const productData = new FormData();
       productData.append("image", image);
@@ -49,10 +56,13 @@ const ProductList = () => {
       }
     } catch (error) {
       toast.error("Product create failed. Try Again.");
+    } finally {
+      setIsCreatingProduct(false); // Stop loading
     }
   };
 
   const handleDescription = async () => {
+    setIsGeneratingDescription(true); // Start loading
     try {
       const tagsList = [...tags.split(',').map(tag => tag.trim()), name, festival].filter(tag => tag !== '');
       const response = await fetch('http://localhost:8002/generate-description', {
@@ -65,10 +75,13 @@ const ProductList = () => {
       toast.success('Description generated successfully');
     } catch (error) {
       toast.error('Failed to generate description');
+    } finally {
+      setIsGeneratingDescription(false); // Stop loading
     }
   };
 
   const handleTagGeneration = async (file) => {
+    setIsGeneratingTags(true); // Start loading
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -78,21 +91,28 @@ const ProductList = () => {
       toast.success('Tags generated successfully');
     } catch (error) {
       toast.error('Failed to generate tags');
+    } finally {
+      setIsGeneratingTags(false); // Stop loading
     }
   };
 
   const uploadFileHandler = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    setIsUploadingImage(true); // Start loading
     try {
       const formData = new FormData();
       formData.append("image", file);
       const res = await uploadProductImage(formData).unwrap();
+      setIsUploadingImage(false); // Stop loading
       setImage(res.image);
       setImageUrl(res.image);
+      setIsGeneratingTags(true);
       await handleTagGeneration(file);
     } catch (error) {
       toast.error(error?.data?.message || error.error);
+    } finally {
+      setIsGeneratingTags(false);
     }
   };
 
@@ -113,7 +133,14 @@ const ProductList = () => {
           <form onSubmit={handleSubmit} ref={formRef}>
             <div className="mb-6">
               <label className="block border border-[#480815] px-4 py-6 text-center cursor-pointer font-bold">
-                {image ? image.name : "Upload Image"}
+                {isUploadingImage || isGeneratingTags ? (
+                  <div className="flex items-center justify-center">
+                    <div className="loader"></div> {/* CSS loader */}
+                    <span className="ml-2">{isUploadingImage ? "Uploading Image...." : "Generating Tags"}</span>
+                  </div>
+                ) : (
+                  image ? image.name : "Upload Image"
+                )}
                 <input type="file" name="image" accept="image/*" onChange={uploadFileHandler} className="hidden" />
               </label>
             </div>
@@ -186,8 +213,13 @@ const ProductList = () => {
                     onClick={handleDescription}
                     className="absolute right-2 top-2 p-2 bg-transparent hover:bg-gray-100 rounded-full"
                     title="Generate AI Description"
+                    disabled={isGeneratingDescription}
                   >
-                    🤖
+                    {isGeneratingDescription ? (
+                      <div className="loader"></div>
+                    ) : (
+                      "🤖"
+                    )}
                   </button>
                 </div>
               </div>
@@ -216,7 +248,12 @@ const ProductList = () => {
                 </div>
               </div>
 
-              <ProperButtonBlack type="submit" text="Submit" className="w-full md:w-auto py-3 px-8 mt-6" />
+              <ProperButtonBlack
+                type="submit"
+                text={isCreatingProduct ? "Creating..." : "Submit"}
+                className="w-full md:w-auto py-3 px-8 mt-6"
+                disabled={isCreatingProduct}
+              />
             </div>
           </form>
         </div>
