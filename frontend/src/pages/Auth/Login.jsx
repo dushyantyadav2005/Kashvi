@@ -47,6 +47,7 @@ const Login = () => {
   return (
     <div className="flex flex-col min-h-screen py-6 px-4 sm:px-6 md:py-8">
       <div className="flex-grow flex items-center justify-center">
+        {isLoading && <Loader />}
         <div className="flex justify-between items-center mx-auto w-full max-w-md md:max-w-2xl lg:max-w-4xl border border-[#D4AF37] rounded-lg bg-white">
           {/* Left image - hidden on medium screens */}
           <img
@@ -117,29 +118,27 @@ const Login = () => {
                   {isLoading ? "Signing In..." : "Login"}
                 </ProperButtonBlack>
               </div>
-
-              {isLoading && <Loader />}
             </form>
 
             <div className="w-full mt-6 flex items-center justify-center space-x-2">
               <span className="flex-1 border-b"></span>
               <Link
-                to={`${redirect ?"/register?redirect=${redirect}" : "/register"}`}
-              className="text-sm text-gray-500 uppercase hover:text-[#D4AF37]"
+                to={`${redirect ? "/register?redirect=${redirect}" : "/register"}`}
+                className="text-sm text-gray-500 uppercase hover:text-[#D4AF37]"
               >
-              or <b className="text-[#D4AF37]">sign up</b>
-            </Link>
-            <span className="flex-1 border-b"></span>
+                or <b className="text-[#D4AF37]">sign up</b>
+              </Link>
+              <span className="flex-1 border-b"></span>
+            </div>
           </div>
+          {/* Right image - hidden on medium screens */}
+          <img
+            src="../../images/LoginPage.png"
+            alt="Decorative right"
+            className="opacity-50 h-full rotate-180 hidden lg:block"
+          />
         </div>
-        {/* Right image - hidden on medium screens */}
-        <img
-          src="../../images/LoginPage.png"
-          alt="Decorative right"
-          className="opacity-50 h-full rotate-180 hidden lg:block"
-        />
       </div>
-    </div>
     </div >
   );
 };

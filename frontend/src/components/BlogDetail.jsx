@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
-import { FiArrowLeft, FiClock, FiUser, FiTrash } from 'react-icons/fi';
-import { useSelector } from 'react-redux';
-import Loader from '../components/Loader';
-import ProperButtonBlack from '../components/ProperButtonBlack';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
+import { FiArrowLeft, FiClock, FiUser, FiTrash } from "react-icons/fi";
+import { useSelector } from "react-redux";
+import Loader from "../components/Loader";
+import ProperButtonBlack from "../components/ProperButtonBlack";
 
 const BlogDetail = () => {
   const { id } = useParams();
@@ -18,102 +18,113 @@ const BlogDetail = () => {
       try {
         const response = await axios.get(`http://localhost:5000/api/blogs/${id}`);
         setBlog(response.data);
-        setLoading(false);
       } catch (err) {
         console.error(err);
-        setLoading(false);
       }
+      setLoading(false);
     };
-    
+
     fetchBlog();
   }, [id]);
 
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this blog post?')) {
+    if (window.confirm("Are you sure you want to delete this blog post?")) {
       try {
         await axios.delete(`http://localhost:5000/api/blogs/${id}`, {
-          headers: {
-            Authorization: `Bearer ${userInfo.token}`,
-          },
+          headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        navigate('/blogs');
+        navigate("/blogs");
       } catch (err) {
-        console.error('Error deleting blog:', err);
-        alert('Failed to delete blog');
+        console.error("Error deleting blog:", err);
+        alert("Failed to delete blog");
       }
     }
   };
 
   if (loading) return <Loader />;
-
-  if (!blog) return (
-    <div className="text-center p-16">
-      <h2 className="text-2xl mb-4">Blog post not found</h2>
-      <p className="text-gray-600">The requested blog post could not be loaded.</p>
-    </div>
-  );
+  if (!blog)
+    return (
+      <div className="text-center p-16">
+        <h2 className="text-2xl mb-4 font-semibold">Blog post not found</h2>
+        <p className="text-gray-600">The requested blog post could not be loaded.</p>
+      </div>
+    );
 
   return (
-    <>
-    <img src="../../images/embupsidedown.png" alt="" className='w-full h-auto opacity-50' />
-
-    <div className="min-h-screen pt-10 px-4 md:px-8 pb-8">
-
-      <div className="flex justify-between items-center px-4 md:px-8">
+    <div className="min-h-screen pt-10 px-4 md:px-12 pb-12 animate-fade-in">
+      {/* Navigation Buttons */}
+      <div className="flex justify-between items-center mb-6">
         <ProperButtonBlack
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2"
-          text={<><FiArrowLeft /> Back</>}
+          className="flex items-center gap-2 transition-transform duration-200 hover:scale-105"
+          text={
+            <>
+              <FiArrowLeft /> Back
+            </>
+          }
         />
         {userInfo?.isAdmin && (
           <ProperButtonBlack
             onClick={handleDelete}
-            className=" flex items-center gap-2 bg-[#d11a3eeb]"
-            text={<><FiTrash /> Delete</>}
+            className="flex items-center gap-2 bg-red-600 hover:bg-red-700 transition-all duration-200 hover:scale-105"
+            text={
+              <>
+                <FiTrash /> Delete
+              </>
+            }
           />
         )}
       </div>
 
-      <div className="w-full h-[50vh] md:h-[60vh] rounded-2xl overflow-hidden shadow-xl mt-8 mb-12 md:my-12 animate-float">
-        <img 
-          src={blog.image} 
-          alt={blog.title}
-          className="w-full h-full object-cover transition-transform duration-400 ease-in-out"
-          onError={(e) => {
-            e.target.onerror = null; 
-            e.target.src = 'https://via.placeholder.com/800x500?text=Image+Not+Available'
-          }}
-        />
-      </div>
-
-      <h1 className="font-serif text-3xl md:text-4xl text-gray-800 text-center mb-8 mx-auto max-w-4xl">
-        {blog.title}
-      </h1>
-
-      <div className="bg-white bg-opacity-95 rounded-2xl shadow-xl p-6 md:p-12 max-w-4xl mx-auto animate-fade-in">
-        <div className="flex flex-wrap gap-6 text-gray-600 text-sm mb-8">
-          <div className="flex items-center gap-2">
-            <FiUser /> By {blog.author || 'Admin'}
-          </div>
-          <div className="flex items-center gap-2">
-            <FiClock /> {Math.ceil(blog.content.length / 1000)} min read
-          </div>
-          <div>
-            • {new Date(blog.createdAt).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}
-          </div>
+      {/* Main Blog Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+        {/* Left Side: Image */}
+        <div className="w-full h-[60vh] rounded-3xl overflow-hidden shadow-2xl transform transition duration-500 hover:scale-105">
+          <img
+            src={blog.image}
+            alt={blog.title}
+            className="w-full h-full object-cover transition-transform duration-500 ease-in-out"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "https://via.placeholder.com/800x500?text=Image+Not+Available";
+            }}
+          />
         </div>
 
-        <div 
-          className="text-gray-800 leading-relaxed text-lg space-y-4"
-          dangerouslySetInnerHTML={{ __html: blog.content.replace(/\n/g, '<br />') }}
-        />
+        {/* Right Side: Blog Details */}
+        <div className="space-y-6 max-w-2xl mx-auto">
+          {/* Title */}
+          <h1 className="font-serif text-3xl md:text-5xl text-gray-900 font-bold leading-tight">
+            {blog.title}
+          </h1>
+
+          {/* Blog Info */}
+          <div className="flex flex-wrap gap-6 text-gray-600 text-sm">
+            <div className="flex items-center gap-2">
+              <FiUser className="text-gray-500" /> By {blog.author || "Admin"}
+            </div>
+            <div className="flex items-center gap-2">
+              <FiClock className="text-gray-500" /> {Math.ceil(blog.content.length / 1000)} min read
+            </div>
+            <div>
+              • {new Date(blog.createdAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </div>
+          </div>
+
+          {/* Blog Content */}
+          <div className="bg-white bg-opacity-90 backdrop-blur-md p-6 md:p-10 rounded-2xl shadow-xl border border-gray-200 transition-all duration-300 hover:shadow-3xl">
+            <div
+              className="text-gray-800 leading-relaxed text-lg space-y-6"
+              dangerouslySetInnerHTML={{ __html: blog.content.replace(/\n/g, "<br />") }}
+            />
+          </div>
+        </div>
       </div>
     </div>
-    </>
   );
 };
 

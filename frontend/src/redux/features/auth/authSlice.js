@@ -16,6 +16,7 @@ const authSlice = createSlice({
     setCredentials: (state, action) => {
       try {
         state.userInfo = action.payload.userInfo;
+        console.log(state.userInfo)
         localStorage.setItem("userInfo", JSON.stringify(action.payload.userInfo));
       } catch (error) {
         console.error('Failed to save to localStorage:', error);

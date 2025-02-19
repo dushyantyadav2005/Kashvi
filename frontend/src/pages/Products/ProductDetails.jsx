@@ -14,6 +14,7 @@ import HeartIcon from "./HeartIcon";
 import Ratings from "./Ratings";
 import ProductTabs from "./ProductTabs";
 import { addToCart } from "../../redux/features/cart/cartSlice";
+import ProperButtonBlack from "../../components/ProperButtonBlack";
 
 const ProductDetails = () => {
   const { id: productId } = useParams();
@@ -87,7 +88,7 @@ const ProductDetails = () => {
     <div className="max-w-7xl mx-auto px-4 py-8">
       <Link
         to="/"
-        className="text-gray-500 hover:text-gray-700 text-sm mb-6 inline-block"
+        className="text-[#D4AF37] hover:text-[#800e25] text-sm mb-6 inline-block font-montserrat"
       >
         &larr; Back to Products
       </Link>
@@ -104,7 +105,7 @@ const ProductDetails = () => {
             onMouseMove={handleZoomImage}
             onMouseLeave={handleLeaveImageZoom}
           >
-            <div className="h-[600px] w-full border rounded-xl bg-white p-8 overflow-hidden">
+            <div className="h-[600px] w-full border-2 border-[#D4AF37] rounded-xl bg-white p-8 overflow-hidden shadow-lg">
               <img
                 src={product.image}
                 alt={product.name}
@@ -131,7 +132,7 @@ const ProductDetails = () => {
 
           {/* Product Details */}
           <div className="lg:w-1/2 space-y-6">
-            <h1 className="text-3xl font-light text-gray-900">{product.name}</h1>
+            <h1 className="text-3xl font-playfair font-light text-[#24110c]">{product.name}</h1>
 
             <div className="space-y-4">
               <Ratings
@@ -140,36 +141,36 @@ const ProductDetails = () => {
                 className="text-lg"
               />
 
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-[#24110c] leading-relaxed font-montserrat">
                 {product.description}
               </p>
 
-              <div className="grid grid-cols-2 gap-4 text-gray-600">
-                <div className="flex items-center space-x-2">
-                  <FaStore className="text-gray-400 min-w-[16px]" />
+              <div className="grid grid-cols-2 gap-4 text-[#24110c]">
+                <div className="flex items-center space-x-2 font-montserrat">
+                  <FaStore className="text-[#D4AF37] min-w-[16px]" />
                   <span>{product.brand}</span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <FaClock className="text-gray-400 min-w-[16px]" />
+                <div className="flex items-center space-x-2 font-montserrat">
+                  <FaClock className="text-[#D4AF37] min-w-[16px]" />
                   <span>{moment(product.createAt).fromNow()}</span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <FaShoppingCart className="text-gray-400 min-w-[16px]" />
+                <div className="flex items-center space-x-2 font-montserrat">
+                  <FaShoppingCart className="text-[#D4AF37] min-w-[16px]" />
                   <span>{product.quantity} units</span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <FaBox className="text-gray-400 min-w-[16px]" />
+                <div className="flex items-center space-x-2 font-montserrat">
+                  <FaBox className="text-[#D4AF37] min-w-[16px]" />
                   <span>{product.countInStock} in stock</span>
                 </div>
               </div>
 
-              <div className="pt-4 border-t">
+              <div className="pt-4 border-t border-[#D4AF37]/30">
                 <div className="flex items-center space-x-6">
                   {product.countInStock > 0 && (
                     <select
                       value={qty}
                       onChange={(e) => setQty(Number(e.target.value))}
-                      className="border rounded-md px-3 py-2 text-sm w-24 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="border border-[#D4AF37] rounded-md px-3 py-2 text-sm w-24 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] font-montserrat bg-transparent"
                     >
                       {[...Array(product.countInStock).keys()].map((x) => (
                         <option key={x + 1} value={x + 1}>
@@ -179,17 +180,14 @@ const ProductDetails = () => {
                     </select>
                   )}
 
-                  <button
+                  <ProperButtonBlack
                     onClick={addToCartHandler}
                     disabled={product.countInStock === 0 || isAddingToCart}
-                    className={`px-6 py-3 rounded-md text-sm font-medium transition-colors
-                      ${product.countInStock === 0
-                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                        : 'bg-indigo-600 text-white hover:bg-indigo-700'}
-                    `}
+                    text={isAddingToCart ? <Loader small /> : "Add to Cart"}
+                    className={`w-full max-w-[200px] mt-2 ${product.countInStock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
                     {isAddingToCart ? <Loader small /> : "Add to Cart"}
-                  </button>
+                  </ProperButtonBlack>
                 </div>
               </div>
             </div>

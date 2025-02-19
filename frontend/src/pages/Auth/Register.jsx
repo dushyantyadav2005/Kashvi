@@ -71,10 +71,10 @@ const Register = () => {
       <div className="flex-grow flex items-center justify-center">
         <div className="flex justify-between items-center mx-auto w-full max-w-md md:max-w-xl lg:max-w-4xl border border-[#D4AF37] rounded-lg bg-white shadow-lg">
           {/* Left image - hidden on medium screens */}
-          <img 
-            src="../../images/LoginPage.png" 
-            alt="Decorative left" 
-            className="h-full opacity-50 hidden lg:block" 
+          <img
+            src="../../images/LoginPage.png"
+            alt="Decorative left"
+            className="h-full opacity-50 hidden lg:block"
           />
 
           <div className="w-full p-6 md:p-8 lg:w-1/2 flex flex-col justify-center items-center">
@@ -160,9 +160,8 @@ const Register = () => {
                   disabled={isRegistering || isVerifying}
                 />
                 {passwordStrength && (
-                  <p className={`text-sm mt-2 ${
-                    passwordStrength === "Strong" ? "text-green-600" : "text-red-600"
-                  }`}>
+                  <p className={`text-sm mt-2 ${passwordStrength === "Strong" ? "text-green-600" : "text-red-600"
+                    }`}>
                     Password Strength: {passwordStrength}
                   </p>
                 )}
@@ -188,9 +187,9 @@ const Register = () => {
                 <ProperButtonBlack
                   type="submit"
                   className="w-full py-3 text-lg md:text-xl"
-                  disabled={isRegistering || isVerifying}
+                  text={isRegistering || isVerifying ? "Signing Up..." : "Register"}
                 >
-                  {isRegistering || isVerifying ? "Creating Account..." : "Register Now"}
+                  {isRegistering || isVerifying ? "Signing Up..." : "Register"}
                 </ProperButtonBlack>
               </div>
             </form>
@@ -208,10 +207,10 @@ const Register = () => {
           </div>
 
           {/* Right image - hidden on medium screens */}
-          <img 
-            src="../../images/LoginPage.png" 
-            alt="Decorative right" 
-            className="opacity-50 h-full rotate-180 hidden lg:block" 
+          <img
+            src="../../images/LoginPage.png"
+            alt="Decorative right"
+            className="opacity-50 h-full rotate-180 hidden lg:block"
           />
         </div>
       </div>

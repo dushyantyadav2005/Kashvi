@@ -94,6 +94,12 @@ const Shop = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
+  const handleReset = () => {
+    setSelectedCategory("");
+    setSelectedFestival("");
+    setDesignNumberFilter("");
+  };
+
   return (
     <>
       <div className="container mx-auto">
@@ -116,11 +122,11 @@ const Shop = () => {
         <div className="flex md:flex-row">
           {/* Filters Sidebar */}
           <div
-            className={`fixed md:static h-full bg-white md:bg-transparent z-50 w-64 md:w-auto transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+            className={`fixed md:static  bg-white md:bg-transparent z-0 w-64 md:w-auto transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
               }`}
           >
             <AiOutlineClose size={24} onClick={toggleSidebar} className={`${sidebarOpen ? "block" : "hidden"} m-4`} />
-            <div className="p-5 py-14 h-screen md:h-auto overflow-y-auto border-r-2 border-[#D4AF37] shadow-lg md:shadow-none">
+            <div className="p-5 py-14 h-[100vh] md:h-[100%] overflow-y-auto border-r-2 border-b-2 border-[#D4AF37] shadow-lg md:shadow-none">
               <h2 className="text-2xl font-playfair text-[#24110c] mb-8 text-center">Filter By</h2>
 
               {/* Categories Filter */}
@@ -249,7 +255,7 @@ const Shop = () => {
 
               {/* Reset Button */}
               <div className="mb-8">
-                <ProperButtonBlack text="Reset" name="reset" className="w-full mx-auto" />
+                <ProperButtonBlack text="Reset" name="reset" onClick={handleReset} className="w-full mx-auto" />
               </div>
             </div>
           </div>

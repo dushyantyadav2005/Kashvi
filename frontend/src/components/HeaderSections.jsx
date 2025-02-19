@@ -9,6 +9,9 @@ import "swiper/css/pagination";
 import { Navigation, Pagination, EffectCoverflow } from "swiper/modules";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import VideoShowcase from "./VideoShowcase";
+import BlogList from './BlogList';
+
 
 const HeaderSections = () => {
     const {
@@ -58,7 +61,7 @@ const HeaderSections = () => {
             </div>
 
             {/* Best Sellers Section */}
-            <div id="best-sellersection">
+            <div id="best-sellersection ">
                 <div className="flex items-center flex-col justify-center my-7 relative">
                     <img
                         src="../../images/doubleup.png"
@@ -78,7 +81,7 @@ const HeaderSections = () => {
                             Best Sellers
                         </h2>
                         <h2
-                            className="relative text-black text-base max-md:text-4xl font-light text-center px-4 font-montserrat uppercase tracking-widest"
+                            className="relative text-black text-base max-md:text-xl font-light text-center px-4 font-montserrat uppercase tracking-widest"
                             data-aos="fade-up"
                             data-aos-delay="400"
                             data-aos-duration="1000"
@@ -128,9 +131,22 @@ const HeaderSections = () => {
                             </SwiperSlide>
                         ))}
                     </Swiper>
+                    <div className="relative">
+
+                    </div>
+                </div>
+                <div className="relative">
+                    <img
+                        src="../../images/embupsidedown.png"
+                        alt="Decorative Embellishment"
+                        className="w-full h-auto opacity-50 rotate-180 transform transition-transform duration-1000 hover:scale-105"
+                        data-aos="fade-up"
+                        data-aos-duration="1500"
+                    />
                 </div>
 
             </div>
+            <VideoShowcase />
             {/* Festival Section */}
             <div className="relative">
                 <img
@@ -142,6 +158,7 @@ const HeaderSections = () => {
                     data-aos-offset="200"
                 />
             </div>
+
             <div id="festival-section" className="mt-16">
                 <div className="flex items-center flex-col justify-center my-7">
                     <img
@@ -160,7 +177,7 @@ const HeaderSections = () => {
                         Festival Sarees
                     </h2>
                     <h2
-                        className="relative text-black text-base max-md:text-4xl font-light text-center px-4 font-montserrat uppercase tracking-widest"
+                        className="relative text-black text-base max-md:text-xl font-light text-center px-4 font-montserrat uppercase tracking-widest"
                         data-aos="fade-up"
                         data-aos-delay="400"
                     >
@@ -215,7 +232,7 @@ const HeaderSections = () => {
                     </Swiper>
                 </div>
 
-                <div className="relative">
+                {/* <div className="relative">
                     <img
                         src="../../images/embupsidedown.png"
                         alt="Decorative Embellishment"
@@ -223,8 +240,9 @@ const HeaderSections = () => {
                         data-aos="fade-up"
                         data-aos-duration="1500"
                     />
-                </div>
+                </div> */}
             </div>
+            <BlogList/>
         </div>
     );
 };

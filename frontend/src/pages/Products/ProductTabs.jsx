@@ -5,6 +5,7 @@ import { useGetTopProductsQuery } from "../../redux/api/productApiSlice";
 import { useGetFestivalProductsQuery } from "../../redux/api/productApiSlice";
 import SmallProduct from "./SmallProduct";
 import Loader from "../../components/Loader";
+import ProperButtonBlack from "../../components/ProperButtonBlack";
 
 const ProductTabs = ({
   loadingProductReview,
@@ -18,7 +19,6 @@ const ProductTabs = ({
 }) => {
   const { data, isLoading } = useGetTopProductsQuery();
   const { data: festiveData, isLoading: festiveIsLoading } = useGetFestivalProductsQuery();
-
   const [activeTab, setActiveTab] = useState(1);
 
   if (isLoading || festiveIsLoading) return <Loader />;
@@ -26,108 +26,111 @@ const ProductTabs = ({
   const handleTabClick = (tabNumber) => setActiveTab(tabNumber);
 
   return (
-    <div className="flex flex-col md:flex-row flex-wrap gap-4">
-      <section className="flex md:flex-col w-full md:w-auto flex-shrink-0">
-        {["Write Your Review", "All Reviews", "Related Products", "Festival Products"].map((tab, index) => (
-          <div
+    <div className="flex flex-col lg:flex-row gap-8 w-full">
+      {/* Tab Navigation */}
+      <div className="lg:w-1/4 flex lg:flex-col overflow-hidden">
+        {["Write Review", "All Reviews"].map((tab, index) => (
+          <button
             key={index}
-            className={`p-4 cursor-pointer text-lg ${activeTab === index + 1 ? "font-bold" : ""}`}
             onClick={() => handleTabClick(index + 1)}
+            className={`p-4 text-left min-w-[200px] lg:w-full border-b-2 lg:border-b-0 lg:border-r-2 transition-all
+              ${activeTab === index + 1 
+                ? "border-[#D4AF37] text-[#D4AF37] bg-[#efdcd9]/10 font-semibold" 
+                : "border-[#D4AF37]/30 text-[#24110c] hover:bg-[#efdcd9]/20"}
+              font-montserrat text-sm uppercase tracking-wider`}
           >
             {tab}
-          </div>
+          </button>
         ))}
-      </section>
+      </div>
 
-      {/* Content */}
-      <section className="flex-1 min-w-[250px] max-w-full md:max-w-[50%]">
+      {/* Tab Content */}
+      <div className="flex-1 lg:pl-8">
+        {/* Review Form */}
         {activeTab === 1 && (
-          <div className="mt-4">
+          <div className="space-y-6">
             {userInfo ? (
-              <form onSubmit={submitHandler} className="space-y-4">
+              <form onSubmit={submitHandler} className="space-y-6">
                 <div>
-                  <label htmlFor="rating" className="block text-xl mb-2">Rating</label>
+                  <label htmlFor="rating" className="block font-playfair text-xl text-[#24110c] mb-3">
+                    Rating
+                  </label>
                   <select
                     id="rating"
                     required
                     value={rating}
                     onChange={(e) => setRating(e.target.value)}
-                    className="p-2 border rounded-lg w-full text-black"
+                    className="w-full p-3 border-2 border-[#D4AF37] rounded-lg bg-transparent font-montserrat focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
                   >
-                    <option value="">Select</option>
+                    <option value="">Select Rating</option>
                     {["Inferior", "Decent", "Great", "Excellent", "Exceptional"].map((label, i) => (
-                      <option key={i} value={i + 1}>{label}</option>
+                      <option key={i} value={i + 1} className="text-[#24110c]">
+                        {label}
+                      </option>
                     ))}
                   </select>
                 </div>
+
                 <div>
-                  <label htmlFor="comment" className="block text-xl mb-2">Comment</label>
+                  <label htmlFor="comment" className="block font-playfair text-xl text-[#24110c] mb-3">
+                    Comment
+                  </label>
                   <textarea
                     id="comment"
-                    rows="3"
+                    rows="4"
                     required
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
-                    className="p-2 border rounded-lg w-full text-black"
-                  ></textarea>
+                    className="w-full p-3 border-2 border-[#D4AF37] rounded-lg bg-transparent font-montserrat focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+                  />
                 </div>
-                <button
-                  className="bg-pink-600 text-white py-2 px-4 rounded-lg w-full"
-                  onSubmit={submitHandler}
+
+                <ProperButtonBlack
+                  type="submit"
+                  text={loadingProductReview ? "Submitting..." : "Submit Review"}
+                  disabled={loadingProductReview}
+                  className="w-full md:w-auto"
                 >
-                  Submit
-                </button>
+                  {loadingProductReview ? "Submitting..." : "Submit Review"}
+                </ProperButtonBlack>
               </form>
             ) : (
-              <p>Please <Link to="/login" className="text-blue-500">sign in</Link> to write a review</p>
+              <p className="font-montserrat text-[#24110c]">
+                Please{" "}
+                <Link to="/login" className="text-[#D4AF37] hover:underline">
+                  sign in
+                </Link>{" "}
+                to write a review
+              </p>
             )}
           </div>
         )}
 
+        {/* All Reviews */}
         {activeTab === 2 && (
-          <div className="space-y-4">
-            {product.reviews.length === 0 && <p>No Reviews</p>}
-            {product.reviews.map((review) => (
-              <div key={review._id} className="bg-gray-800 p-4 rounded-lg">
-                <div className="flex justify-between text-gray-400">
-                  <strong>{review.name}</strong>
-                  <p>{review.createdAt.substring(0, 10)}</p>
+          <div className="space-y-6">
+            {product.reviews.length === 0 ? (
+              <p className="font-montserrat text-[#24110c]">No reviews yet</p>
+            ) : (
+              product.reviews.map((review) => (
+                <div key={review._id} className="p-6 border-2 border-[#D4AF37] rounded-lg bg-[#efdcd9]/10">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="font-playfair text-lg text-[#24110c]">{review.name}</h3>
+                    <span className="font-montserrat text-sm text-[#24110c]/70">
+                      {review.createdAt.substring(0, 10)}
+                    </span>
+                  </div>
+                  <Ratings value={review.rating} className="mb-3" />
+                  <p className="font-montserrat text-[#24110c]">{review.comment}</p>
                 </div>
-                <p className="my-4">{review.comment}</p>
-                <Ratings value={review.rating} />
-              </div>
-            ))}
+              ))
+            )}
           </div>
         )}
-      </section>
 
-      {activeTab === 3 && (
-        <section className="flex flex-wrap gap-4 w-full">
-          {isLoading ? (
-            <Loader />
-          ) : (
-            data.map((product) => (
-              <SmallProduct key={product._id} product={product} />
-            ))
-          )}
-        </section>
-      )}
-
-      {activeTab === 4 && (
-        <section className="flex flex-wrap gap-4 w-full">
-          {festiveIsLoading ? (
-            <Loader />
-          ) : festiveData && festiveData.length > 0 ? (
-            festiveData.map((product) => (
-              <SmallProduct key={product._id} product={product} />
-            ))
-          ) : (
-            <p>No festival products found.</p>
-          )}
-        </section>
-      )}
+      </div>
     </div>
   );
 };
 
-export default ProductTabs;
+export default ProductTabs; 

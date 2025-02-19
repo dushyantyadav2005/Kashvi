@@ -1,14 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FaTrash } from "react-icons/fa";
-import { useState } from "react";
 import { addToCart, removeFromCart } from "../redux/features/cart/cartSlice";
-import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
-import { faker } from "@faker-js/faker";
-import Loader from "../components/Loader"; // Import Loader Component
 import ProperButtonBlack from "../components/ProperButtonBlack";
 
 // Optional: Import image correctly if stored in `src/assets/images`
@@ -17,11 +13,9 @@ import ProperButtonBlack from "../components/ProperButtonBlack";
 const Cart = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false); // Track loading state
-
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;
-  const { userInfo, isVerified } = useSelector((state) => state.auth) || {};
+  const { isVerified } = useSelector((state) => state.auth) || {};
 
   const addToCartHandler = (product, qty) => {
     dispatch(addToCart({ ...product, qty }));
@@ -36,50 +30,8 @@ const Cart = () => {
       toast.error("You need to verify your account to proceed with checkout.");
       return;
     }
-
-    setLoading(true); // Start loading before making the request
-
-    try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      };
-
-      const response = await axios.post(
-        "http://localhost:5000/api/invoice",
-        {
-          invoiceNo: faker.string.alphanumeric(10).toUpperCase(),
-          email: userInfo?.email || "N/A",
-          customerName: userInfo?.username || "Guest",
-          items: cartItems.map((item) => ({
-            name: item.name,
-            qty: item.qty,
-          })),
-        },
-        config
-      );
-
-      if (response.data && response.data.message) {
-        console.log("Invoice generated:", response.data);
-        toast.success(
-          "Invoice generated successfully! Kindly check your email to download the invoice."
-        );
-      } else {
-        throw new Error("Invalid response from server");
-      }
-    } catch (error) {
-      console.error("Error generating invoice:", error);
-      toast.error("Failed to generate invoice. Please try again.");
-    } finally {
-      setLoading(false); // Stop loading after the request completes
-    }
+    navigate('/checkout');
   };
-
-  if (loading) {
-    return <Loader />;
-  }
 
   return (
     <>
@@ -155,9 +107,8 @@ const Cart = () => {
 
                   <div onClick={checkoutHandler}>
                     <ProperButtonBlack
-                      className=" mt-2 py-3 px-6 text-lg w-full flex justify-center items-center "
-                      disabled={cartItems.length === 0 || loading}
-                      text={"Generate Invoice"}
+                      className=" mt-2 py-3 px-6 text-lg w-full flex justify-center items-center"
+                      text={"Checkout"}
                     />
                   </div>
                 </div>

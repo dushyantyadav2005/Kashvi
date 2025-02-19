@@ -9,7 +9,7 @@ import {
   AiOutlineMenu,
   AiOutlineClose,
   AiOutlineContacts,
-  AiOutlineBook
+  AiOutlineBook,
 } from "react-icons/ai";
 import { MdFavoriteBorder } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
@@ -29,6 +29,7 @@ const Navigation = () => {
   const navigate = useNavigate();
   const [logoutApiCall] = useLogoutMutation();
   const [verifyEmail] = useVerifyEmailMutation();
+
   const logoutHandler = async () => {
     try {
       await logoutApiCall().unwrap();
@@ -58,15 +59,15 @@ const Navigation = () => {
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
   return (
-    <nav className="bg-[#640c1dd2] h-auto text-[#efdcd9] w-full fixed top-0 z-50 shadow-lg shadow-[#24110c]/50 font-montserrat border-b-4 border-b-[#D4AF37] backdrop-blur-lg">
+    <nav className="bg-[#560d1ce7] h-auto text-[#efdcd9] w-full fixed top-0 z-50 shadow-lg shadow-[#24110c]/50 font-montserrat border-b-4 border-b-[#D4AF37] backdrop-blur-lg">
       <div className="w-full">
         <div className="w-full flex items-center justify-between p-2 pt-3 max-w-[1200px] mx-auto">
           {/* Left - Logo */}
-          <div className="w-1/4">
+          <div className="w-1/4 flex items-center">
             <img
               src="../../images/logopng1.png"
               alt="Logo"
-              className="h-10"
+              className="h-10 w-auto object-contain" // Ensures the logo maintains its aspect ratio
             />
           </div>
 
@@ -135,7 +136,6 @@ const Navigation = () => {
                   <ul className="absolute right-0 top-full mt-2 bg-[#800e25d2] text-[#efdcd9] shadow-lg rounded-lg overflow-hidden w-48 backdrop-blur-lg border border-[#D4AF37]">
                     {userInfo.isAdmin && (
                       <>
-                  
                         <li>
                           <Link to="/admin/productlist" className="block px-4 py-2 hover:bg-[#D4AF37] hover:text-white transition-all duration-300" onClick={closeDropdown}>
                             Products
@@ -154,6 +154,11 @@ const Navigation = () => {
                         <li>
                           <Link to="/admin/userlist" className="block px-4 py-2 hover:bg-[#D4AF37] hover:text-white transition-all duration-300" onClick={closeDropdown}>
                             Users
+                          </Link>
+                        </li>
+                        <li>
+                          <Link to="/admin/feedback" className="block px-4 py-2 hover:bg-[#D4AF37] hover:text-white transition-all duration-300" onClick={closeDropdown}>
+                            Feedback
                           </Link>
                         </li>
                       </>
@@ -265,11 +270,6 @@ const Navigation = () => {
                 <span>Blogs</span>
               </Link>
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
-              {cartItems.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-[#D4AF37] text-[#1A2238] px-1.5 py-0.5 text-xs rounded-full">
-                  {cartItems.reduce((a, c) => a + c.qty, 0)}
-                </span>
-              )}
             </li>
             <li className="relative hover:text-[#D4AF37] group">
               <Link to="/contact" className="flex items-center gap-1" onClick={toggleSidebar}>
@@ -277,11 +277,6 @@ const Navigation = () => {
                 <span>Contact us</span>
               </Link>
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
-              {cartItems.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-[#D4AF37] text-[#1A2238] px-1.5 py-0.5 text-xs rounded-full">
-                  {cartItems.reduce((a, c) => a + c.qty, 0)}
-                </span>
-              )}
             </li>
             <li className="relative hover:text-[#D4AF37] group">
               <Link to="/favorite" className="flex items-center gap-1" onClick={toggleSidebar}>
@@ -291,7 +286,6 @@ const Navigation = () => {
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#D4AF37] transition-all duration-300 group-hover:w-full"></span>
               <FavoritesCount />
             </li>
-
 
             {userInfo ? (
               <>

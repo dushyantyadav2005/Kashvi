@@ -1,13 +1,12 @@
 const Footer = () => {
     return (
-        <footer className="bg-[#480815] text-[#efdcd9]">
+        <footer className="bg-[#3a0711] text-[#efdcd9]">
             {/* Top Section with Logo and Newsletter */}
             <div className="max-w-7xl mx-auto px-8 py-6 flex flex-col md:flex-row justify-between items-center border-b border-[#D4AF37]">
                 {/* Logo */}
                 <div className="mb-4 md:mb-0">
                     <img
-                        src={'/logopng.png'}
-                        alt="Vedanti Logo"
+                        src={'/logopng1.png'}
                         className="h-12 w-auto"
                     />
                 </div>

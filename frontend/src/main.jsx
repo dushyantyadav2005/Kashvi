@@ -41,6 +41,9 @@ import ForgotPassword from "./pages/Auth/ForgotPassword.jsx";
 import ResetPassword from "./pages/Auth/ResetPassword.jsx";
 import Contact from "./pages/Contact.jsx";
 import AboutUs from "./pages/AboutUs.jsx";
+import CheckOutForm from "./pages/CheckOutForm.jsx";
+import UserOrder from "./pages/User/UserOrder.jsx";
+import Feedback from "./components/Feedback.jsx";
 // import AdminDashboard from "./pages/Admin/AdminDashboard.jsx";
 
 const router = createBrowserRouter(
@@ -63,12 +66,17 @@ const router = createBrowserRouter(
       <Route path="/blogs/:id" element={<BlogDetail />} />
 
 
+
       {/* Registered users */}
       <Route path="" element={<PrivateRoute />}>
         <Route path="/profile" element={<Profile />} />
         <Route path="/shipping" element={<Shipping />} />
         <Route path="/placeorder" element={<PlaceOrder />} />
         <Route path="/order/:id" element={<Order />} />
+        <Route path="/checkout" element={<CheckOutForm />} />
+        <Route path="/user-order" element={<UserOrder />} />
+
+
       </Route>
 
       <Route path="/admin" element={<AdminRoute />}>
@@ -79,6 +87,8 @@ const router = createBrowserRouter(
         <Route path="productlist/:pageNumber" element={<ProductList />} />
         <Route path="product/update/:_id" element={<ProductUpdate />} />
         <Route path="orderlist" element={<OrderList />} />
+        <Route path="feedback" element={<Feedback />} />
+
         {/* <Route path="dashboard" element={<AdminDashboard />} /> */}
       </Route>
     </Route>

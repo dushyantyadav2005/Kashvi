@@ -17,7 +17,7 @@ const AboutUs = () => {
         <div className="container mx-auto p-4">
             <div className="flex justify-center align-center md:flex md:space-x-4">
                 <div className="md:w-2/3">
-                    <h2 className="text-4xl font-semibold mb-8 text-center" data-aos="fade-up">
+                    <h2 className="text-4xl font-semibold mb-8 text-center font-playfair" data-aos="fade-up">
                         About Us
                     </h2>
 

@@ -29,21 +29,20 @@ const BlogList = () => {
   );
 
   return (
-    <div className=" min-h-screen">
-            <img src="../../images/embupsidedown.png" alt="" className='w-full h-auto opacity-50 mb-12' />
+    <div className="min-h-screen">
+      <img src="../../images/embupsidedown.png" alt="" className='w-full h-auto opacity-50 mb-12' />
 
       <h1 className="text-center text-4xl mb-14 text-gray-900 relative font-playfair">
         Latest Saree Articles
-        {/* <span className="absolute bottom-[-0.75rem] left-1/2 transform -translate-x-1/2 w-20 h-1 bg-[#D4AF37]"></span> */}
       </h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         {blogs.map(blog => (
           <div 
             key={blog._id} 
-            className="rounded-sm overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl group relative border-2 border-[#D4AF37] bg-[#5b0a1a] transform hover:-translate-y-2"
+            className="rounded-sm overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl group relative border-2 border-[#D4AF37] bg-[#5b0a1a] flex flex-col"
           >
-            <div className="h-64 relative overflow-hidden bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer">
+            <div className="h-48 sm:h-64 md:h-80 lg:h-96 relative overflow-hidden bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer">
               <img
                 src={blog.image}
                 alt={blog.title}
@@ -53,26 +52,15 @@ const BlogList = () => {
                   e.target.src = 'https://via.placeholder.com/400x250?text=Image+Not+Available'
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#470815da] to-transparent opacity-40 group-hover:opacity-30 transition-opacity duration-300"></div>
             </div>
-            <div className="p-6 relative z-10">
-              <span
-                className={`text-white px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide mb-4 inline-block shadow-md transition-all duration-300 ${
-                  blog.category === 'styling' ? 'bg-[#D4AF37]' :
-                  blog.category === 'fabric-care' ? 'bg-[#24110c]' :
-                  blog.category === 'fashion-trends' ? 'bg-[#800e25d2]' :
-                  'bg-[#D4AF37]'
-                }`}
-              >
-                {blog.category.replace('-', ' ')}
-              </span>
-              <h2 className="text-xl font-bold text-yellow-500 mb-4 transition-all duration-300 group-hover:text-yellow-400 font-playfair capitalize">{blog.title}</h2>
-              <p className="text-gray-300 leading-relaxed mb-6 line-clamp-3 transition-all duration-300 group-hover:text-gray-500 ">
-                {blog.content.substring(0, 120)}...
-              </p>
+            
+            <div className="p-6 flex flex-col flex-grow">
+              <h2 className="text-2xl md:text-xl lg:text-2xl font-bold text-yellow-500 mb-4 transition-all duration-300 group-hover:text-yellow-400 font-playfair capitalize">
+                {blog.title}
+              </h2>
               <Link 
                 to={`/blogs/${blog._id}`} 
-                className="flex items-center text-yellow-500 font-semibold transition-all duration-300 group-hover:text-yellow-400"
+                className="flex items-center text-yellow-500 font-semibold transition-all duration-300 group-hover:text-yellow-400 mt-auto"
               >
                 Continue Reading
                 <FiArrowRight className="ml-2 transition-all duration-300 group-hover:translate-x-1" />

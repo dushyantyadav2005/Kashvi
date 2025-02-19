@@ -14,22 +14,22 @@ const UserList = () => {
   const { data: users, refetch, isLoading, error } = useGetUsersQuery();
 
   const [deleteUser] = useDeleteUserMutation();
+  const [updateUser] = useUpdateUserMutation();
 
   const [editableUserId, setEditableUserId] = useState(null);
   const [editableUserName, setEditableUserName] = useState("");
   const [editableUserEmail, setEditableUserEmail] = useState("");
-
-  const [updateUser] = useUpdateUserMutation();
 
   useEffect(() => {
     refetch();
   }, [refetch]);
 
   const deleteHandler = async (id) => {
-    if (window.confirm("Are you sure")) {
+    if (window.confirm("Are you sure you want to delete this user?")) {
       try {
         await deleteUser(id);
         refetch();
+        toast.success("User deleted successfully.");
       } catch (err) {
         toast.error(err?.data?.message || err.error);
       }
@@ -51,6 +51,7 @@ const UserList = () => {
       });
       setEditableUserId(null);
       refetch();
+      toast.success("User updated successfully.");
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -59,7 +60,7 @@ const UserList = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8f9fa] to-[#f1f3f5] pt-20 px-4 md:px-8 pb-8">
       <div className="max-w-6xl mx-auto">
-        <h1 className="font-playfair text-4xl text-center mb-8 uppercase">User Management</h1>
+        <h1 className="font-playfair text-3xl md:text-4xl text-center mb-8 uppercase">User Management</h1>
 
         {isLoading ? (
           <Loader />
@@ -68,8 +69,8 @@ const UserList = () => {
             {error?.data?.message || error.error}
           </Message>
         ) : (
-          <div className="bg-white bg-opacity-95 rounded-2xl shadow-xl p-6 md:p-8">
-            <table className="w-full">
+          <div className="bg-white bg-opacity-95 rounded-2xl shadow-xl p-4 md:p-8 overflow-x-auto">
+            <table className="w-full min-w-[600px] text-sm md:text-base">
               <thead className="bg-[#480815] text-white">
                 <tr>
                   <th className="px-4 py-3 text-left rounded-tl-2xl">ID</th>
@@ -82,7 +83,7 @@ const UserList = () => {
               <tbody>
                 {users.map((user) => (
                   <tr key={user._id} className="border-b border-[#D4AF37] hover:bg-[#c3183a16]">
-                    <td className="px-4 py-3 text-sm">{user._id}</td>
+                    <td className="px-4 py-3 text-xs md:text-sm">{user._id}</td>
                     <td className="px-4 py-3">
                       {editableUserId === user._id ? (
                         <div className="flex items-center gap-2">
@@ -90,11 +91,11 @@ const UserList = () => {
                             type="text"
                             value={editableUserName}
                             onChange={(e) => setEditableUserName(e.target.value)}
-                            className="bg-[#c3183a16] border border-[#480815] focus:ring-2 focus:ring-[#D4AF37] rounded-sm p-2 w-full"
+                            className="bg-[#c3183a16] border border-[#480815] focus:ring-2 focus:ring-[#D4AF37] rounded-md p-2 w-full"
                           />
                           <ProperButtonBlack
                             onClick={() => updateHandler(user._id)}
-                            className="px-3 py-2"
+                            className="p-2"
                             text={<FaCheck />}
                           />
                         </div>
@@ -117,11 +118,11 @@ const UserList = () => {
                             type="email"
                             value={editableUserEmail}
                             onChange={(e) => setEditableUserEmail(e.target.value)}
-                            className="bg-[#c3183a16] border border-[#480815] focus:ring-2 focus:ring-[#D4AF37] rounded-sm p-2 w-full"
+                            className="bg-[#c3183a16] border border-[#480815] focus:ring-2 focus:ring-[#D4AF37] rounded-md p-2 w-full"
                           />
                           <ProperButtonBlack
                             onClick={() => updateHandler(user._id)}
-                            className="px-3 py-2"
+                            className="p-2"
                             text={<FaCheck />}
                           />
                         </div>
@@ -139,18 +140,18 @@ const UserList = () => {
                         </div>
                       )}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 text-center">
                       {user.isAdmin ? (
                         <FaCheck className="text-green-600" />
                       ) : (
                         <FaTimes className="text-red-600" />
                       )}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 text-center">
                       {!user.isAdmin && (
                         <ProperButtonBlack
                           onClick={() => deleteHandler(user._id)}
-                          className="bg-[#d11a3eeb] hover:bg-[#c3183a] px-3 py-2"
+                          className="bg-[#d11a3eeb] hover:bg-[#c3183a] p-2"
                           text={<FaTrash />}
                         />
                       )}

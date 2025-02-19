@@ -23,4 +23,18 @@ const submitFeedback = async (req, res) => {
     }
 };
 
-export { submitFeedback }
+// Add this new controller function
+const getAllFeedbacks = async (req, res) => {
+    try {
+        // Retrieve all feedbacks sorted by creation date (newest first)
+        const feedbacks = await Feedback.find().sort({ createdAt: -1 });
+        // Send the feedbacks as JSON response
+        res.status(200).json(feedbacks);
+    } catch (error) {
+        console.error('Error fetching feedbacks:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+
+export { submitFeedback, getAllFeedbacks };

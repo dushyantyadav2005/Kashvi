@@ -60,7 +60,9 @@ const loginUser = asyncHandler(async (req, res) => {
         username: existingUser.username,
         email: existingUser.email,
         isAdmin: existingUser.isAdmin,
+        phone: existingUser.phone,
         isVerified: existingUser.isVerified,
+        address: existingUser.address
       });
       return;
     }
@@ -115,20 +117,21 @@ const updateCurrentUserProfile = asyncHandler(async (req, res) => {
     user.username = req.body.username || user.username;
     user.email = req.body.email || user.email;
     user.phone = req.body.phone || user.phone;
+    user.address = req.body.address || user.address;
 
     if (req.body.password) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(req.body.password, salt);
       user.password = hashedPassword;
     }
-
     const updatedUser = await user.save();
-
     res.json({
       _id: updatedUser._id,
       username: updatedUser.username,
       email: updatedUser.email,
       isAdmin: updatedUser.isAdmin,
+      address: updatedUser.address,
+      phone: updatedUser.phone
     });
   } else {
     throw new Error("User not found");
@@ -190,6 +193,7 @@ const updateUserById = asyncHandler(async (req, res) => {
       username: updatedUser.username,
       email: updatedUser.email,
       isAdmin: updatedUser.isAdmin,
+      address:updatedUser.address,
     });
   } else {
     res.status(404);
@@ -222,7 +226,6 @@ const verifyUser = asyncHandler(async (req, res) => {
     user.verificationOTP = otp;
     user.verificationOTPExpires = Date.now() + 3600000; // OTP expires in 1 hour
     await user.save();
-
     const subject = "🔐 Verify Your Email - Secure Your Account";
     const html = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background-color: #f9f9f9; text-align: center;">
         <h2 style="color: #333;">🔐 Verify Your Email</h2>

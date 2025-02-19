@@ -13,7 +13,6 @@ const Profile = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [phone, setPhone] = useState("");
-
   const { userInfo } = useSelector((state) => state.auth);
   const [updateProfile, { isLoading: loadingUpdateProfile }] = useProfileMutation();
   const dispatch = useDispatch();
@@ -37,7 +36,7 @@ const Profile = () => {
           password,
           phone,
         }).unwrap();
-        dispatch(setCredentials({ ...res }));
+        dispatch(setCredentials({ userInfo: res }));
         toast.success("Profile updated successfully");
       } catch (err) {
         toast.error(err?.data?.message || err.error);
@@ -51,7 +50,7 @@ const Profile = () => {
         <div className="w-full p-8">
           <h2 className="h4 text-center font-playfair m-10 mb-0 mt-0 text-4xl uppercase">Update</h2>
           <h2 className="h4 text-center font-montserrat m-10 mt-0 mb-10 text-sm uppercase">Profile</h2>
-          
+
           <form onSubmit={submitHandler} className="mt-4 w-full">
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2">Name</label>
@@ -84,7 +83,6 @@ const Profile = () => {
                 maxLength="10"
               />
             </div>
-
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2">Password</label>
               <input
@@ -112,16 +110,18 @@ const Profile = () => {
                 text={loadingUpdateProfile ? "Updating..." : "Update Profile"}
                 disabled={loadingUpdateProfile}
               />
-              
-              <ProperButtonBlack
-                as={Link}
-                to="/user-orders"
-                className="w-48"
-                text="My Orders"
-              />
+              <Link to={`/user-order`}>
+                <ProperButtonBlack
+                  type="button" // Fixed: Explicitly setting type="button"
+                  as={Link}
+                  className="w-48"
+                  text="My Orders"
+                />
+              </Link>
             </div>
-            {loadingUpdateProfile && <Loader />}
           </form>
+
+          {loadingUpdateProfile && <Loader />}
         </div>
       </div>
     </div>
