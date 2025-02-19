@@ -66,6 +66,20 @@ const getOrders = asyncHandler(async (req, res) => {
         res.status(500).json({ message: "Error fetching orders", error: error.message });
     }
 })
+const getOrdersAdmin = asyncHandler(async (req, res) => {
+    try {
+        console.log("Req params:",req.params);
+        const _id = req.params.id;
+        const user_id = req.params.user_id;
+        console.log(_id, user_id)
+        const orders = await Order.find({});
+        res.json(orders);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error fetching orders", error: error.message });
+    }
+})
 
 
-export { createOrder, getMyOrders, updateShippingAddress, getOrders };
+export { createOrder, getMyOrders, updateShippingAddress, getOrders,getOrdersAdmin };

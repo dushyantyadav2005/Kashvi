@@ -37,6 +37,12 @@ export const orderApiSlice = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5,
     }),
+    getAdminOrders: builder.query({
+      query: (id) => ({
+        url: `${ORDERS_URL}/getOrders`,
+      }),
+      keepUnusedDataFor: 5,
+    }),
 
     getOrders: builder.query({
       query: ({ id, user_id }) => ({
@@ -77,4 +83,5 @@ export const {
   useGetMyOrdersQuery,
   useDeliverOrderMutation,
   useGetOrdersQuery,
+  useGetAdminOrdersQuery
 } = orderApiSlice;

@@ -40,7 +40,8 @@ function Contact() {
             <div className="container px-6 py-8 md:py-12 mx-auto">
                 <div className="flex flex-wrap md:justify-between">
                     {/* Left Section - Map & Address */}
-                    <div className="w-full lg:w-2/3 md:w-1/2 bg-gray-300 rounded-lg overflow-hidden shadow-lg p-6 relative">
+                    <div className="w-full lg:w-2/3 md:w-1/2 bg-gray-300 rounded-
+                     overflow-hidden shadow-lg p-6 relative">
                         {/* Google Map */}
                         <iframe
                             width="100%"
@@ -88,7 +89,7 @@ function Contact() {
                                     type="text"
                                     id="name"
                                     name="name"
-                                    className="bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815] py-2 px-4 block w-full rounded-md"
+                                    className="bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815] py-2 px-4 block w-full rounded-sm"
                                     required
                                 />
                             </div>
@@ -100,7 +101,7 @@ function Contact() {
                                     type="email"
                                     id="email"
                                     name="email"
-                                    className="bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815] py-2 px-4 block w-full rounded-md"
+                                    className="bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815] py-2 px-4 block w-full rounded-sm"
                                     required
                                 />
                             </div>
@@ -112,14 +113,14 @@ function Contact() {
                                     id="message"
                                     name="message"
                                     rows="4"
-                                    className="bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815] py-2 px-4 block w-full rounded-md"
+                                    className="bg-[#c3183a16] text-black focus:outline-none focus:ring-2 focus:ring-[#D4AF37] border border-[#480815] py-2 px-4 block w-full rounded-sm"
                                     required
                                 ></textarea>
                             </div>
 
                             {/* Submit Button */}
                             <div className="flex justify-center">
-                                <ProperButtonBlack text="Submit" className="mt-4 w-full  text-white py-2 rounded-md shadow-md hover:bg-[#6a1a2b] transition-all" />
+                                <ProperButtonBlack text="Submit" className="mt-4 w-full  text-white py-2 rounded-sm shadow-md hover:bg-[#6a1a2b] transition-all" />
                             </div>
                         </form>
                     </div>

@@ -1,18 +1,18 @@
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
 import { Link } from "react-router-dom";
-import { useGetOrdersQuery } from "../../redux/api/orderApiSlice";
+import { useGetAdminOrdersQuery, useGetOrdersQuery } from "../../redux/api/orderApiSlice";
+import { useSelector } from "react-redux";
 import AdminMenu from "./AdminMenu";
 import ProperButtonBlack from "../../components/ProperButtonBlack";
 
 const OrderList = () => {
-  const { data: orders, isLoading, error } = useGetOrdersQuery();
-
+  const { data: orders, isLoading, error } = useGetAdminOrdersQuery();
+  const { userInfo } = useSelector((state) => state.auth);
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8f9fa] to-[#f1f3f5] pt-20 px-4 md:px-8 pb-8">
       <div className="max-w-6xl mx-auto">
         <AdminMenu />
-        
         {isLoading ? (
           <Loader />
         ) : error ? (
@@ -29,8 +29,6 @@ const OrderList = () => {
                     <th className="px-4 py-3 text-left">ID</th>
                     <th className="px-4 py-3 text-left">USER</th>
                     <th className="px-4 py-3 text-left">DATE</th>
-                    <th className="px-4 py-3 text-left">TOTAL</th>
-                    <th className="px-4 py-3 text-left">PAID</th>
                     <th className="px-4 py-3 text-left">DELIVERED</th>
                     <th className="px-4 py-3 text-left rounded-tr-2xl">ACTIONS</th>
                   </tr>
@@ -53,25 +51,16 @@ const OrderList = () => {
                       <td className="px-4 py-3">
                         {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "N/A"}
                       </td>
-                      <td className="px-4 py-3 font-medium">$ {order.totalPrice}</td>
                       <td className="px-4 py-3">
-                        <span className={`inline-block px-3 py-1 rounded-full text-xs ${
-                          order.isPaid ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
-                        }`}>
-                          {order.isPaid ? "Completed" : "Pending"}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={`inline-block px-3 py-1 rounded-full text-xs ${
-                          order.isDelivered ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
-                        }`}>
+                        <span className={`inline-block px-3 py-1 rounded-full text-xs ${order.isDelivered ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+                          }`}>
                           {order.isDelivered ? "Completed" : "Pending"}
                         </span>
                       </td>
                       <td className="px-4 py-3">
                         <ProperButtonBlack
                           as={Link}
-                          to={`/order/${order._id}`}
+                          to={`/order/${order._id}/${userInfo._id}`}
                           className="px-3 py-1 text-sm"
                           text="Details"
                         />
